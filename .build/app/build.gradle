@@ -1,0 +1,4 @@
+// 根构建文件（插件在 settings.gradle 的 pluginManagement 中统一声明）
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

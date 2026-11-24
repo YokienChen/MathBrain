@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>版本管理工具 · 最强大脑</title>
+<style>
+:root{--bg:#0f0d1e;--panel:#1a1730;--line:#2d2850;--txt:#e8e3ff;--sub:#9a92c8;--gold:#ffd54f;--purple:#b9a6ff;--cyan:#7fe9ff;--green:#4caf50;}
+*{box-sizing:border-box;}
+body{margin:0;background:radial-gradient(circle at 20% 0%,#241d47,#0f0d1e 60%);color:var(--txt);font:14px/1.5 system-ui,"Segoe UI","Microsoft YaHei",sans-serif;min-height:100vh;}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 20px 60px;}
+header{text-align:center;margin-bottom:22px;}
+h1{margin:0;color:var(--gold);letter-spacing:2px;font-size:1.8rem;}
+.sub{color:var(--purple);font-size:.9rem;margin-top:6px;}
+.cols{display:grid;grid-template-columns:340px 1fr;gap:18px;align-items:start;}
+@media(max-width:820px){.cols{grid-template-columns:1fr;}}
+.panel{background:rgba(26,23,48,.85);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.35);}
+.ptitle{color:var(--cyan);font-weight:700;margin:0 0 12px;font-size:1rem;letter-spacing:1px;}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+button{cursor:pointer;border:1px solid var(--line);background:rgba(124,77,255,.2);color:var(--txt);border-radius:9px;padding:7px 12px;font:600 .82rem system-ui;transition:.15s;}
+button:hover{background:rgba(124,77,255,.4);border-color:var(--purple);}
+button.primary{background:linear-gradient(135deg,#b9a6ff,#7c4dff);border-color:var(--purple);color:#fff;}
+button.gold{background:linear-gradient(135deg,#ffb300,#ff6f00);border-color:var(--gold);color:#1a1200;}
+input,select{background:#121025;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:7px 10px;font:.85rem system-ui;}
+.vlist{display:flex;flex-direction:column;gap:6px;max-height:64vh;overflow:auto;}
+.vitem{padding:9px 11px;border-radius:10px;border:1px solid transparent;background:rgba(255,255,255,.04);cursor:pointer;position:relative;}
+.vitem:hover{background:rgba(255,255,255,.09);}
+.vitem.sel{border-color:var(--gold);background:rgba(255,213,79,.12);}
+.vitem .h{display:flex;align-items:center;gap:8px;}
+.vitem .v{color:var(--gold);font-weight:700;}
+.vitem .tag{font-size:.66rem;padding:1px 6px;border-radius:7px;background:rgba(124,77,255,.35);color:#ddd;}
+.vitem .tag.mile{background:rgba(255,213,79,.25);color:var(--gold);}
+.vitem .date{margin-left:auto;color:var(--sub);font-size:.72rem;}
+.vitem .note{color:#c6c0e8;font-size:.75rem;margin-top:3px;}
+.tree{font-family:ui-monospace,Consolas,monospace;font-size:.8rem;line-height:1.9;color:var(--sub);white-space:pre-wrap;}
+.tree b{color:var(--gold);} .tree .cur{color:var(--cyan);font-weight:bold;}
+.branch{display:inline-block;margin:3px 6px 3px 0;padding:4px 10px;border-radius:14px;border:1px solid var(--purple);background:rgba(124,77,255,.18);font-size:.78rem;}
+.branch.act{background:var(--purple);color:#171233;font-weight:700;}
+.diffbox{background:#0c0a18;border:1px solid var(--line);border-radius:10px;padding:12px;font:12px/1.7 ui-monospace,Consolas,monospace;max-height:52vh;overflow:auto;white-space:pre-wrap;}
+.add{color:#7ee787;} .del{color:#ff7b72;} .meta{color:var(--sub);}
+.kv{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;align-items:center;}
+.copy{position:fixed;bottom:18px;right:18px;}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#1a1730;border:1px solid var(--gold);color:var(--gold);padding:9px 16px;border-radius:10px;display:none;z-index:99;}
+.hint{color:var(--sub);font-size:.78rem;}
+code{background:#0c0a18;padding:2px 6px;border-radius:5px;color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>🕰️ 版本管理工具</h1><div class="sub">最强大脑 · 查看版本修改 / 分支 / 一键回退</div></header>
+<div class="cols">
+  <div class="panel">
+    <h2 class="ptitle">版本时间线</h2>
+    <div class="toolbar">
+      <button onclick="expandAll()">展开全部</button>
+      <button onclick="resetSel()">重置</button>
+    </div>
+    <div class="vlist" id="vlist"></div>
+  </div>
+  <div>
+    <div class="panel" style="margin-bottom:16px;">
+      <h2 class="ptitle">🌿 分支结构</h2>
+      <div id="branches"></div>
+      <div class="kv" style="margin-top:12px;">
+        <input id="bn" placeholder="新分支名" style="width:140px;">
+        <select id="bb"><option value="1.0.0">基于 v1.0.0</option></select>
+        <button class="primary" onclick="addBranch()">新建分支</button>
+      </div>
+      <div class="hint">分支为本地标记，与游戏内版本中心共用存档键 <code>mathbrain_ver_branches_v1</code></div>
+    </div>
+    <div class="panel">
+      <h2 class="ptitle">📋 版本详情与修改</h2>
+      <div id="detail"><div class="hint">← 点击左侧版本卡片查看修改说明、分支点与回退命令</div></div>
+    </div>
+  </div>
+</div>
+</div>
+<button class="copy gold" onclick="copyRollback()">📋 复制当前回滚命令</button>
+<div class="toast" id="toast"></div>
+<script>
+const META={"project":"最强大脑 · 数学心算","current":"1.0.0","versions":[{"v":"3.1","file":"v3_1.html","date":"早期","tag":"基线","notes":"字体减半/难度标签(简单·中等·困难·？？？)/血量上限翻倍；近10局最高-50起点、前20关热身、跳过满分、答错清空输入、修双击刷分"},{"v":"4.0","file":"v4_0.html","date":"早期","tag":"里程碑","notes":"新增心算+比大小双模式"},{"v":"5.0","file":"v5_0.html","date":"早期","tag":"","notes":"比大小：内置< = >符号、题型解锁、π/e保底机制、概率表、退出85%规则"},{"v":"5.1","file":"v5_1.html","date":"早期","tag":"","notes":"比大小答错直接下一关且0分、掉血×3；双指数概率"},{"v":"5.2","file":"v5_2.html","date":"早期","tag":"","notes":"双指数定义/保底/禁止同指数、结算页两按钮"},{"v":"5.3","file":"v5_3.html","date":"11-20","tag":"","notes":"双指数对分布：(2,3)=40%、(3,4)=30%、其他=30%，保底同分布"},{"v":"6.0","file":"v6_0.html","date":"11-20","tag":"里程碑","notes":"新增秘境挑战：关卡选择/星级/最高分、人vs妖怪双血条、炸弹·飞刀·炽热烈焰、敌方加成表、隐藏分与答案上限、7种题型、特殊数🔥与唯一提示、速度计分与星级线"},{"v":"6.1","file":"v6_1.html","date":"11-20","tag":"","notes":"修复秘境答错仍计分"},{"v":"6.2","file":"v6_2.html","date":"11-20","tag":"","notes":"秘境算式强制单行显示（自动缩放字号）"},{"v":"6.4","file":"v6_4.html","date":"11-20","tag":"","notes":"秘境敌方伤害加成重新平衡"},{"v":"6.5","file":"v6_5.html","date":"11-20","tag":"","notes":"秘境🔥位置多样化、④⑥特殊题上限改0.4"},{"v":"7.0","file":"v7_0.html","date":"11-20","tag":"里程碑","notes":"金币系统、猫咪陪伴气泡、我的宠物页(投喂/升级/每日心情衰减)、秘境宠物加成(减灼烧/不屈意志/硬核护盾)"},{"v":"8.0","file":"v8_0.html","date":"11-23","tag":"里程碑","notes":"金币再×2(累计4倍)、钥匙🗝系统(≥40关首通各1把)、宠物10-70级与钥匙成本、10级后不衰减、全球排行榜(固定前20+名次/百分比公式+并列最前)"},{"v":"8.1","file":"v8_0.html","date":"11-23","tag":"文案","notes":"排行榜玩家行(前xx.xx%)改为(超过xx.xx%)。注：无独立备份，回退指向v8.0源码"},{"v":"8.2","file":"v8_2.html","date":"11-23","tag":"","notes":"删除主页'双模式·无限挑战'、秘境战斗隐藏货币、秘境排版优化(勇士左移+算式安全边距)"},{"v":"8.3","file":"v8_3.html","date":"11-23","tag":"修复","notes":"修复190+关2²送分题bug(兜底限定量级范围+换对)；比大小比例分档(100-129:92-97%…220+:98-99%)"},{"v":"8.4","file":"v8_4.html","date":"11-23","tag":"","notes":"投喂心情+5→+20(×10=+200，不超上限)；比大小答错扣血翻倍"},{"v":"8.5","file":"v8_5.html","date":"11-23","tag":"修复","notes":"修复不屈意志生效时输入死锁只能等死的bug；删除生效横幅'✨不屈意志✨'"},{"v":"8.6","file":"v8_6.html","date":"11-23","tag":"修复","notes":"修复排行榜名次卡在634083(按心情→等级→关卡→分布算真实名次)；比大小扣血改为21.6%最大生命值"},{"v":"8.7","file":"v8_7.html","date":"11-23","tag":"","notes":"比大小动态扣血(8+关卡/40+连错×3%)；101+难度标签5档文案与动画(未知/死域/岩浆/不要作死/炎魔本魔)"},{"v":"1.0.0","file":"index.html","date":"11-24","tag":"当前·大版本","notes":"版本控制(查看版本间修改/分支/回退)+防外挂(退出/分屏4倍速扣血、稳健外挂检测归零)。当前运行版本"}]};
+const LS_BRANCH='mathbrain_ver_branches_v1';
+let selected=null;
+function branches(){ try{const o=JSON.parse(localStorage.getItem(LS_BRANCH));if(Array.isArray(o)&&o.length)return o;}catch(e){} return [{name:'main',base:'1.0.0',active:true}]; }
+function saveBranches(b){ localStorage.setItem(LS_BRANCH,JSON.stringify(b)); renderBranches(); }
+function renderBranches(){
+  const bs=branches();
+  document.getElementById('branches').innerHTML=bs.map(b=>'<span class="branch '+(b.active?'act':'')+'">'+b.name+' → v'+b.base+(b.active?' ✓':'')+'</span>').join('')
+   +'<div class="tree" style="margin-top:8px;">'+META.versions.slice().reverse().map((x,i)=>{
+      const branchAt=bs.filter(b=>b.base===x.v).map(b=>' ├─🌿 '+b.name).join('\n');
+      const cur=x.v===META.current?'  ← 当前运行':'';
+      return (i===0?'● ':'│ ')+'<b>v'+x.v+'</b>'+cur+(branchAt?'\n'+branchAt:'');
+     }).join('\n')+'</div>';
+  const sel=document.getElementById('bb');
+  sel.innerHTML=META.versions.map(x=>'<option value="'+x.v+'">基于 v'+x.v+'</option>').join('');
+  sel.value='1.0.0';
+}
+function addBranch(){
+  const name=document.getElementById('bn').value.trim(); if(!name){t('请输入分支名');return;}
+  const base=document.getElementById('bb').value; const bs=branches();
+  if(bs.some(b=>b.name===name)){t('分支名已存在');return;}
+  bs.forEach(b=>b.active=false); bs.push({name,base,active:true}); saveBranches(bs);
+  document.getElementById('bn').value=''; t('已创建分支 '+name+' (基于 v'+base+')');
+}
+function renderList(){
+  const order=META.versions.slice().reverse();
+  document.getElementById('vlist').innerHTML=order.map(x=>
+    '<div class="vitem" data-v="'+x.v+'" onclick="sel(\''+x.v+'\')">'
+    +'<div class="h"><span class="v">v'+x.v+'</span>'
+    +(x.tag?'<span class="tag '+(x.tag==='里程碑'?'mile':'')+'">'+x.tag+'</span>':'')
+    +'<span class="date">'+x.date+'</span></div>'
+    +'<div class="note">'+x.notes.slice(0,60)+(x.notes.length>60?'…':'')+'</div></div>').join('');
+}
+function sel(v){ selected=v; document.querySelectorAll('.vitem').forEach(e=>e.classList.toggle('sel',e.dataset.v===v)); showDetail(v); }
+function expandAll(){ document.getElementById('detail').innerHTML=META.versions.slice().reverse().map(x=>'<div class="diffbox" style="margin-bottom:10px;"><span class="add">[v'+x.v+']</span> '+x.notes+'</div>').join(''); }
+function resetSel(){ selected=null; document.querySelectorAll('.vitem').forEach(e=>e.classList.remove('sel')); document.getElementById('detail').innerHTML='<div class="hint">← 点击左侧版本卡片查看修改说明、分支点与回退命令</div>'; }
+function showDetail(v){
+  const i=META.versions.findIndex(x=>x.v===v); const x=META.versions[i]; const prev=i>0?META.versions[i-1]:null;
+  const branchAt=branches().filter(b=>b.base===v).map(b=>b.name).join('、');
+  const rollback=x.file==='index.html'?'（当前版本，无需回退）':'cp 数学_'+v.replace('.','_')+'_备份.html 数学_升级版.html';
+  let h='<h3 style="color:var(--gold);margin:0 0 8px;">v'+x.v+' '+(x.tag?'· '+x.tag:'')+'</h3>';
+  h+='<div class="kv"><span class="hint">日期</span><b>'+x.date+'</b><span class="hint">源码文件</span><code>'+x.file+'</code></div>';
+  h+='<div class="diffbox"><span class="meta">## 本版修改内容</span>\n<span class="add">+ '+x.notes+'</span>';
+  if(prev) h+='\n\n<span class="meta">## 相对上一版 v'+prev.v+'</span>\n<span class="del">- '+prev.notes.slice(0,80)+(prev.notes.length>80?'…':'')+'</span>\n<span class="add">+ '+x.notes+'</span>';
+  if(branchAt) h+='\n\n<span class="meta">## 分支点</span>\n🌿 '+branchAt;
+  h+='</div>';
+  h+='<div class="kv" style="margin-top:12px;"><span class="hint">一键回滚到本地源码：</span><code id="rollcmd">'+rollback+'</code>'
+   +(x.file!=='index.html'?'<button onclick="cpCmd()">复制</button>':'')+'</div>';
+  if(v==='8.1') h+='<div class="hint">⚠ v8.1 无独立备份，回滚命令指向 v8.0（内容差异仅为排行榜文案）</div>';
+  document.getElementById('detail').innerHTML=h;
+}
+function cpCmd(){ const c=document.getElementById('rollcmd'); if(!c)return; copy(c.textContent); }
+function copyRollback(){
+  if(!selected){t('请先选择一个版本');return;}
+  const i=META.versions.findIndex(x=>x.v===selected); const x=META.versions[i];
+  if(x.file==='index.html'){t('当前版本无需回退');return;}
+  copy('cp 数学_'+selected.replace('.','_')+'_备份.html 数学_升级版.html');
+}
+function copy(s){ if(navigator.clipboard) navigator.clipboard.writeText(s).then(()=>t('已复制: '+s),()=>t('复制失败，请手动选择')); else t('请手动复制: '+s); }
+function t(m){ const e=document.getElementById('toast'); e.textContent=m; e.style.display='block'; clearTimeout(t._t); t._t=setTimeout(()=>e.style.display='none',1800); }
+renderList(); renderBranches();
+</script>
+</body></html>

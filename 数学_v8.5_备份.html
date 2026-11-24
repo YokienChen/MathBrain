@@ -1,0 +1,2572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最强大脑测试 · 双模式挑战</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI','Microsoft YaHei',sans-serif;}
+
+body{
+  background:linear-gradient(135deg,#0f0c29 0%,#302b63 45%,#24243e 100%);
+  background-size:200% 200%;
+  animation:bgShift 18s ease infinite;
+  color:#fff;min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;padding:20px;overflow-x:hidden;
+}
+@keyframes bgShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+.container{
+  max-width:800px;width:100%;
+  background:rgba(8,8,24,.78);
+  border:1px solid rgba(160,140,255,.25);
+  border-radius:20px;padding:30px;
+  box-shadow:0 10px 40px rgba(0,0,0,.6),inset 0 0 60px rgba(90,60,200,.12);
+  margin-top:20px;position:relative;backdrop-filter:blur(6px);
+}
+
+/* ===== 开始页美化 ===== */
+.start-screen{position:relative;overflow:hidden;padding:10px 0 20px;}
+.start-decor{position:absolute;inset:-20px;pointer-events:none;z-index:0;}
+.float-symbol{
+  position:absolute;color:#b9a6ff;font-weight:bold;
+  animation:floatUp linear infinite;user-select:none;
+}
+@keyframes floatUp{
+  from{transform:translateY(40px) rotate(0deg);opacity:0;}
+  15%{opacity:.9;}
+  85%{opacity:.9;}
+  to{transform:translateY(-160px) rotate(70deg);opacity:0;}
+}
+.start-content{position:relative;z-index:1;text-align:center;}
+
+.badge{
+  display:inline-block;padding:6px 18px;border-radius:99px;
+  background:linear-gradient(90deg,rgba(255,235,59,.18),rgba(255,120,60,.18));
+  border:1px solid rgba(255,235,59,.45);color:#ffe680;
+  font-size:.9rem;letter-spacing:2px;margin-bottom:14px;
+}
+.main-title{
+  font-size:3.4rem;letter-spacing:6px;line-height:1.1;
+  background:linear-gradient(90deg,#ffeb3b,#ff8a65,#ffeb3b);
+  background-size:200% auto;-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:#ffeb3b;
+  filter:drop-shadow(0 0 18px rgba(255,200,60,.45));
+  animation:shine 5s linear infinite;
+}
+@keyframes shine{to{background-position:200% center;}}
+.tagline{color:#cfc7f5;font-size:1.05rem;margin:10px 0 22px;letter-spacing:1px;}
+
+.mode-select-label{color:#9f93d6;font-size:.9rem;letter-spacing:3px;margin-bottom:12px;}
+.mode-select{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;}
+.mode-card{
+  flex:1 1 240px;max-width:300px;min-width:200px;cursor:pointer;
+  background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+  border:2px solid rgba(255,255,255,.14);border-radius:20px;
+  padding:22px 16px;transition:transform .25s,box-shadow .25s,border-color .25s;
+  color:#fff;text-align:center;
+}
+.mode-card:hover{transform:translateY(-7px);box-shadow:0 16px 34px rgba(0,0,0,.5);}
+.mode-card.calc:hover{border-color:#5a10f0;box-shadow:0 16px 34px rgba(90,16,240,.45);}
+.mode-card.compare:hover{border-color:#00bcd4;box-shadow:0 16px 34px rgba(0,188,212,.4);}
+.mode-icon{font-size:2.6rem;margin-bottom:10px;filter:drop-shadow(0 0 10px rgba(255,255,255,.3));}
+.mode-title{font-size:1.35rem;font-weight:bold;color:#ffe680;margin-bottom:4px;}
+.mode-card.compare .mode-title{color:#7fe9ff;}
+.mode-sub{font-size:.82rem;color:#a89ed0;margin-bottom:12px;letter-spacing:1px;}
+.mode-desc{font-size:.9rem;color:#cfc7f5;line-height:1.75;text-align:left;}
+
+.rules-box{
+  background:rgba(0,0,0,.3);border:1px solid rgba(160,140,255,.22);
+  border-radius:14px;padding:16px 20px;margin-bottom:20px;
+  font-size:.92rem;color:#d5cef2;line-height:1.9;text-align:left;
+  max-width:560px;margin-left:auto;margin-right:auto;
+}
+.rules-box p{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.hint{color:#888;font-size:.8rem;margin-top:14px;}
+
+/* ===== 游戏界面 ===== */
+.screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;transition:all .5s ease;}
+.game-screen,.result-screen{display:none;}
+.game-screen{position:relative;}
+.quit-btn{
+  position:absolute;top:-6px;left:0;
+  background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.22);
+  color:#cfc7f5;font-size:.85rem;padding:6px 12px;border-radius:8px;
+  cursor:pointer;transition:all .2s;z-index:5;
+}
+.quit-btn:hover{border-color:#ff6b6b;color:#ff8a80;}
+.quit-btn.armed{background:#c62828;border-color:#ff8a80;color:#fff;}
+.game-header{display:flex;justify-content:space-between;width:100%;margin-bottom:24px;padding-bottom:15px;border-bottom:2px solid #444;gap:10px;flex-wrap:wrap;}
+.stage,.life,.score{font-size:1.35rem;font-weight:bold;}
+.life{color:#ff6b6b;}.score{color:#4caf50;}
+
+.problem-container{
+  background:rgba(24,22,44,.92);padding:30px;border-radius:15px;margin:16px 0;
+  width:100%;text-align:center;border:2px solid rgba(90,110,220,.55);
+  box-shadow:0 6px 20px rgba(0,0,0,.35);
+}
+.problem{
+  font-size:3.4rem;font-weight:bold;color:#ffeb3b;margin-bottom:8px;
+  font-family:'Courier New',monospace;word-break:break-word;
+  text-shadow:0 0 14px rgba(255,235,59,.25);
+}
+/* 比大小模式：半透明白色圆圈代替“？” */
+.q-circle{
+  display:inline-block;width:.78em;height:.78em;border-radius:50%;
+  background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.75);
+  vertical-align:middle;margin:0 .12em;
+  box-shadow:0 0 12px rgba(255,255,255,.28),inset 0 0 10px rgba(255,255,255,.18);
+}
+.difficulty-indicator{font-size:1.1rem;color:#ff9800;margin-top:6px;font-weight:bold;}
+.timer{font-size:1.1rem;color:#bb86fc;margin-top:10px;}
+
+.input-display{
+  font-size:2.3rem;min-height:62px;margin-top:18px;padding:10px 14px;
+  background:rgba(0,0,0,.55);border-radius:10px;border:1px solid #555;
+  color:#bb86fc;font-family:'Courier New',monospace;
+  white-space:nowrap;overflow-x:auto;text-align:center;
+}
+.input-display::-webkit-scrollbar{height:6px;}
+.input-display::-webkit-scrollbar-thumb{background:#666;border-radius:3px;}
+
+.keyboard{display:grid;grid-template-columns:repeat(3,1fr);grid-gap:14px;margin-top:24px;width:100%;max-width:400px;}
+.key{
+  background:#333;color:#fff;border:none;padding:20px 10px;font-size:1.8rem;
+  border-radius:10px;cursor:pointer;transition:all .2s;font-weight:bold;
+}
+.key:hover{background:#444;}.key:active{background:#555;transform:scale(.95);}
+.key-del{background:#c62828;}.key-del:hover{background:#e53935;}
+.key-submit{background:#2e7d32;}.key-submit:hover{background:#43a047;}
+.keyboard-compare{grid-template-columns:repeat(3,1fr);max-width:420px;}
+.key-cmp{background:linear-gradient(160deg,#006064,#00838f);font-size:2.4rem;padding:24px 10px;}
+.key-cmp:hover{background:linear-gradient(160deg,#00838f,#00acc1);}
+.key-cmp.eq{background:linear-gradient(160deg,#4527a0,#5e35b1);}
+.key-cmp.eq:hover{background:linear-gradient(160deg,#5e35b1,#7e57c2);}
+
+.life-bar{width:100%;height:20px;background:#333;border-radius:10px;margin-top:8px;overflow:hidden;}
+.life-fill{height:100%;background:linear-gradient(90deg,#ff5252,#ff8a80);border-radius:10px;transition:width .25s linear;}
+
+.milestone-toast{
+  position:fixed;top:14%;left:50%;transform:translate(-50%,-20px);
+  background:linear-gradient(90deg,rgba(255,215,0,.92),rgba(255,140,0,.92));
+  color:#3a2600;font-size:0.75rem;font-weight:bold;letter-spacing:1px;
+  padding:12px 34px;border-radius:99px;z-index:1001;
+  box-shadow:0 0 40px rgba(255,200,60,.7);opacity:0;pointer-events:none;
+  transition:opacity .35s,transform .35s;
+}
+.milestone-toast.show{opacity:1;transform:translate(-50%,0);}
+
+/* ===== 星星特效（屏幕边缘） ===== */
+.star-overlay{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1000;}
+.star-particle{
+  position:absolute;color:#ffd54f;line-height:1;
+  text-shadow:0 0 10px #ffb300,0 0 22px #ff8f00;
+  animation:starFloat 1.9s cubic-bezier(.2,.7,.3,1) forwards;
+}
+@keyframes starFloat{
+  0%{opacity:0;transform:scale(.2) translateY(0) rotate(0deg);}
+  18%{opacity:1;transform:scale(1.35) translateY(-8px) rotate(45deg);}
+  100%{opacity:0;transform:scale(.4) translateY(-90px) rotate(200deg);}
+}
+
+/* ===== 结果页 ===== */
+.result-screen{text-align:center;}
+.result-title{font-size:3rem;color:#ffeb3b;margin-bottom:26px;text-shadow:0 0 16px rgba(255,235,59,.4);}
+.result-stats{font-size:1.7rem;line-height:1.9;}
+.result-stats span{color:#7cf7a0;font-weight:bold;}
+.progress-bar{width:100%;height:30px;background:#333;border-radius:15px;margin:30px 0;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#4caf50,#8bc34a,#ffeb3b);border-radius:15px;transition:width .7s ease;}
+.result-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+.result-actions .btn{margin-top:0;}
+.btn-secondary{
+  background:linear-gradient(90deg,#37474f,#546e7a,#37474f);
+  background-size:200% auto;box-shadow:0 8px 24px rgba(60,80,90,.4);
+  animation:btnShine 5s linear infinite;
+}
+.btn-secondary:hover{box-shadow:0 14px 30px rgba(80,110,120,.55);}
+/* 结果页单按钮：仿退出键风格 */
+.result-restart{
+  background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.22);
+  color:#cfc7f5;font-size:1.15rem;font-weight:bold;padding:12px 30px;border-radius:10px;
+  cursor:pointer;transition:all .2s;letter-spacing:2px;
+}
+.result-restart:hover{border-color:#ff6b6b;color:#ff8a80;background:rgba(198,40,40,.22);}
+.result-restart:active{transform:translateY(1px);}
+
+.footer{margin-top:26px;text-align:center;color:#777;font-size:.88rem;}
+
+@media(max-width:600px){
+  .container{padding:16px;}
+  .main-title{font-size:2.4rem;letter-spacing:3px;}
+  .mode-card{flex:1 1 90%;max-width:100%;padding:16px 12px;}
+  .mode-icon{font-size:2rem;margin-bottom:6px;}
+  .mode-desc{font-size:.82rem;}
+  .problem{font-size:2.4rem;}
+  .input-display{font-size:1.6rem;}
+  .key{padding:15px 5px;font-size:1.5rem;}
+  .key-cmp{font-size:2rem;padding:20px 5px;}
+  .game-header{flex-direction:column;align-items:center;gap:8px;}
+  .result-stats{font-size:1.35rem;}
+  .rules-box p{white-space:normal;}
+}
+
+/* ================= 秘境挑战 ================= */
+.mode-card.secret{
+  background:linear-gradient(145deg,rgba(80,20,90,.75),rgba(30,10,50,.9));
+  border-color:rgba(200,110,255,.45);
+}
+.mode-card.secret .mode-icon{filter:drop-shadow(0 0 12px rgba(180,80,255,.8));}
+.secret-screen{display:none;flex-direction:column;gap:14px;}
+.secret-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.secret-head h2{font-size:1.9rem;color:#d6a8ff;text-shadow:0 0 18px rgba(170,70,255,.6);letter-spacing:4px;}
+.secret-back{
+  background:rgba(0,0,0,.35);border:1px solid rgba(200,150,255,.3);color:#d6c7f5;
+  padding:8px 16px;border-radius:8px;cursor:pointer;font-size:.95rem;
+}
+.secret-back:hover{border-color:#b060ff;color:#fff;background:rgba(120,40,180,.3);}
+.secret-desc{font-size:.85rem;color:#b9a8d8;line-height:1.7;text-align:center;}
+.secret-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;
+  max-height:52vh;overflow-y:auto;padding:6px 8px 6px 2px;
+}
+.secret-grid::-webkit-scrollbar{width:8px;}
+.secret-grid::-webkit-scrollbar-thumb{background:rgba(160,90,220,.5);border-radius:8px;}
+.secret-cell{
+  background:linear-gradient(150deg,rgba(60,25,80,.85),rgba(20,12,40,.9));
+  border:1px solid rgba(170,100,230,.35);border-radius:12px;padding:10px 6px;
+  text-align:center;cursor:pointer;transition:all .18s;
+}
+.secret-cell:hover{transform:translateY(-3px);border-color:#c07bff;box-shadow:0 8px 22px rgba(150,60,230,.4);}
+.secret-cell.cleared{border-color:rgba(255,205,80,.55);background:linear-gradient(150deg,rgba(90,55,30,.7),rgba(30,16,45,.9));}
+.secret-cell .lv{font-size:1.15rem;font-weight:bold;color:#f0e0ff;}
+.secret-cell .st{font-size:1rem;letter-spacing:1px;color:#555;min-height:20px;}
+.secret-cell .st .on{color:#ffd54f;text-shadow:0 0 8px rgba(255,190,40,.8);}
+.secret-cell .bs{font-size:.72rem;color:#9d8bb8;}
+
+.secret-battle{display:none;flex-direction:column;gap:10px;}
+.sb-top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:1rem;}
+.sb-top .sb-title{font-size:1.3rem;color:#d6a8ff;font-weight:bold;letter-spacing:2px;}
+.sb-top .sb-score{color:#ffd54f;font-weight:bold;}
+.combat{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:4px;
+  background:radial-gradient(ellipse at 50% 100%,rgba(90,40,120,.45),transparent 70%);
+  border-radius:16px;padding:8px 12px 4px;min-height:150px;
+}
+.fighter{display:flex;flex-direction:column;align-items:center;gap:4px;flex:0 0 130px;}
+.fighter .name{font-size:.8rem;color:#cfc4e8;letter-spacing:1px;}
+.fighter svg{width:96px;height:112px;filter:drop-shadow(0 6px 12px rgba(0,0,0,.55));}
+.fighter .hp-label{font-size:.72rem;color:#bdb0d6;}
+.hp-track{
+  width:118px;height:13px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.22);
+  border-radius:99px;overflow:hidden;
+}
+.hp-track .fill{height:100%;width:100%;transition:width .28s ease;
+  background:linear-gradient(90deg,#2e7d32,#66bb6a,#a5d6a7);box-shadow:0 0 10px rgba(80,220,100,.7) inset;}
+.hp-track .fill.enemy{background:linear-gradient(90deg,#6a1b9a,#ab47bc,#ce93d8);box-shadow:0 0 10px rgba(200,100,255,.7) inset;}
+.combat-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;padding:0 10px;}
+/* v8.2：勇士左移、左侧更紧凑，给中间算式留出安全间距 */
+#battleCatWrap{flex:0 0 30px;}
+#heroFighter{flex:0 0 108px;margin-left:-6px;}
+.secret-q{font-size:1.75rem;font-weight:bold;color:#ffeb3b;text-shadow:0 0 14px rgba(255,220,60,.45);text-align:center;line-height:1.35;white-space:nowrap;word-break:keep-all;display:inline-block;max-width:100%;}
+.secret-q .fire{color:#ff7043;text-shadow:0 0 16px rgba(255,90,30,.95);animation:firePulse 1s ease infinite alternate;}
+@keyframes firePulse{from{transform:scale(1);}to{transform:scale(1.18);}}
+.secret-tip{font-size:.85rem;color:#9fe0ff;text-align:center;line-height:1.6;}
+.secret-bonus{font-size:.78rem;color:#d8c7ef;letter-spacing:1px;}
+.secret-input{min-height:28px;font-size:1.5rem;color:#fff;letter-spacing:3px;}
+.passive{font-size:.76rem;color:#ff8a65;text-align:center;}
+.projectile{position:fixed;font-size:30px;z-index:9999;pointer-events:none;line-height:1;
+  filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));}
+.dmg-float{position:fixed;z-index:9998;font-weight:bold;font-size:1.35rem;pointer-events:none;
+  animation:dmgUp 1s ease-out forwards;text-shadow:0 2px 6px rgba(0,0,0,.8);}
+@keyframes dmgUp{from{opacity:1;transform:translate(-50%,0);}to{opacity:0;transform:translate(-50%,-46px);}}
+.hit-flash{animation:hitShake .32s ease;}
+@keyframes hitShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.secret-keyboard{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:420px;margin:0 auto;width:100%;}
+.secret-result{display:none;flex-direction:column;align-items:center;gap:14px;text-align:center;}
+.sr-title{font-size:2rem;color:#ffd54f;text-shadow:0 0 20px rgba(255,190,40,.6);}
+.sr-title.lose{color:#ff7b72;text-shadow:0 0 20px rgba(255,70,60,.55);}
+.sr-stars{font-size:2.6rem;letter-spacing:10px;color:#555;}
+.sr-stars .on{color:#ffd54f;text-shadow:0 0 18px rgba(255,200,50,.9);}
+.sr-stats{font-size:1.1rem;line-height:1.9;color:#e6dcf7;}
+.sr-lines{font-size:.82rem;color:#a89bc4;line-height:1.7;}
+@media(max-width:600px){
+  .combat{padding:6px 4px 2px;gap:2px;}
+  .fighter{flex:0 0 88px;}
+  #battleCatWrap{flex:0 0 22px;}
+  #heroFighter{flex:0 0 74px;margin-left:-4px;}
+  .fighter svg{width:68px;height:82px;}
+  .hp-track{width:88px;}
+  .combat-mid{padding:0 4px;}
+  .secret-q{font-size:1.3rem;}
+  .secret-tip{font-size:.76rem;}
+  .secret-bonus{font-size:.7rem;}
+}
+
+/* ===== v7.0 金币 / 猫咪气泡 / 宠物 ===== */
+.coin-badge{
+  position:absolute;top:14px;right:18px;z-index:8;
+  display:flex;align-items:center;gap:6px;
+  padding:5px 12px 5px 6px;border-radius:99px;
+  background:linear-gradient(135deg,rgba(255,214,64,.2),rgba(255,160,20,.12));
+  border:1px solid rgba(255,214,64,.6);color:#ffe082;font-weight:bold;font-size:1rem;
+  box-shadow:0 0 16px rgba(255,190,40,.35);cursor:default;user-select:none;
+}
+.coin-icon{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:24px;height:24px;border-radius:50%;font-size:13px;
+  background:radial-gradient(circle at 35% 30%,#fff3b0,#ffca28 55%,#f9a825);
+  border:2px solid #ffd54f;box-shadow:inset 0 0 4px rgba(120,70,0,.6),0 0 8px rgba(255,200,40,.6);
+  vertical-align:middle;
+}
+/* 普通模式猫咪 + 气泡 */
+.cat-row{display:flex;align-items:flex-end;justify-content:center;gap:10px;min-height:56px;margin:-8px 0 6px;}
+.cat-buddy{font-size:2.2rem;line-height:1;filter:drop-shadow(0 3px 8px rgba(0,0,0,.5));cursor:pointer;user-select:none;
+  animation:catBob 2.6s ease-in-out infinite;}
+@keyframes catBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
+.cat-bubble{
+  position:relative;max-width:360px;padding:9px 14px;border-radius:14px 14px 14px 4px;
+  background:linear-gradient(135deg,#fff8e1,#ffe0b2);color:#5d4037;font-size:.9rem;font-weight:600;
+  box-shadow:0 6px 18px rgba(0,0,0,.35);opacity:0;transform:translateY(8px) scale(.94);
+  transition:opacity .3s,transform .3s;pointer-events:none;
+}
+.cat-bubble.show{opacity:1;transform:translateY(0) scale(1);}
+.cat-bubble::before{content:'';position:absolute;left:-7px;bottom:8px;border:7px solid transparent;border-right-color:#ffe0b2;border-left:0;}
+/* 秘境战士旁小猫 */
+.sb-cat{font-size:1.7rem;line-height:1;filter:drop-shadow(0 3px 6px rgba(0,0,0,.5));margin-bottom:2px;animation:catBob 2.2s ease-in-out infinite;}
+.hero-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
+/* 不屈意志光效 */
+.steadfast-glow{animation:steadfastGlow .5s ease-in-out infinite alternate;}
+@keyframes steadfastGlow{
+  from{filter:drop-shadow(0 0 6px #fff) drop-shadow(0 0 10px #ffd54f) brightness(1.2);}
+  to{filter:drop-shadow(0 0 18px #fff) drop-shadow(0 0 30px #ffd54f) brightness(1.8);}
+}
+.shield-flash{animation:shieldFlash .6s ease-out;}
+@keyframes shieldFlash{0%{filter:drop-shadow(0 0 26px #4fc3f7) brightness(2);}100%{filter:none;}}
+/* 我的宠物页 */
+.pet-screen{display:none;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:8px 0;}
+.pet-cat{font-size:5.4rem;line-height:1;filter:drop-shadow(0 8px 18px rgba(0,0,0,.5));animation:catBob 3s ease-in-out infinite;}
+.pet-desc{font-size:.92rem;color:#d5cef2;line-height:1.7;max-width:460px;}
+.mood-box{width:100%;max-width:460px;}
+.mood-label{display:flex;justify-content:space-between;font-size:.92rem;color:#ffe082;margin-bottom:6px;}
+.mood-track{height:20px;border-radius:99px;background:rgba(0,0,0,.5);border:1px solid rgba(255,214,64,.4);overflow:hidden;position:relative;}
+.mood-fill{height:100%;width:0%;border-radius:99px;transition:width .35s ease;
+  background:linear-gradient(90deg,#ff8a65,#ffd54f,#fff59d);box-shadow:0 0 12px rgba(255,200,60,.6) inset;}
+.pet-info{font-size:.8rem;color:#a89bc4;line-height:1.8;}
+.pet-skills{font-size:.82rem;color:#b9a6ff;line-height:1.8;min-height:30px;}
+.pet-skill-on{color:#7fe9ff;text-shadow:0 0 8px rgba(80,220,255,.5);}
+.pet-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:460px;}
+.pet-btn{
+  padding:10px 18px;border-radius:12px;cursor:pointer;font-size:.95rem;font-weight:bold;
+  border:1px solid rgba(255,214,64,.5);color:#2a1a00;
+  background:linear-gradient(135deg,#ffe082,#ffb300);transition:transform .15s,filter .15s;
+}
+.pet-btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.1);}
+.pet-btn:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.6);}
+.pet-btn.upgrade{background:linear-gradient(135deg,#b9a6ff,#7c4dff);color:#fff;border-color:rgba(180,150,255,.6);}
+.pet-btn.rank-entry{margin-top:4px;background:linear-gradient(135deg,#7fe9ff,#4fc3f7);border-color:rgba(127,233,255,.6);}
+.pet-msg{font-size:.85rem;color:#ffd54f;min-height:20px;}
+/* ===== v8.0 全球排行榜 ===== */
+.rank-screen{display:none;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:8px 0;}
+.rank-title{color:#ffe680;letter-spacing:4px;font-size:1.5rem;}
+.rank-motto{display:flex;align-items:center;gap:8px;color:#d5cef2;font-size:.95rem;}
+.rank-cat{font-size:1.6rem;}
+.rank-list{width:100%;max-width:460px;display:flex;flex-direction:column;gap:3px;font-size:.88rem;}
+.rank-row{display:flex;align-items:center;gap:8px;padding:5px 10px;border-radius:8px;background:rgba(255,255,255,.05);}
+.rank-row:nth-child(odd){background:rgba(255,255,255,.09);}
+.rank-row.me{background:linear-gradient(135deg,rgba(255,214,64,.28),rgba(255,160,20,.18));border:1px solid rgba(255,214,64,.7);font-weight:bold;color:#ffe680;margin-top:8px;}
+.rank-row .rk-idx{color:#ffe082;min-width:34px;text-align:right;font-variant-numeric:tabular-nums;}
+.rank-row .rk-uid{flex:1;text-align:left;color:#d5cef2;}
+.rank-row.me .rk-uid{color:#fff3c4;}
+.rank-row .rk-mood{color:#7fe9ff;font-variant-numeric:tabular-nums;}
+.rank-row.me .rk-mood{color:#fff3c4;}
+.rank-row .rk-pct{color:#b9a6ff;font-size:.82rem;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="coin-badge" title="金币"><span class="coin-icon">🐈</span><span id="coinValue">0</span><span class="key-count" title="钥匙" style="margin-left:8px;padding-left:8px;border-left:1px solid rgba(255,214,64,.4);">🗝️ <span id="keyValue">0</span></span></div>
+  <div class="screen start-screen" id="startScreen">
+    <div class="start-decor" id="startDecor"></div>
+    <div class="start-content">
+      <h1 class="main-title">最强大脑</h1>
+      <p class="tagline">挑战你的计算极限 · 看看你能走到第几关</p>
+
+      <div class="mode-select-label">— 选 择 模 式 —</div>
+      <div class="mode-select">
+        <div class="mode-card calc" id="modeCalc">
+          <div class="mode-icon">🧮</div>
+          <div class="mode-title">心算模式</div>
+          <div class="mode-sub">CALCULATION</div>
+          <div class="mode-desc">• 加减乘无限升级<br>• 数字键盘输入答案<br>• 结束可查看击败百分比</div>
+        </div>
+        <div class="mode-card compare" id="modeCompare">
+          <div class="mode-icon">⚖️</div>
+          <div class="mode-title">比大小模式</div>
+          <div class="mode-sub">COMPARISON</div>
+          <div class="mode-desc">• 从加到幂层层解锁<br>• 只按 &lt; = &gt; 三键<br>• 越到后面越难判断</div>
+        </div>
+        <div class="mode-card secret" id="modeSecret">
+          <div class="mode-icon">🔥</div>
+          <div class="mode-title">秘境挑战</div>
+          <div class="mode-sub">SECRET REALM</div>
+          <div class="mode-desc">• 逐关讨伐妖怪，赢或输才结束<br>• 炸弹与飞刀，烈焰每秒灼烧<br>• 谜题藏起一位，靠提示推理</div>
+        </div>
+      </div>
+      <div class="mode-card pet" id="modePet" style="max-width:300px;margin:0 auto 18px;">
+        <div class="mode-icon">🐈</div>
+        <div class="mode-title">我的宠物</div>
+        <div class="mode-sub">MY PET</div>
+        <div class="mode-desc" style="text-align:center;">照顾猫咪，一起变强<br>查看心情 · 投喂 · 升级</div>
+      </div>
+
+      <div class="rules-box">
+        <p>⏱️ 生命随时间流逝，归零即结束 · 答对回血、答错扣血</p>
+        <p>🎯 得分 = 关卡 × 连击系数 × 速度系数</p>
+        <p>🔥 连击越高得分越猛，答错会让连击倒退</p>
+        <p>✨ 每通过 10 关，屏幕边缘星光闪耀</p>
+        <p>📈 起点随历史最佳关卡提升 · 前 20 关为热身</p>
+      </div>
+
+      <p class="hint">心算模式支持数字键 / Enter 提交 · 比大小模式点三键即提交</p>
+    </div>
+  </div>
+
+  <div class="screen game-screen" id="gameScreen">
+    <button class="quit-btn" id="quitBtn">✕ 退出</button>
+    <div class="game-header">
+      <div class="stage">第 <span id="stageNum">1</span> 关</div>
+      <div class="life">生命 <span id="lifeValue">100</span>%</div>
+      <div class="score">得分 <span id="scoreValue">0</span></div>
+    </div>
+    <div class="life-bar"><div class="life-fill" id="lifeFill" style="width:100%;"></div></div>
+
+    <div class="cat-row">
+      <div class="cat-buddy" id="catBuddy" title="你的猫咪伙伴">🐈</div>
+      <div class="cat-bubble" id="catBubble"></div>
+    </div>
+
+    <div class="problem-container">
+      <div class="problem" id="problemText">3 + 5</div>
+      <div class="difficulty-indicator" id="difficultyText">简单</div>
+      <div class="timer" id="timerText">用时: 0.0秒</div>
+      <div class="input-display" id="inputDisplay"></div>
+    </div>
+
+    <div class="keyboard" id="keyboard"></div>
+  </div>
+
+  <div class="screen result-screen" id="resultScreen">
+    <h2 class="result-title">挑战结束</h2>
+    <div class="result-stats">
+      <p>通过关卡: <span id="finalStage">0</span></p>
+      <p>最终得分: <span id="finalScore">0</span></p>
+      <p style="color:#ffe082;">🪙 本局金币 +<span id="coinEarned">0</span></p>
+      <p id="percentileRow">超过了 <span id="percentile">0</span>% 的玩家</p>
+    </div>
+    <div class="progress-bar" id="progressRow"><div class="progress-fill" id="progressFill" style="width:0%;"></div></div>
+    <div class="result-actions">
+      <button class="result-restart" id="restartBtn">再来一局 ↻</button>
+      <button class="result-restart" id="backMenuBtn">返回 ☰</button>
+    </div>
+  </div>
+
+  <div class="screen secret-screen" id="secretSelectScreen">
+    <div class="secret-head">
+      <button class="secret-back" id="secretBackMenu">← 主菜单</button>
+      <h2>秘 境 挑 战</h2>
+      <span style="width:88px"></span>
+    </div>
+    <div class="secret-desc">🔥 炽热烈焰每秒灼烧 5 点生命 · 答对投掷炸弹并回复 250 · 答错挨飞刀<br>⚡ 全拼速度：每题得分 = 1000 ÷ (3 + 用时秒数)</div>
+    <div class="secret-grid" id="secretGrid"></div>
+  </div>
+
+  <div class="screen secret-battle" id="secretBattleScreen">
+    <div class="sb-top">
+      <button class="secret-back" id="secretBackList">← 关卡</button>
+      <span class="sb-title" id="secretLevelTitle">第 1 关</span>
+      <span class="sb-score" id="secretScore">0 分</span>
+    </div>
+    <div class="combat">
+      <div class="hero-wrap" id="battleCatWrap" title="宠物同行">
+        <div class="sb-cat" id="battleCat">🐈</div>
+      </div>
+      <div class="fighter" id="heroFighter">
+        <div class="hp-label" id="heroHpText">1000 / 1000</div>
+        <div class="hp-track"><div class="fill" id="heroHpFill"></div></div>
+        <svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="heroArmor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#81c784"/><stop offset="1" stop-color="#2e7d32"/></linearGradient>
+            <linearGradient id="heroShield" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff59d"/><stop offset="1" stop-color="#f9a825"/></linearGradient>
+          </defs>
+          <rect x="46" y="104" width="11" height="28" rx="5" fill="#37474f"/><rect x="63" y="104" width="11" height="28" rx="5" fill="#37474f"/>
+          <rect x="42" y="126" width="17" height="9" rx="4" fill="#212121"/><rect x="61" y="126" width="17" height="9" rx="4" fill="#212121"/>
+          <path d="M38 66 Q60 56 82 66 L86 106 Q60 114 34 106 Z" fill="url(#heroArmor)" stroke="#1b5e20" stroke-width="2"/>
+          <circle cx="38" cy="68" r="11" fill="#a5d6a7" stroke="#2e7d32" stroke-width="2"/><circle cx="82" cy="68" r="11" fill="#a5d6a7" stroke="#2e7d32" stroke-width="2"/>
+          <rect x="26" y="72" width="10" height="30" rx="5" fill="#4caf50" transform="rotate(12 31 87)"/>
+          <circle cx="60" cy="42" r="24" fill="#ffcc80"/>
+          <path d="M36 40 Q40 14 60 14 Q80 14 84 40 Q72 28 60 28 Q48 28 36 40 Z" fill="#3e2723"/>
+          <ellipse cx="51" cy="43" rx="3.5" ry="4.5" fill="#222"/><ellipse cx="69" cy="43" rx="3.5" ry="4.5" fill="#222"/>
+          <path d="M54 54 Q60 58 66 54" stroke="#8d5524" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M60 14 Q66 4 76 2" stroke="#ff5252" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path d="M14 70 Q26 62 38 70 L36 100 Q26 110 16 100 Z" fill="url(#heroShield)" stroke="#6d4c41" stroke-width="2"/>
+          <path d="M26 74 L26 102" stroke="#8d6e63" stroke-width="2"/>
+        </svg>
+        <div class="name">勇 士</div>
+      </div>
+      <div class="combat-mid">
+        <div class="secret-q" id="secretProblem">—</div>
+        <div class="secret-tip" id="secretHints"></div>
+        <div class="secret-input" id="secretInputDisplay">&nbsp;</div>
+        <div class="secret-bonus" id="secretBonus">敌方加成：🛡+0%　🗡+0%</div>
+        <div class="passive" id="secretPassive">🔥 炽热烈焰：-5 / 秒</div>
+      </div>
+      <div class="fighter" id="monsterFighter">
+        <div class="hp-label" id="monsterHpText">1000 / 1000</div>
+        <div class="hp-track"><div class="fill enemy" id="monsterHpFill"></div></div>
+        <svg viewBox="0 0 130 140" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="monBody" cx="50%" cy="35%"><stop offset="0" stop-color="#ce93d8"/><stop offset="1" stop-color="#4a148c"/></radialGradient>
+            <linearGradient id="monHorn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff8e1"/><stop offset="1" stop-color="#ffb300"/></linearGradient>
+          </defs>
+          <path d="M38 36 Q24 12 34 8 Q46 18 50 32 Z" fill="url(#monHorn)" stroke="#5d4037" stroke-width="2"/>
+          <path d="M92 36 Q106 12 96 8 Q84 18 80 32 Z" fill="url(#monHorn)" stroke="#5d4037" stroke-width="2"/>
+          <path d="M35 70 Q65 58 95 70 L102 118 Q65 132 28 118 Z" fill="url(#monBody)" stroke="#311b92" stroke-width="2"/>
+          <path d="M30 78 Q14 88 18 104" stroke="#6a1b9a" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <path d="M100 78 Q116 88 112 104" stroke="#6a1b9a" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <ellipse cx="65" cy="48" rx="34" ry="30" fill="url(#monBody)" stroke="#4a148c" stroke-width="2"/>
+          <ellipse cx="52" cy="46" rx="9" ry="7" fill="#ffeb3b"/><ellipse cx="78" cy="46" rx="9" ry="7" fill="#ffeb3b"/>
+          <ellipse cx="52" cy="46" rx="3" ry="6" fill="#d50000"/><ellipse cx="78" cy="46" rx="3" ry="6" fill="#d50000"/>
+          <path d="M42 36 L60 42" stroke="#311b92" stroke-width="4" stroke-linecap="round"/><path d="M88 36 L70 42" stroke="#311b92" stroke-width="4" stroke-linecap="round"/>
+          <path d="M50 62 Q65 74 80 62" stroke="#1a0033" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M54 64 L58 73 L62 64 Z" fill="#fff"/><path d="M68 64 L72 73 L76 64 Z" fill="#fff"/>
+          <ellipse cx="65" cy="120" rx="30" ry="8" fill="#ff6d00" opacity=".35"/>
+        </svg>
+        <div class="name">炎 魔</div>
+      </div>
+    </div>
+    <div class="secret-keyboard" id="secretKeyboard"></div>
+  </div>
+
+  <div class="screen secret-result" id="secretResultScreen">
+    <div class="sr-title" id="secretResultTitle">讨伐成功</div>
+    <div class="sr-stars" id="secretResultStars"></div>
+    <div class="sr-stats" id="secretResultStats"></div>
+    <div class="sr-lines" id="secretResultLines"></div>
+    <div class="result-actions">
+      <button class="result-restart" id="secretRetryBtn">再来一次 ↻</button>
+      <button class="result-restart" id="secretResultBack">关卡列表 ☰</button>
+    </div>
+  </div>
+
+  <div class="screen pet-screen" id="petScreen">
+    <button class="secret-back" id="petBackMenu" style="align-self:flex-start;">← 主菜单</button>
+    <h2 style="color:#ffe680;letter-spacing:4px;">我 的 宠 物</h2>
+    <div class="pet-cat" id="petCat">🐈</div>
+    <div class="pet-desc">可爱的宠物生来就是为了与你作伴，悉心照顾你的宠物，打败更强的敌人！</div>
+    <div class="mood-box">
+      <div class="mood-label"><span>宠物心情 <b id="moodValue">125</b></span><span id="moodMax">/ 125</span></div>
+      <div class="mood-track"><div class="mood-fill" id="moodFill"></div></div>
+    </div>
+    <div class="pet-info" id="petLevelInfo">等级 1 · 每日凌晨 3:00 衰减 4.5% · 心情下限 100 / 上限 125</div>
+    <div class="pet-skills" id="petSkills"></div>
+    <div class="pet-actions">
+      <button class="pet-btn" id="feedBtn">投喂（10 🐈）</button>
+      <button class="pet-btn" id="feed10Btn">投喂×10（99 🐈）</button>
+      <button class="pet-btn upgrade" id="upgradeBtn">升级宠物</button>
+    </div>
+    <button class="pet-btn rank-entry" id="rankEntryBtn">📊 查看排行榜</button>
+    <div class="pet-msg" id="petMsg"></div>
+  </div>
+
+  <div class="screen rank-screen" id="rankScreen">
+    <button class="secret-back" id="rankBackBtn" style="align-self:flex-start;">← 返回宠物</button>
+    <h2 class="rank-title">全球排行榜</h2>
+    <div class="rank-motto"><span class="rank-cat">🐈</span><span>以乐观面对困难，战胜恐惧！</span></div>
+    <div class="rank-list" id="rankList"></div>
+  </div>
+</div>
+
+<div class="footer">设计用于数学能力测试 · 挑战你的计算速度与准确性</div>
+
+<div class="star-overlay" id="starOverlay"></div>
+<div class="milestone-toast" id="milestoneToast"></div>
+
+<script>
+/* ================= 游戏状态 ================= */
+const MAX_LIFE = 200;   // 血量上限（翻倍，容错更高）
+let currentMode = 'calc';   // 'calc' 心算 | 'compare' 比大小
+const HISTORY_KEY = 'mathbrain_stage_history_v2';   // v2: 按模式分别记录
+const HISTORY_SIZE = 10;
+let startStage = 1;     // 本局起点（由历史最高关决定）
+let currentStage = 1;
+let life = MAX_LIFE;
+let score = 0;
+let streak = 0;
+let currentInput = "";
+let currentProblem = "";
+let currentAnswer;       // calc: BigInt 数值 | compare: '<' '=' '>'
+let startTime = 0;
+let lifeInterval = null;
+let gameActive = false;
+let answerLocked = false;    // 判题锁：答对后到下一题生成前，禁止重复判题
+let noSpecialCount = 0;      // 比大小模式：π/e 连续未出现计数（保底5用）
+let noDoubleExpCount = 0;    // 比大小模式：双指数题连续未出现计数（保底3用）
+
+/* ================= v7.0 金币与宠物系统 ================= */
+const V7_KEY='mathbrain_v7_v1';   // 沿用存档 key，向后兼容旧档（新增 keys/keyClaimed 字段）
+// 宠物等级表：index=等级 → {price:升级到下一级花费(金币), keyPrice:升级到下一级花费(钥匙), k:每日衰减%, m:心情上限}
+// v8.0：8升9 4500→3000，9升10 8000→4000；新增 10-70 级（双货币升级，10级起 k=0 不衰减）
+const PET_LEVELS={
+  1:{price:200,keyPrice:0,k:4.5,m:125},2:{price:300,keyPrice:0,k:4.0,m:150},
+  3:{price:400,keyPrice:0,k:3.5,m:175},4:{price:600,keyPrice:0,k:3.0,m:200},
+  5:{price:800,keyPrice:0,k:2.5,m:250},6:{price:1400,keyPrice:0,k:2.0,m:500},
+  7:{price:2000,keyPrice:0,k:1.5,m:1000},8:{price:3000,keyPrice:0,k:1.0,m:3000},
+  9:{price:4000,keyPrice:0,k:0.5,m:8000}
+};
+// 生成 10-70 级配置：上限按分段公式，升级需金币+1钥匙，k=0（每日不衰减）
+(function buildPetLevels(){
+  const bands=[
+    [10,14,2000,18000,200],[15,19,2400,18300,180],[20,24,2800,18700,160],
+    [25,29,3200,19200,140],[30,34,3600,19800,120],[35,39,4000,20500,100],
+    [40,44,4400,21300,80],[45,49,4800,22200,60],[50,54,5200,23200,40],
+    [55,59,5600,23750,30],[60,64,6000,24350,20],[65,69,6400,25000,10]
+  ];
+  for(const [lo,hi,price,base,mul] of bands){
+    for(let L=lo;L<=hi;L++) PET_LEVELS[L]={price:price,keyPrice:1,k:0,m:base+L*mul};
+  }
+  PET_LEVELS[70]={price:null,keyPrice:null,k:0,m:25700};   // 满级
+})();
+const PET_MAX_LEVEL=70;
+const PET_MIN_MOOD=100;
+function defaultV7(){ return {coins:0,keys:0,keyClaimed:[],petLevel:1,mood:PET_MIN_MOOD,lastDecay:0}; }
+function loadV7(){
+  try{
+    let raw=null;
+    if(window.AndroidStore&&window.AndroidStore.getHistory) raw=window.AndroidStore.getHistory(V7_KEY);
+    if(!raw) raw=localStorage.getItem(V7_KEY);
+    const o=raw?JSON.parse(raw):null;
+    const d=defaultV7();
+    if(!o||typeof o!=='object'||Array.isArray(o)) return d;
+    let claimed=Array.isArray(o.keyClaimed)?o.keyClaimed.filter(x=>Number.isInteger(x)&&x>=40):[];
+    return {
+      coins:Math.max(0,Math.floor(Number(o.coins)||0)),
+      keys:Math.max(0,Math.floor(Number(o.keys)||0)),
+      keyClaimed:claimed,
+      petLevel:Math.min(PET_MAX_LEVEL,Math.max(1,Math.floor(Number(o.petLevel)||1))),
+      mood:Number(o.mood)||d.mood,
+      lastDecay:Number(o.lastDecay)||0
+    };
+  }catch(e){return defaultV7();}
+}
+function saveV7(o){
+  const s=JSON.stringify(o);
+  try{ if(window.AndroidStore&&window.AndroidStore.setHistory) window.AndroidStore.setHistory(V7_KEY,s); }catch(e){}
+  try{ localStorage.setItem(V7_KEY,s); }catch(e){}
+}
+// 当前宠物配置
+function petCfg(){ return PET_LEVELS[loadV7().petLevel]; }
+// 心情上限随等级变化，超出则截断
+function clampMood(v,level){
+  const m=PET_LEVELS[level]||PET_LEVELS[1];
+  return Math.min(m.m,Math.max(PET_MIN_MOOD,v));
+}
+// 上次凌晨3点的时间戳（若 now 当天3点已过则返回当天3点，否则昨天3点）
+// now 可为 Date 或毫秒时间戳
+function last3am(now){
+  const n=(now instanceof Date)?now.getTime():Number(now)||Date.now();
+  const d=new Date(n);
+  d.setHours(3,0,0,0);
+  if(n<d.getTime()) d.setDate(d.getDate()-1);
+  return d.getTime();
+}
+// 按经过了多少个"凌晨3点"逐次衰减：每次 mood*= (1-k/100)，下限100
+function applyDailyDecay(v7,now){
+  now=now||Date.now();
+  const target=last3am(now);
+  if(!v7.lastDecay) { v7.lastDecay=target; return v7; }
+  if(target<=v7.lastDecay) return v7;
+  const k=petCfgFor(v7.petLevel).k;
+  // 计算跨过了几个3点
+  let crossings=0,cur=v7.lastDecay;
+  while(true){
+    const next=last3am(cur+24*3600*1000);
+    if(next>target) break;
+    crossings++;cur=next;
+    if(crossings>100000) break;
+  }
+  if(crossings>0){
+    v7.mood=clampMood(v7.mood*Math.pow(1-k/100,crossings),v7.petLevel);
+  }
+  v7.lastDecay=target;
+  return v7;
+}
+function petCfgFor(level){ return PET_LEVELS[level]||PET_LEVELS[1]; }
+// 金币结算：reached=达到关卡，start=本局起点，played=打的关数
+// 未打满20关打折扣 n=(played/20)^2，基数取 max(reached, start+20)
+// v8.0 平衡性调整：最终金币获取 ×4（v7.0 为 ×2，即最初表的 4 倍）
+function calcCoinsEarned(reached,start){
+  const played=Math.max(0,reached-start);
+  const base=Math.max(reached,start+20);
+  const n=played>=20?1:Math.pow(played/20,2);
+  return Math.round(base*n)*4;
+}
+function addCoins(amount,now){
+  const v7=applyDailyDecay(loadV7(),now);
+  v7.coins+=amount;
+  saveV7(v7);
+  return v7;
+}
+// v8.0：8.0 版本后首次通关第40关及以后秘境关卡，每关发 1 把钥匙（每关仅一次）
+// 独立于历史通关记录：以 keyClaimed 数组为准，旧玩家此前通关的关卡仍可领取
+function claimSecretKey(level,now){
+  if(!Number.isInteger(level)||level<40) return 0;
+  const v7=applyDailyDecay(loadV7(),now);
+  if(v7.keyClaimed.indexOf(level)>=0) return 0;
+  v7.keyClaimed.push(level);
+  v7.keys+=1;
+  saveV7(v7);
+  return 1;
+}
+// 秘境被动灼烧加成：心情≥1000 时每秒减少 mood/3000（四舍五入到0.1），上限3
+function moodBurnReduction(mood){
+  if(mood<1000) return 0;
+  return Math.min(3,Math.round((mood/3000)*10)/10);
+}
+// 技能解锁（按当前心情）
+function hasSteadfast(mood){ return mood>=8000; }   // 不屈意志
+function hasHardShield(mood){ return mood>=20000; }  // 硬核护盾
+
+/* ================= 历史记录与起点（按模式分开） =================
+   每种模式各自记录过去 10 次"达到的关卡"，
+   起点 = 该模式近 10 次最高值 - 50（最低为 1）。                */
+function histKey(mode){ return HISTORY_KEY+'_'+mode; }
+function loadHistory(mode){
+  try{
+    // APK 内优先用原生存储（file:// 下更可靠），浏览器预览回退到 localStorage
+    if(window.AndroidStore && window.AndroidStore.getHistory){
+      const raw=window.AndroidStore.getHistory(histKey(mode));
+      const arr=raw?JSON.parse(raw):[];
+      return Array.isArray(arr)?arr:[];
+    }
+    const raw=localStorage.getItem(histKey(mode));
+    const arr=raw?JSON.parse(raw):[];
+    return Array.isArray(arr)?arr:[];
+  }catch(e){return [];}
+}
+function saveHistory(mode,arr){
+  const s=JSON.stringify(arr);
+  try{ if(window.AndroidStore && window.AndroidStore.setHistory){ window.AndroidStore.setHistory(histKey(mode),s); } }catch(e){}
+  try{ localStorage.setItem(histKey(mode),s); }catch(e){}
+}
+function recordStage(){
+  const hist=loadHistory(currentMode);
+  hist.push(currentStage);              // 本局到达的关卡
+  while(hist.length>HISTORY_SIZE) hist.shift();
+  saveHistory(currentMode,hist);
+}
+function computeStartStage(mode){
+  const hist=loadHistory(mode);
+  if(hist.length===0) return 1;
+  const best=Math.max.apply(null,hist);
+  return Math.max(1,best-50);
+}
+// 已过关卡按"0错、0秒"满分累计：得分公式 a*b*c，b=streak+20，c=5（0秒）
+function skippedScore(fromStage){
+  let s=0;
+  for(let i=1;i<fromStage;i++){
+    s+=Math.ceil(i*(i+20)*5);
+  }
+  return s;
+}
+// 热身：本局前 20 关的难度按 起点+19 关的 (5%,10%,...,100%) 向下取整缩放
+function warmupStage(stage){
+  const T=startStage+19;
+  const idx=stage-startStage;          // 0..19
+  if(idx>=0 && idx<20){
+    return Math.floor(T*(idx+1)/20);
+  }
+  return stage;
+}
+
+/* ================= 心算模式：数值规则 ================= */
+
+// 加减法：关卡 -> 加数/被减数上限（答案不受限）
+function getAddLimit(stage){
+  if(stage<=5)  return 10;
+  if(stage<=10) return 20;
+  if(stage<=20) return 50;
+  if(stage<=30) return 100;
+  if(stage<=40) return 300;
+  return 1000; // 41~50
+}
+
+// 乘法因数范围表（51关起）
+const MUL_RANGES = [
+  {from:51, to:60,  min:10,  max:20},
+  {from:61, to:70,  min:10,  max:30},
+  {from:71, to:80,  min:20,  max:50},
+  {from:81, to:90,  min:30,  max:70},
+  {from:91, to:100, min:40,  max:100},
+  {from:101,to:110, min:100, max:200},
+  {from:111,to:120, min:100, max:300},
+  {from:121,to:130, min:200, max:500},
+  {from:131,to:140, min:300, max:700},
+  {from:141,to:150, min:400, max:1000}
+];
+// 151关起：每 50 关整体膨胀 10 倍（基准 400~1000），无上限
+function getMulRange(stage){
+  for(const r of MUL_RANGES){
+    if(stage>=r.from && stage<=r.to) return {min:r.min,max:r.max};
+  }
+  const block = Math.floor((stage-151)/50)+1;      // 151~200 => 1
+  const f = Math.pow(10,block);
+  return {min:400*f, max:1000*f};
+}
+
+// 乘法因数：个位不为 0；个位为 5 的概率降为原来的 30%（减少70%）
+function getMulFactor(min,max){
+  const digits=[1,2,3,4,5,6,7,8,9];
+  const weights=[1,1,1,1,0.3,1,1,1,1];
+  const total=8.3;
+  let r=Math.random()*total, d=9;
+  for(let i=0;i<digits.length;i++){
+    if(r<weights[i]){d=digits[i];break;}
+    r-=weights[i];
+  }
+  let first = min + ((d - (min%10) + 10)%10);
+  if(first>max) first-=10;
+  if(first<min || first>max){
+    let n,guard=0;
+    do{
+      n=getRandomInt(min,max);guard++;
+    }while((n%10===0 || (n%10===5 && Math.random()<0.7)) && guard<1000);
+    return n;
+  }
+  const count=Math.floor((max-first)/10)+1;
+  return first + 10*getRandomInt(0,count-1);
+}
+
+/* ================= 分数 -> 百分位（仅心算模式） ================= */
+const PERCENTILE_TABLE=[
+  {score:0,       pct:0},
+  {score:1360,    pct:20},
+  {score:5720,    pct:30},
+  {score:27440,   pct:40},
+  {score:73160,   pct:45},
+  {score:150880,  pct:48},
+  {score:268600,  pct:49},
+  {score:282880,  pct:50},
+  {score:434320,  pct:65},
+  {score:656040,  pct:85},
+  {score:941760,  pct:95},
+  {score:1300680, pct:98.8},
+  {score:1737200, pct:99.7},
+  {score:2883040, pct:99.88},
+  {score:5404800, pct:99.95},
+  {score:10000000,pct:99.99}
+];
+function calculatePercentile(userScore){
+  const t=PERCENTILE_TABLE;
+  if(userScore<=t[0].score) return 0;
+  for(let i=1;i<t.length;i++){
+    if(userScore<=t[i].score){
+      const lo=t[i-1],hi=t[i];
+      return lo.pct+(hi.pct-lo.pct)*(userScore-lo.score)/(hi.score-lo.score);
+    }
+  }
+  return 99.99;
+}
+
+/* ================= 比大小模式：出题系统 ================= */
+
+// 上限表：两边中较大一边的值的上限；下限 = 0.6 × 上限
+function compareCap(stage){
+  if(stage<=5)   return 10;
+  if(stage<=10)  return 30;
+  if(stage<=20)  return 100;
+  if(stage<=30)  return 300;
+  if(stage<=40)  return 1000;
+  if(stage<=50)  return 3000;
+  if(stage<=60)  return 5000;
+  if(stage<=70)  return 10000;
+  if(stage<=80)  return 20000;
+  if(stage<=90)  return 40000;
+  if(stage<=100) return 80000;
+  // 101 起每十关 ×2
+  const k=Math.ceil((stage-100)/10);
+  const cap=80000*Math.pow(2,k);
+  return Math.min(cap,1e15);   // 防止浮点溢出（实际关卡远达不到）
+}
+
+// 大值/小值比例区间（小值 ÷ 大值）—— 越后面差距越小
+// v8.3：100 关起按新分档
+function compareRatio(stage){
+  if(stage<=10)  return [0.60,0.75];
+  if(stage<=20)  return [0.70,0.85];
+  if(stage<=30)  return [0.80,0.90];
+  if(stage<=40)  return [0.85,0.92];
+  if(stage<=60)  return [0.87,0.94];
+  if(stage<=99)  return [0.90,0.96];
+  if(stage<=129) return [0.92,0.97];    // 100-129
+  if(stage<=159) return [0.94,0.98];    // 130-159
+  if(stage<=189) return [0.96,0.98];    // 160-189
+  if(stage<=219) return [0.97,0.985];   // 190-219
+  return [0.98,0.99];                   // 220+
+}
+
+// 表达式类型解锁表：[左侧形状, 右侧形状]
+// single=单个操作数, sum2=两项和, prod2=两项积, pow=幂
+const COMPARE_TYPES=[
+  {stage:1,  left:'sum2',  right:'single'},
+  {stage:11, left:'sum2',  right:'sum2'},
+  {stage:21, left:'prod2', right:'single'},
+  {stage:31, left:'prod2', right:'sum2'},
+  {stage:41, left:'prod2', right:'prod2'},
+  {stage:51, left:'pow',   right:'single'},
+  {stage:61, left:'pow',   right:'prod2'},
+  {stage:81, left:'pow',   right:'pow'}
+];
+function pickComparePool(stage){
+  let pool=COMPARE_TYPES.filter(t=>stage>=t.stage);
+  // 71 关起不再出现加法（含 sum2 的类型全部排除）
+  if(stage>=71) pool=pool.filter(t=>t.left!=='sum2'&&t.right!=='sum2');
+  return pool;
+}
+function pickCompareType(stage){
+  const pool=pickComparePool(stage);
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+// 双指数题的合法指数对：两边指数不同（x、y 顺序无所谓），且都能在 cap 内形成有效幂
+function validExpPair(b1,b2){
+  if(b1===b2) return false;                 // 禁止指数相同
+  const mn=Math.min(b1,b2), mx=Math.max(b1,b2);
+  if(mn<2) return false;
+  return true;
+}
+// v5.3：双指数题 a^x ? b^y 的指数对分布（与是否保底触发无关，一律按此分布抽取）
+// 40% → {2,3}；30% → {3,4}；其余 30% → 其它合法指数对
+function pickExpPair(){
+  const r=Math.random();
+  if(r<0.40) return {x:2,y:3};
+  if(r<0.70) return {x:3,y:4};
+  const others=[{x:2,y:4},{x:2,y:5},{x:3,y:5},{x:4,y:5}];
+  return others[Math.floor(Math.random()*others.length)];
+}
+// 指定指数对不可生成时（受 cap 限制）的回退顺序，优先保持已规定的高频对
+const EXP_PAIR_FALLBACK=[{x:2,y:3},{x:3,y:4},{x:2,y:4},{x:2,y:5},{x:3,y:5},{x:4,y:5}];
+// 两边都是「指数≥3」的幂题概率（按显示关卡）
+function doubleExpProb(stage){
+  if(stage>=121) return 0.35;
+  if(stage>=101) return 0.30;
+  if(stage>=91)  return 0.25;
+  if(stage>=81)  return 0.20;
+  return 0;
+}
+
+// 数值节点：普通整数 / 常数(π,e)
+function intNode(v){ return {kind:'int', v:Math.round(v)}; }
+function constNode(name){ return {kind:'const', name:name, v:(name==='π'?3.14:2.72)}; }
+function nodeStr(n){ return n.kind==='int' ? String(n.v) : n.name; }
+function nodeVal(n){ return n.v; }
+function exprStr(e){
+  if(!e.op) return nodeStr(e.a);
+  const sym={'+':'+','*':'×','^':'^'}[e.op];
+  return nodeStr(e.a)+' '+sym+' '+nodeStr(e.b);
+}
+function exprVal(e){
+  if(!e.op) return nodeVal(e.a);
+  if(e.op==='+') return nodeVal(e.a)+nodeVal(e.b);
+  if(e.op==='*') return nodeVal(e.a)*nodeVal(e.b);
+  if(e.op==='^') return Math.pow(nodeVal(e.a),nodeVal(e.b));
+}
+
+// 若某边是 prod2 且 51+（因数须≥10），把目标值调整为 10 的倍数，
+// 保证 10×(V/10) 精确分解、不失真，从而维持比例区间。
+function prodSafeValue(V,shape,stage){
+  if(stage>=51 && shape==='prod2'){
+    const v=Math.round(V/10)*10;
+    return Math.max(100,v);
+  }
+  return Math.max(1,Math.round(V));
+}
+
+// 用普通整数 V 构造非指数运算表达式（single/sum2/prod2）
+// 51 关起：非指数运算的操作数不允许出现一位数（<10）
+function buildNonPow(shape,V,stage){
+  V=Math.max(1,Math.round(V));
+  const minOp=(stage>=51)?10:1;   // 操作数下限
+  if(shape==='single') return {op:null, a:intNode(Math.max(V,minOp))};
+  if(shape==='sum2'){
+    // a+b=V，两个加数都 >= minOp
+    if(V<2*minOp) V=2*minOp;
+    const a=getRandomInt(minOp,Math.max(minOp,V-minOp));
+    return {op:'+', a:intNode(a), b:intNode(V-a)};
+  }
+  if(shape==='prod2'){
+    // a*b=V，两个因数都 >= minOp 且不允许为 1（因数下限至少 2）
+    const minFac=Math.max(2,minOp);
+    const divs=[];
+    for(let i=1;i*i<=V;i++) if(V%i===0){
+      const j=V/i;
+      if(i>=minFac && j>=minFac){ divs.push(i); if(i!==j) divs.push(j); }
+    }
+    if(divs.length===0){
+      // V 无法拆成两个>=minFac 的因数（如质数）：向下找最近的可分解整数
+      let vv=V;
+      for(let k=0;k<=200;k++){
+        const cand=V-k;
+        if(cand<minFac*minFac) break;
+        for(let i=minFac;i*i<=cand;i++){
+          if(cand%i===0 && cand/i>=minFac){ vv=cand; break; }
+        }
+        if(vv!==V) break;
+      }
+      if(vv===V){ // 极端兜底：用 minFac×minFac
+        return {op:'*', a:intNode(minFac), b:intNode(minFac)};
+      }
+      const d=Math.floor(Math.random()*2)?minFac:(vv/minFac>=minFac?vv/minFac:minFac);
+      return {op:'*', a:intNode(d), b:intNode(vv/d)};
+    }
+    const d=divs[Math.floor(Math.random()*divs.length)];
+    return {op:'*', a:intNode(d), b:intNode(V/d)};
+  }
+  return {op:null, a:intNode(Math.max(V,minOp))};
+}
+
+// 生成幂候选列表（a^b ≤ cap，a≥2, b≥2）
+function powCandidates(cap){
+  const list=[];
+  const aMax=Math.min(2000,Math.floor(Math.sqrt(cap))+2);
+  for(let a=2;a<=aMax;a++){
+    let v=a*a;
+    if(v>cap) continue;
+    for(let b=2;b<=40;b++){
+      if(v>cap) break;
+      list.push({a:a,b:b,v:v});
+      v*=a;
+    }
+  }
+  return list;
+}
+function powExpr(p){ return {op:'^', a:intNode(p.a), b:intNode(p.b)}; }
+
+// 在 [lo,hi] 比例区间内，为大值 big 随机取一个合法整数小值
+function pickSmall(big,lo,hi){
+  const sMin=Math.ceil(big*lo-1e-9);
+  const sMax=Math.floor(big*hi+1e-9);
+  const upper=Math.min(sMax,big-1);
+  if(upper<sMin || sMin<1) return null;
+  return getRandomInt(sMin,upper);
+}
+// 在小值 small 已知时，反推合法整数大值（使 small/big ∈[lo,hi]，big∈[floor,cap]）
+function pickBig(small,lo,hi,floor,cap){
+  const bMin=Math.ceil(small/hi-1e-9);
+  const bMax=Math.floor(small/lo+1e-9);
+  const loB=Math.max(bMin,floor,small+1), hiB=Math.min(bMax,cap);
+  if(hiB<loB) return null;
+  return getRandomInt(loB,hiB);
+}
+
+// 若两边算式字符串完全相同，尝试让其中一边换一种等价构造；实在不行返回 false
+function dedupeExpressions(core,type,stage){
+  const ls=exprStr(core.leftExpr), rs=exprStr(core.rightExpr);
+  if(ls!==rs) return true;
+  // 幂 vs 幂：找同一值的不同幂表示
+  if(type.left==='pow'&&type.right==='pow'){
+    const lv=exprVal(core.leftExpr), rv=exprVal(core.rightExpr);
+    if(Math.abs(lv-rv)<1e-9){
+      const map={};
+      powCandidates(Math.ceil(Math.max(lv,rv))+1).forEach(p=>{ (map[p.v]=map[p.v]||[]).push(p); });
+      const reps=map[Math.round(lv)]||[];
+      if(reps.length>=2){
+        const i=reps.findIndex(r=>r.a===core.leftExpr.a.v&&r.b===core.leftExpr.b.v);
+        const other=reps[(i+1)%reps.length];
+        core.rightExpr=powExpr(other);
+        return exprStr(core.leftExpr)!==exprStr(core.rightExpr);
+      }
+    }
+    return false;
+  }
+  // 非幂：为右边重新取值构造一个不同写法的等价式（多试几种拆分/分解）
+  for(let k=0;k<40;k++){
+    const v=Math.round(exprVal(core.leftExpr));
+    const alt=buildNonPow(type.right,v,stage);
+    if(exprStr(alt)!==exprStr(core.leftExpr)){ core.rightExpr=alt; return true; }
+  }
+  return false;
+}
+
+// 构造一对表达式和答案（不含 π/e 注入）
+// 采用「生成→按实际值校验→重试」架构，确保所有约束严格成立。
+function buildCompareCore(stage,type,cap,floor,lo,hi,opts){
+  opts=opts||{};
+  const hasL=(type.left==='pow'), hasR=(type.right==='pow');
+  const wantEqual=Math.random()<0.15;
+  // opts.expPair: 两边都是幂时，指数对须满足 validExpPair（都>=3且不同，或 2和3）
+  const list=hasL?powCandidates(cap):null;
+
+  // 把目标值编码为指定形状；prod2 在 51+ 用 10 的倍数保证两因数都>=10 且精确
+  function encode(shape,V){
+    return buildNonPow(shape,prodSafeValue(V,shape,stage),stage);
+  }
+  // 校验一对表达式是否满足全部约束，返回 answer 或 null
+  function validate(L,R,wantEq){
+    if(exprStr(L)===exprStr(R)) return null;               // 两边不得雷同
+    const lv=exprVal(L),rv=exprVal(R);
+    // v8.3：用相对容差判等，避免大数（1e7+）下差 1~2 被误判为不等
+    const eqTol=Math.max(1e-9,Math.max(Math.abs(lv),Math.abs(rv))*1e-12);
+    if(wantEq){
+      return Math.abs(lv-rv)<eqTol ? '=' : null;
+    }
+    if(Math.abs(lv-rv)<eqTol) return null;
+    const big=Math.max(lv,rv),small=Math.min(lv,rv);
+    if(big<floor-1e-6||big>cap+1e-6) return null;          // 大值范围
+    const ratio=small/big;
+    if(ratio<lo-1e-9||ratio>hi+1e-9) return null;          // 比例区间
+    return lv>rv?'>':'<';
+  }
+  // 51+ 的非指数操作数>=10 校验
+  function noSingleDigit(e){
+    const arr=[];
+    if(e.a.kind==='int')arr.push(e.a.v);
+    if(e.b&&e.b.kind==='int')arr.push(e.b.v);
+    return arr.every(v=>v>=10);
+  }
+
+  // ---------- 情形A：两边都不是幂 ----------
+  if(!hasL && !hasR){
+    for(let t=0;t<600;t++){
+      let L,R,ans;
+      if(wantEqual){
+        const v=getRandomInt(floor,cap);
+        L=encode(type.left,v); R=encode(type.right,v);
+        ans=validate(L,R,true);
+      }else{
+        const big=getRandomInt(floor,cap);
+        const small=pickSmall(big,lo,hi);
+        if(small===null) continue;
+        if(Math.random()<0.5){ L=encode(type.left,big); R=encode(type.right,small); }
+        else{ L=encode(type.left,small); R=encode(type.right,big); }
+        ans=validate(L,R,false);
+      }
+      if(ans===null) continue;
+      if(stage>=51 && (!noSingleDigit(L)||!noSingleDigit(R))) continue;
+      return {leftExpr:L,rightExpr:R,answer:ans};
+    }
+    // 兜底：按实际值校验答案（不同形状 encode 取整后未必严格相等）
+    const v=getRandomInt(floor,cap);
+    const L=encode(type.left,v), R=encode(type.right,v);
+    const lv=exprVal(L), rv=exprVal(R);
+    return {leftExpr:L,rightExpr:R,answer:Math.abs(lv-rv)<1e-9?'=':(lv>rv?'>':'<')};
+  }
+
+  // ---------- 情形B：幂 vs 普通（幂只在左） ----------
+  if(hasL && !hasR){
+    const bigsPool=list.filter(p=>p.v>=floor&&p.v<=cap);   // v8.3：兜底候选限定在量级范围内
+    for(let t=0;t<600;t++){
+      const p=list[Math.floor(Math.random()*list.length)];
+      if(!p) break;
+      let R,ans;
+      if(wantEqual){
+        if(p.v<floor||p.v>cap) continue;
+        R=encode(type.right,p.v);
+        ans=validate(powExpr(p),R,true);
+      }else if((t&1)===0){
+        // 幂为大值
+        if(p.v<floor) continue;
+        const small=pickSmall(p.v,lo,hi);
+        if(small===null) continue;
+        R=encode(type.right,small);
+        ans=validate(powExpr(p),R,false);
+      }else{
+        // 幂为小值
+        const big=pickBig(p.v,lo,hi,floor,cap);
+        if(big===null) continue;
+        R=encode(type.right,big);
+        ans=validate(powExpr(p),R,false);
+      }
+      if(ans===null) continue;
+      if(stage>=51 && !noSingleDigit(R)) continue;   // 幂侧不受一位数限制
+      return {leftExpr:powExpr(p),rightExpr:R,answer:ans};
+    }
+    // v8.3 兜底：用范围内的幂（杜绝 list[0]=2² 送分题），答案按实际值重新校验
+    // （prodSafeValue 会把普通侧取整到10倍数，与幂值可能差几，不能硬编码 '='）
+    for(let k=0;k<60;k++){
+      const p=bigsPool[Math.floor(Math.random()*bigsPool.length)];
+      if(!p) break;
+      const R=encode(type.right,p.v);
+      const lv=exprVal(powExpr(p)), rv=exprVal(R);
+      const ans=Math.abs(lv-rv)<Math.max(1,lv*1e-9) ? '=' : (lv>rv?'>':'<');
+      if(ans!=='=' && (rv<floor||rv>cap)) continue;   // 普通侧也须在量级内
+      return {leftExpr:powExpr(p),rightExpr:R,answer:ans};
+    }
+    const p=bigsPool[0]||{a:2,b:2,v:4};
+    return {leftExpr:powExpr(p),rightExpr:encode(type.right,p.v),
+            answer:exprVal(powExpr(p))>exprVal(encode(type.right,p.v))?'>':'<'};
+  }
+
+  // ---------- 情形C：幂 vs 幂（v5.3：严格按指定指数对，x、y 顺序无所谓） ----------
+  // opts.expPair={x,y} 时，a^x 与 b^y 的指数对固定为 {x,y}（左右顺序随机）；
+  // 只有当该对在当前 cap 下无法成题时，才依次回退到其它合法对。
+  const wanted=(opts.expPair && typeof opts.expPair==='object') ? opts.expPair : null;
+  const pairList=[];
+  if(wanted) pairList.push(wanted);
+  EXP_PAIR_FALLBACK.forEach(p=>{
+    if(!pairList.some(q=>q.x===p.x&&q.y===p.y)) pairList.push(p);
+  });
+  const bigs=list.filter(p=>p.v>=floor&&p.v<=cap);
+
+  // 等值题：只在指定指数对下寻找 a^x = b^y 的同值表示；找不到就改出不等题，绝不换指数对
+  if(wantEqual){
+    const eqPairs=wanted?[wanted]:pairList;
+    const map={};
+    list.forEach(p=>{ (map[p.v]=map[p.v]||[]).push(p); });
+    const vals=Object.keys(map).map(Number).filter(v=>v>=floor&&v<=cap&&map[v].length>=2);
+    for(const pair of eqPairs){
+      for(const v of vals){
+        const reps=map[v];
+        const ga=reps.filter(p=>p.b===pair.x), gb=reps.filter(p=>p.b===pair.y);
+        if(!ga.length||!gb.length) continue;
+        const pA=ga[Math.floor(Math.random()*ga.length)], pB=gb[Math.floor(Math.random()*gb.length)];
+        const flip=Math.random()<0.5;
+        return {leftExpr:powExpr(flip?pB:pA),rightExpr:powExpr(flip?pA:pB),answer:'='};
+      }
+    }
+    // 无合法等值表示 → 改出不等题（仍用指定指数对）
+  }
+  // 不等题：两边分别取自指定指数对的两组候选，再按实际值校验
+  // v8.3：候选只在 [floor,cap] 范围内取（bigs），杜绝 2² 这类远低于 floor 的送分题
+  const bigByB={};
+  bigs.forEach(p=>{ (bigByB[p.b]=bigByB[p.b]||[]).push(p); });
+  function buildForPair(pair,strict){
+    const gA=bigByB[pair.x]||[], gB=bigByB[pair.y]||[];
+    if(!gA.length||!gB.length) return null;
+    for(let t=0;t<800;t++){
+      const pA=gA[Math.floor(Math.random()*gA.length)];
+      const pB=gB[Math.floor(Math.random()*gB.length)];
+      const ans=validate(powExpr(pA),powExpr(pB),false);
+      if(ans===null) continue;
+      const flip=Math.random()<0.5;
+      return {leftExpr:powExpr(flip?pB:pA),rightExpr:powExpr(flip?pA:pB),
+              answer:flip?(ans==='>'?'<':(ans==='<'?'>':'=')):ans};
+    }
+    return null;
+  }
+  const genPairs=wanted?[wanted]:pairList;   // 强制双指数时优先用指定对，确保分布不被稀释
+  for(const pair of genPairs){
+    const r=buildForPair(pair,true);
+    if(r) return r;
+  }
+  // v8.3 兜底1：指定指数对在 [floor,cap] 内无合法题时，按回退顺序换对（仍全部落在范围内）
+  for(const pair of pairList){
+    if(wanted && pair.x===wanted.x && pair.y===wanted.y) continue;
+    const r=buildForPair(pair,false);
+    if(r) return r;
+  }
+  // v8.3 兜底2：从全部范围内幂里挑比例最接近的一对（两边都≥floor，绝无 2² 送分题）
+  if(bigs.length>=2){
+    const sorted=bigs.slice().sort((a,b)=>a.v-b.v);
+    let best=null,bestRatio=-1;
+    for(let i=1;i<sorted.length;i++){
+      const lo=sorted[i-1], hi=sorted[i];
+      const ratio=lo.v/hi.v;
+      if(ratio<0.4) continue;                 // 忽略悬殊配对（如 2² vs 大幂）
+      if(ratio>bestRatio){ bestRatio=ratio; best=[lo,hi]; }
+    }
+    if(best){
+      const [pA,pB]=best;
+      const ans=pA.v>pB.v?'>':'<';
+      const flip=Math.random()<0.5;
+      return {leftExpr:powExpr(flip?pB:pA),rightExpr:powExpr(flip?pA:pB),answer:flip?(ans==='>'?'<':'>'):ans};
+    }
+  }
+  // v8.3 极端兜底：范围内幂不足两个时，用范围内幂的底数+1 构造另一边（保证两边都在量级内）
+  const p=bigs[bigs.length-1]||list[list.length-1]||{a:2,b:2,v:4};
+  const altB=(p.b>=3)?(p.b===3?4:3):3;
+  const other={a:p.a+1,b:altB};
+  const ov=Math.pow(other.a,other.b);
+  return {leftExpr:powExpr(p),rightExpr:powExpr(other),answer:p.v>ov?'>':(p.v<ov?'<':'=')};
+}
+
+// 101 关起：π/e 判定
+// 关键：判定基于【显示关卡】(showStage)，而非被热身压缩过的内容关卡；
+//       只有真正注入成功才清零保底计数，避免 pow-vs-pow 无处注入时"假注入"吃掉保底。
+// 保底阈值 5：连续 5 题未出现，下一题必出现。基础出现率 20%。
+function shouldInjectSpecial(showStage,canInject){
+  if(showStage<101 || !canInject) return false;
+  if(noSpecialCount>=5) return true;        // 保底：连续 5 题未出现 → 必出
+  return Math.random()<0.2;                 // 基础 20%
+}
+// 该 core 是否存在「可补偿」位置：某个加式/乘式，可用 π/e 替换一个操作数并让同式另一操作数吸收缩放，
+// 使该边总值保持在原量级（避免出现神秘无理数时两边差好几个数量级）。single 不可补偿，故不算 slot。
+function hasSpecialSlot(core){
+  const comp=e=>!!e && (e.op==='+'||e.op==='*');
+  return comp(core.leftExpr)||comp(core.rightExpr);
+}
+// 补偿式注入：把某加式/乘式的一个操作数换成 π/e，同式另一操作数按比例补偿，
+// 使该表达式的实际值基本不变 → 两边仍在同一量级、比例仍接近原区间。
+function injectSpecial(core){
+  const left=core.leftExpr, right=core.rightExpr;
+  const slots=[];
+  [left,right].forEach(e=>{
+    if(e.op==='*'||e.op==='+'){ slots.push({e:e,key:'a'}); slots.push({e:e,key:'b'}); }
+  });
+  if(slots.length===0) return false;
+  const slot=slots[Math.floor(Math.random()*slots.length)];
+  const e=slot.e, otherKey=(slot.key==='a')?'b':'a';
+  const targetV=exprVal(e);
+  const constName=Math.random()<0.5?'π':'e';
+  const cv=(constName==='π'?3.14:2.72);
+  const otherV=Number(e[otherKey].v);
+  let newOther;
+  if(e.op==='*') newOther=targetV/cv;         // a*b=V ⇒ (V/π)×π ≈ V
+  else newOther=targetV-cv;                   // a+b=V ⇒ (V-π)+π ≈ V
+  if(!isFinite(newOther) || newOther<1) return false;
+  const rounded=Math.round(newOther);
+  // 补偿后需保证仍是整数、且 51+ 不产生一位数；否则放弃本次注入
+  if(Math.abs(rounded-newOther)>Math.max(0.5,newOther*0.01)) return false;
+  if(core.__stage>=51 && rounded<10) return false;
+  e[otherKey]=intNode(rounded);
+  e[slot.key]=constNode(constName);
+  const lv=exprVal(left), rv=exprVal(right);
+  core.answer=Math.abs(lv-rv)<1e-9?'=':(lv>rv?'>':'<');
+  return true;
+}
+
+function isDoubleExpCore(core){
+  return core.leftExpr.op==='^' && core.rightExpr.op==='^';
+}
+function generateCompare(contentStage,showStage){
+  if(showStage===undefined) showStage=contentStage;
+  const cap=compareCap(contentStage);
+  const floor=Math.floor(0.6*cap);
+  let [lo,hi]=compareRatio(contentStage);
+  let type=pickCompareType(contentStage);
+  let opts={};
+
+  // ===== 双指数题（两边都是幂）=====
+  // 出现概率 = 基础概率(doubleExpProb，不计保底) 或 连续3题未出必出。
+  // v5.3：无论保底触发还是基础概率触发，指数对一律按 pickExpPair() 分布抽取
+  //       （40% {2,3}、30% {3,4}、其余 30% 其它合法对），x/y 顺序无所谓。
+  // 注意只有 81 关起才有 pow-vs-pow 题型，故保底/概率仅在 showStage>=81 启用。
+  const deProb=doubleExpProb(showStage);
+  let forceDouble=false;
+  if(showStage>=81){
+    forceDouble = (noDoubleExpCount>=3) || Math.random()<deProb;
+    if(forceDouble){
+      type={left:'pow',right:'pow'};
+      opts.expPair=pickExpPair();        // v5.3：固定本次的指数对（保底/概率同样适用）
+      lo=Math.max(0.4,lo-0.05);          // 差距比例下限再放宽 5 个百分点
+    }else{
+      // 非双指数局：从类型池排除 pow/pow，避免自然出现抬高双指数题概率
+      const pool=pickComparePool(contentStage).filter(t=>!(t.left==='pow'&&t.right==='pow'));
+      type=pool[Math.floor(Math.random()*pool.length)];
+    }
+  }
+  let core=buildCompareCore(contentStage,type,cap,floor,lo,hi,opts);
+  core.__stage=contentStage;
+
+  // π/e：用显示关卡判定（基础20% / 保底5）。双指数题局两边都是幂、无注入位置，
+  // 故不参与 π/e 判定（计数也不动），让两个保底各自独立、不互相抢占。
+  if(showStage>=101 && !forceDouble){
+    const wantInject=shouldInjectSpecial(showStage,true);
+    if(wantInject && !hasSpecialSlot(core)){
+      for(let k=0;k<40 && !hasSpecialSlot(core);k++){
+        const t=pickCompareType(contentStage);
+        core=buildCompareCore(contentStage,t,cap,floor,compareRatio(contentStage)[0],hi,{});
+        core.__stage=contentStage;
+      }
+    }
+    if(wantInject && hasSpecialSlot(core) && injectSpecial(core)){
+      noSpecialCount=0;
+    }else{
+      noSpecialCount++;
+    }
+  }
+
+  // 双指数题保底计数：按最终呈现的 core 统计（换题后以实际为准）
+  if(showStage>=81){
+    if(isDoubleExpCore(core)) noDoubleExpCount=0;
+    else noDoubleExpCount++;
+  }
+  currentProblem=exprStr(core.leftExpr)+' ？ '+exprStr(core.rightExpr);
+  currentAnswer=core.answer;
+}
+
+/* ================= DOM ================= */
+const startScreen=document.getElementById('startScreen');
+const gameScreen=document.getElementById('gameScreen');
+const resultScreen=document.getElementById('resultScreen');
+const modeCalc=document.getElementById('modeCalc');
+const modeCompare=document.getElementById('modeCompare');
+const quitBtn=document.getElementById('quitBtn');
+const restartBtn=document.getElementById('restartBtn');
+const backMenuBtn=document.getElementById('backMenuBtn');
+const stageNum=document.getElementById('stageNum');
+const lifeValue=document.getElementById('lifeValue');
+const scoreValue=document.getElementById('scoreValue');
+const problemText=document.getElementById('problemText');
+const inputDisplay=document.getElementById('inputDisplay');
+const timerText=document.getElementById('timerText');
+const difficultyText=document.getElementById('difficultyText');
+const lifeFill=document.getElementById('lifeFill');
+const finalStage=document.getElementById('finalStage');
+const finalScore=document.getElementById('finalScore');
+const percentile=document.getElementById('percentile');
+const percentileRow=document.getElementById('percentileRow');
+const progressRow=document.getElementById('progressRow');
+const progressFill=document.getElementById('progressFill');
+const keyboard=document.getElementById('keyboard');
+const starOverlay=document.getElementById('starOverlay');
+const milestoneToast=document.getElementById('milestoneToast');
+
+/* ================= v7.0 DOM 引用与渲染 ================= */
+const coinValue=document.getElementById('coinValue');
+const catBubble=document.getElementById('catBubble');
+const PRAISE_LINES=[
+  '太棒啦！这题都难不住你～','好厉害，继续保持这个节奏！','你的大脑在发光诶 ✨',
+  '干净利落，堪比数学家！','又对一题，猫咪为你鼓掌～','这速度，绝了！',
+  '聪明如你，答案手到擒来！','连胜的感觉是不是超爽？','你又在进步了，真为你骄傲！',
+  '完美！这就是最强大脑的实力！'
+];
+const FOCUS_LINES=[
+  '哎呀，认真一点哦～','别急，看清楚再答。','失误啦，集中注意力！',
+  '深呼吸，下一题稳住。','猫咪在看着你呢，仔细点～','粗心了，再专注一些！',
+  '这题不难，再想想？','别慌，慢慢来就好。','打起精神，你可以的！','专心一点，答案就在眼前。'
+];
+function renderCoins(){
+  if(!coinValue) return;
+  try{
+    const v7=loadV7();
+    coinValue.textContent=v7.coins;
+    const kv=document.getElementById('keyValue');
+    if(kv) kv.textContent=v7.keys;
+  }catch(e){ coinValue.textContent='0'; }
+}
+let catBubbleTimer=null;
+function showCatBubble(text){
+  if(!catBubble) return;
+  catBubble.textContent=text;
+  catBubble.classList.add('show');
+  clearTimeout(catBubbleTimer);
+  catBubbleTimer=setTimeout(()=>catBubble.classList.remove('show'),2200);
+}
+function catPraise(){ showCatBubble(PRAISE_LINES[Math.floor(Math.random()*PRAISE_LINES.length)]); }
+function catFocus(){ showCatBubble(FOCUS_LINES[Math.floor(Math.random()*FOCUS_LINES.length)]); }
+
+/* ================= 开始页装饰 ================= */
+function initStartDecor(){
+  const bg=document.getElementById('startDecor');
+  if(!bg) return;
+  bg.innerHTML='';
+  const symbols=['+','−','×','÷','^','π','e','<','>','=','7','3','9','5','%'];
+  for(let i=0;i<28;i++){
+    const s=document.createElement('span');
+    s.className='float-symbol';
+    s.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    s.style.left=(Math.random()*100)+'%';
+    s.style.top=(Math.random()*100)+'%';
+    s.style.fontSize=(14+Math.random()*26)+'px';
+    s.style.animationDuration=(8+Math.random()*10)+'s';
+    s.style.animationDelay=(-Math.random()*12)+'s';
+    bg.appendChild(s);
+  }
+}
+
+/* ================= 键盘 ================= */
+function initKeyboard(){
+  keyboard.innerHTML='';
+  if(currentMode==='compare'){
+    keyboard.className='keyboard keyboard-compare';
+    const keys=[
+      {text:'<',cls:'key-cmp'},{text:'=',cls:'key-cmp eq'},{text:'>',cls:'key-cmp'}
+    ];
+    keys.forEach(k=>{
+      const b=document.createElement('button');
+      b.className='key '+k.cls;
+      b.textContent=k.text;
+      b.addEventListener('click',()=>{
+        if(!gameActive||answerLocked) return;
+        currentInput=k.text;
+        updateInputDisplay();
+        checkAnswer();              // 点下即提交
+      });
+      keyboard.appendChild(b);
+    });
+  }else{
+    keyboard.className='keyboard';
+    const keys=[
+      {text:'1',cls:''},{text:'2',cls:''},{text:'3',cls:''},
+      {text:'4',cls:''},{text:'5',cls:''},{text:'6',cls:''},
+      {text:'7',cls:''},{text:'8',cls:''},{text:'9',cls:''},
+      {text:'删除',cls:'key-del'},{text:'0',cls:''},{text:'提交',cls:'key-submit'}
+    ];
+    keys.forEach(k=>{
+      const b=document.createElement('button');
+      b.className='key '+k.cls;
+      b.textContent=k.text;
+      b.addEventListener('click',()=>handleCalcKey(k.text));
+      keyboard.appendChild(b);
+    });
+  }
+}
+function handleCalcKey(key){
+  if(!gameActive||answerLocked) return;
+  if(key==='删除') currentInput=currentInput.slice(0,-1);
+  else if(key==='提交'){ checkAnswer(); return; }
+  else currentInput+=key;   // 已取消 14 位上限
+  updateInputDisplay();
+}
+function updateInputDisplay(){ inputDisplay.textContent=currentInput||' '; }
+
+/* ================= 流程控制 ================= */
+modeCalc.addEventListener('click',()=>enterGame('calc'));
+modeCompare.addEventListener('click',()=>enterGame('compare'));
+function enterGame(mode){
+  currentMode=mode;
+  startScreen.style.display='none';
+  gameScreen.style.display='flex';
+  initGame();
+}
+restartBtn.addEventListener('click',()=>{
+  resultScreen.style.display='none';
+  gameScreen.style.display='flex';
+  initGame();                              // 直接再来一局（同模式）
+});
+backMenuBtn.addEventListener('click',()=>{
+  resultScreen.style.display='none';
+  startScreen.style.display='flex';
+  initStartDecor();
+  renderCoins();
+});
+
+/* ---------- 中途退出：连点两下才退，防误触 ---------- */
+let quitArmed=false, quitArmTimer=null;
+function resetQuitBtn(){
+  quitArmed=false;
+  clearTimeout(quitArmTimer);
+  quitBtn.classList.remove('armed');
+  quitBtn.textContent='✕ 退出';
+  quitBtn.style.display='';
+}
+quitBtn.addEventListener('click',()=>{
+  if(!gameActive) return;
+  if(!quitArmed){
+    quitArmed=true;
+    quitBtn.classList.add('armed');
+    quitBtn.textContent='再点一次退出';
+    quitArmTimer=setTimeout(resetQuitBtn,1800);   // 1.8 秒内不点第二下则取消
+  }else{
+    resetQuitBtn();
+    performQuit();
+  }
+});
+function performQuit(){
+  gameActive=false;
+  clearInterval(lifeInterval);
+  // 中途退出：仅当到达关卡 ≥ 该模式近10局最高的 85% 才记入，否则作废
+  const hist=loadHistory(currentMode);
+  const best=hist.length?Math.max.apply(null,hist):0;
+  const reached=currentStage;
+  if(best===0 || reached>=best*0.85){
+    hist.push(reached);
+    while(hist.length>HISTORY_SIZE) hist.shift();
+    saveHistory(currentMode,hist);
+  }
+  // v7.0 中途退出同样结算金币（按同一公式）
+  const earned=calcCoinsEarned(reached,startStage);
+  addCoins(earned);
+  quitBtn.style.display='none';
+  gameScreen.style.display='none';
+  startScreen.style.display='flex';
+  initStartDecor();
+  renderCoins();
+}
+
+function initGame(){
+  startStage=computeStartStage(currentMode);
+  currentStage=startStage;
+  // 被跳过的关卡全按满分算（0错、0秒）：分数与连击都延续
+  score=skippedScore(startStage);
+  streak=startStage-1;
+  life=MAX_LIFE;currentInput="";answerLocked=false;gameActive=true;
+  noSpecialCount=0;
+  noDoubleExpCount=0;
+  resetQuitBtn();
+  updateUI();generateProblem();initKeyboard();
+  if(lifeInterval) clearInterval(lifeInterval);
+  lifeInterval=setInterval(decreaseLife,250);   // 每 0.25 秒扣 1/3
+  startTime=Date.now();updateTimer();
+}
+function decreaseLife(){
+  if(!gameActive) return;
+  life=Math.max(0,life-1/3);
+  lifeFill.style.width=(life/MAX_LIFE*100)+'%';
+  lifeValue.textContent=Math.round(life/MAX_LIFE*100);
+  if(life<=0) endGame();
+}
+function updateTimer(){
+  if(!gameActive) return;
+  timerText.textContent='用时: '+((Date.now()-startTime)/1000).toFixed(1)+'秒';
+  setTimeout(updateTimer,100);
+}
+
+/* ================= 出题 ================= */
+function generateProblem(){
+  // 热身期只改变"题目内容/难度标注"，关号、得分、特效仍按真实 currentStage
+  const dStage=warmupStage(currentStage);
+  if(currentMode==='calc'){
+    if(dStage<=50) generateAddSub(dStage);
+    else generateMul(dStage);
+  }else{
+    // 传内容关卡（出题难度）和显示关卡（π/e 判定用真实关号）
+    generateCompare(dStage,currentStage);
+  }
+  if(currentMode==='compare'){
+    // “？”渲染成半透明白色圆圈
+    problemText.innerHTML=currentProblem.split(' ？ ').join('<span class="q-circle"></span>');
+  }else{
+    problemText.textContent=currentProblem;
+  }
+  currentInput="";updateInputDisplay();
+  startTime=Date.now();
+  updateDifficultyLabel(dStage);
+}
+
+function generateAddSub(stage){
+  const L=getAddLimit(stage);
+  const isAdd=Math.random()<0.5;
+  let a,b,op;
+  if(stage<=20){
+    a=getRandomInt(1,L);b=getRandomInt(1,L);
+    if(isAdd){op='+';currentAnswer=BigInt(a+b);}
+    else{
+      op='−';
+      if(a<b){const t=a;a=b;b=t;}
+      currentAnswer=BigInt(a-b);
+    }
+  }else{
+    if(isAdd){
+      const big=getRandomInt(Math.floor(0.75*L)+1,L);
+      const small=getRandomInt(Math.floor(0.4*L)+1,big);
+      a=Math.random()<0.5?big:small;
+      b=(a===big)?small:big;
+      op='+';currentAnswer=BigInt(big+small);
+    }else{
+      const minuend=getRandomInt(Math.floor(0.75*L)+1,L);
+      const subMax=Math.ceil(minuend*0.8)-1;
+      const subtrahend=getRandomInt(Math.floor(0.2*L)+1,subMax);
+      a=minuend;b=subtrahend;op='−';currentAnswer=BigInt(minuend-subtrahend);
+    }
+  }
+  currentProblem=a+' '+op+' '+b;
+}
+
+function generateMul(stage){
+  const range=getMulRange(stage);
+  const a=getMulFactor(range.min,range.max);
+  const b=getMulFactor(range.min,range.max);
+  currentProblem=a+' × '+b;
+  currentAnswer=BigInt(a)*BigInt(b);
+}
+
+function updateDifficultyLabel(stage){
+  let text,color;
+  if(stage<=30){ text='简单';color='#4caf50'; }
+  else if(stage<=50){ text='中等';color='#ff9800'; }
+  else if(stage<=100){ text='困难';color='#ff5722'; }
+  else{ text='？？？';color='#8b0000'; }
+  difficultyText.textContent=text;
+  difficultyText.style.color=color;
+  if(stage>100){
+    difficultyText.style.textShadow='0 0 14px rgba(180,0,0,0.9)';
+    difficultyText.style.letterSpacing='8px';
+  }else{
+    difficultyText.style.textShadow='none';
+    difficultyText.style.letterSpacing='normal';
+  }
+}
+
+/* ================= 判题 ================= */
+function checkAnswer(){
+  if(!gameActive || answerLocked) return;
+  if(currentInput==="") return;             // 空输入直接忽略，防止连点重复判题
+  const elapsed=(Date.now()-startTime)/1000;
+  let correct;
+  if(currentMode==='calc'){
+    let u;
+    try{ u=BigInt(currentInput); }catch(e){ return; }
+    correct=(u===currentAnswer);
+  }else{
+    correct=(currentInput===currentAnswer);  // '<' '=' '>'
+  }
+
+  if(correct){
+    answerLocked=true;                       // 立刻上锁，防止连点重复得分/回血
+    streak++;
+    life=Math.min(MAX_LIFE,life+40/3);
+    const a=currentStage;
+    const b=Math.max(15,streak+20);
+    const c=Math.ceil((5-elapsed*0.2)*10)/10;
+    score+=Math.ceil(a*b*c);
+    currentStage++;
+
+    if((currentStage-1)%10===0){
+      spawnStars();
+      showMilestone('第 '+(currentStage-1)+' 关达成 ✦');
+      catPraise();                             // 每过10关猫咪冒夸奖气泡
+    }
+
+    problemText.style.color='#4caf50';
+    setTimeout(()=>{
+      problemText.style.color='#ffeb3b';
+      generateProblem();
+      answerLocked=false;                    // 新题就绪后解锁
+    },300);
+  }else{
+    streak-=2;
+    catFocus();                                // 答错时猫咪冒提醒气泡
+    if(currentMode==='compare'){
+      // 比大小：答错立即进下一关（本题 0 分），上锁防连点误触
+      life=Math.max(0,life-21.6);            // v8.4：比大小错血翻倍（10.8→21.6）
+      currentInput="";updateInputDisplay();
+      if(life<=0){endGame();return;}        // 本题未通过，关号不增加
+      currentStage++;
+      problemText.style.color='#f44336';
+      answerLocked=true;
+      setTimeout(()=>{
+        problemText.style.color='#ffeb3b';
+        generateProblem();
+        answerLocked=false;
+      },280);
+    }else{
+      life=Math.max(0,life-3);
+      currentInput="";updateInputDisplay();
+      problemText.style.color='#f44336';
+      setTimeout(()=>{problemText.style.color='#ffeb3b';},300);
+      if(life<=0){endGame();return;}
+    }
+  }
+  updateUI();
+}
+
+function updateUI(){
+  stageNum.textContent=currentStage;
+  lifeValue.textContent=Math.round(life/MAX_LIFE*100);
+  lifeFill.style.width=(life/MAX_LIFE*100)+'%';
+  scoreValue.textContent=Math.round(score);
+}
+
+/* ================= 特效 ================= */
+function spawnStars(){
+  const count=34;
+  for(let i=0;i<count;i++){
+    const s=document.createElement('div');
+    s.className='star-particle';
+    s.textContent=Math.random()<0.65?'★':'✦';
+    const edge=Math.floor(Math.random()*4);
+    if(edge===0){s.style.left=(Math.random()*100)+'%';s.style.top='0%';}
+    else if(edge===1){s.style.left=(Math.random()*100)+'%';s.style.top='98%';}
+    else if(edge===2){s.style.left='0%';s.style.top=(Math.random()*100)+'%';}
+    else{s.style.left='98%';s.style.top=(Math.random()*100)+'%';}
+    s.style.fontSize=(14+Math.random()*22)+'px';
+    s.style.animationDelay=(Math.random()*0.35)+'s';
+    starOverlay.appendChild(s);
+    setTimeout(()=>s.remove(),2600);
+  }
+}
+function showMilestone(text){
+  milestoneToast.textContent=text;
+  milestoneToast.classList.add('show');
+  clearTimeout(showMilestone._t);
+  showMilestone._t=setTimeout(()=>milestoneToast.classList.remove('show'),1800);
+}
+
+/* ================= 结束 ================= */
+function endGame(){
+  gameActive=false;
+  clearInterval(lifeInterval);
+  recordStage();                           // 记录本次到达关卡，供下局计算起点（按模式）
+  finalStage.textContent=currentStage-1;
+  finalScore.textContent=Math.round(score);
+  // v7.0 金币结算：达到关卡 currentStage，本局起点 startStage
+  const reached=currentStage;
+  const earned=calcCoinsEarned(reached,startStage);
+  addCoins(earned);
+  renderCoins();
+  const coinEarnedEl=document.getElementById('coinEarned');
+  if(coinEarnedEl) coinEarnedEl.textContent=earned;
+  if(currentMode==='calc'){
+    percentileRow.style.display='';
+    progressRow.style.display='';
+    const pct=calculatePercentile(score);
+    percentile.textContent=pct.toFixed(2);
+    progressFill.style.width=pct+'%';
+  }else{
+    // 比大小模式不显示击败百分比（无参考数据）
+    percentileRow.style.display='none';
+    progressRow.style.display='none';
+  }
+  gameScreen.style.display='none';
+  resultScreen.style.display='flex';
+}
+
+/* ================= 工具 ================= */
+function getRandomInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+
+/* ================================================================
+   秘境挑战 · 出题引擎（纯逻辑，不依赖 DOM）
+   ================================================================ */
+// 敌方血量加成表 [关卡] = 血量加成%；1-5 关 0。血量加成规则不变。
+const SECRET_BONUS_TABLE={
+  6:10,7:20,8:30,9:40,10:50,
+  11:70,12:90,13:110,14:130,15:150,
+  16:165,17:182,18:200,19:220,20:242,
+  21:266,22:293,23:322,24:354,25:389,
+  26:428,27:471,28:518,29:570,30:627,
+  31:690,32:759,33:835,34:919,35:1011,
+  36:1112,37:1223,38:1345,39:1480,40:1628,41:1791
+};
+// 伤害加成：1-5关 0；6-30关 = 血量加成的1/10向下取整；31/32/33/34 = 70/80/90/100；35关起每关+20，封顶400
+function secretDmgBonus(k){
+  if(k<=5) return 0;
+  if(k<=30) return Math.floor((SECRET_BONUS_TABLE[k]||0)/10);
+  if(k<=34) return [70,80,90,100][k-31];
+  return Math.min(400, 100+(k-34)*20);
+}
+function secretBonuses(k){
+  let hp;
+  if(k<=5) hp=0;
+  else if(k<=41) hp=SECRET_BONUS_TABLE[k]||0;
+  else { hp=1791; for(let i=42;i<=k;i++) hp=Math.min(3900,Math.round(hp*1.04)); }
+  return {hp:hp,dmg:secretDmgBonus(k)};        // 血量上限 3900%，伤害上限 400%
+}
+// 第 k 关第 i 题的隐藏分：前20题 k,2k,…,20k；之后每题 +max(1,floor(0.3k))
+function secretHiddenScore(k,i){
+  const step=Math.max(1,Math.floor(0.3*k));
+  return i<=20 ? i*k : 20*k+(i-20)*step;
+}
+// 隐藏分 → 答案数值上限
+function secretAnswerCap(h){
+  const bands=[
+    [10,10],[25,20],[50,50],[100,100],[150,200],[200,300],[250,500],
+    [300,700],[350,1000],[400,1500],[500,2000],[600,2800],[700,4000],
+    [800,6000],[900,8000],[1000,10000],[1150,15000],[1300,25000],
+    [1500,40000],[1750,65000],[2000,100000],[2250,200000],
+    [2500,400000],[2750,800000]
+  ];
+  for(const b of bands) if(h<=b[0]) return b[1];
+  return 800000*Math.pow(2,Math.floor((h-2501)/250));  // 每多 250 翻一倍
+}
+// 隐藏分 → 可用题型（①~⑦）
+function secretAllowedTypes(h){
+  if(h<=200) return [1];
+  if(h<=500) return [1,2,3];
+  if(h<=1000) return [2,3,4,6];
+  return [2,3,5,7];
+}
+function secretDigitAt(n,p){ return Math.floor(Math.round(Math.abs(n))/Math.pow(10,p))%10; }
+function secretDigitName(p){ return ['个','十','百','千','万','十万','百万'][p]||('10^'+p); }
+function secretReplaceDigit(n,pos,d){
+  const pow=Math.pow(10,pos);
+  return n-(secretDigitAt(n,pos)*pow)+d*pow;
+}
+function secretFireNumber(n,pos){
+  const pow=Math.pow(10,pos);
+  const high=Math.floor(n/(pow*10));
+  const low=n%pow;
+  // 省略前导零：最高位被遮时直接以🔥开头，避免 0🔥6 这类难看显示
+  const head=high>0?String(high):'';
+  const tail=pos>0?String(low).padStart(pos,'0'):'';
+  return head+'🔥'+tail;
+}
+// 特殊题：枚举被遮住那一位 0-9 的所有答案，挑 1-4 条"答案某位是几"提示，保证唯一
+function secretGreedHints(ans,list){
+  const minD=String(Math.min.apply(null,list.map(x=>x.ans))).length;
+  const pos=[];
+  for(let p=0;p<minD;p++) pos.push(p);
+  for(let i=pos.length-1;i>0;i--){ const j=getRandomInt(0,i); const t=pos[i];pos[i]=pos[j];pos[j]=t; }
+  let cands=list.slice();
+  const chosen=[];
+  while(cands.length>1 && chosen.length<4){
+    let best=null,bestRemain=Infinity;
+    for(const p of pos){
+      if(chosen.some(c=>c.p===p)) continue;
+      const v=secretDigitAt(ans,p);
+      const remain=cands.filter(c=>secretDigitAt(c.ans,p)===v);
+      if(remain.length<cands.length && remain.length<bestRemain){ best={p:p,v:v}; bestRemain=remain.length; }
+    }
+    if(!best) return null;
+    chosen.push(best);
+    cands=cands.filter(c=>secretDigitAt(c.ans,best.p)===best.v);
+  }
+  if(cands.length!==1 || cands[0].ans!==ans) return null;
+  return chosen.sort((a,b)=>b.p-a.p);
+}
+function secretFactorPairs(V){
+  const out=[];
+  for(let i=2;i*i<=V;i++) if(V%i===0) out.push([i,V/i]);
+  return out;
+}
+// 构造一道特殊数题，返回 {text,hints,answer} 或 null
+// 隐藏位在 0(个)/1(十)/2(百) 中随机，让🔥不只出现在个位
+function secretMakeSpecial(type,floor,cap){
+  for(let attempt=0;attempt<900;attempt++){
+    const V=getRandomInt(floor,cap);
+    let a,b,c,text,calc,target,POS;
+    if(type===4){
+      if(V<12) continue;
+      b=getRandomInt(10,Math.min(999,V-1)); a=V-b;
+      if(a<1) continue;
+      target=b; POS=getRandomInt(0,String(b).length-1);
+      text=a+' + '+secretFireNumber(b,POS);
+      calc=d=>a+secretReplaceDigit(b,POS,d);
+    }else if(type===5){
+      const pairs=secretFactorPairs(V).filter(p=>p.some(x=>x>=10));
+      if(!pairs.length) continue;
+      const pr=pairs[getRandomInt(0,pairs.length-1)];
+      a=pr[0]; b=pr[1];
+      if(b<10){ const t=a;a=b;b=t; }
+      target=b; POS=getRandomInt(0,String(b).length-1);
+      text=a+' × '+secretFireNumber(b,POS);
+      calc=d=>a*secretReplaceDigit(b,POS,d);
+    }else if(type===6){
+      if(V<14) continue;
+      c=getRandomInt(10,Math.min(999,V-4));
+      const pairs=secretFactorPairs(V-c);
+      if(!pairs.length) continue;
+      const pr=pairs[getRandomInt(0,pairs.length-1)];
+      a=pr[0]; b=pr[1];
+      target=c; POS=getRandomInt(0,String(c).length-1);
+      text=a+' × '+b+' + '+secretFireNumber(c,POS);
+      calc=d=>a*b+secretReplaceDigit(c,POS,d);
+    }else{ // type 7
+      b=getRandomInt(10,Math.min(999,Math.floor((V-1)/2)));
+      if(b<10) continue;
+      const aMax=Math.floor((V-1)/b);
+      if(aMax<2) continue;
+      a=getRandomInt(2,aMax); c=V-a*b;
+      if(c<1) continue;
+      target=b; POS=getRandomInt(0,String(b).length-1);
+      text=a+' × '+secretFireNumber(b,POS)+' + '+c;
+      calc=d=>a*secretReplaceDigit(b,POS,d)+c;
+    }
+    const map={};
+    const originalDigit=secretDigitAt(target,POS);
+    for(let d=0;d<=9;d++){ const v=calc(d); map[v]=(map[v]||0)+1; }
+    const list=Object.keys(map).map(Number);
+    if(list.length<2) continue;
+    const ans=calc(originalDigit);
+    if(ans<floor*0.5||ans>cap*2) continue;
+    const hints=secretGreedHints(ans,list.map(x=>({ans:x})));
+    if(!hints) continue;
+    return {text:text,hints:hints,answer:ans,special:true};
+  }
+  return null;
+}
+// 生成一道秘境题。noSpecialCount 为"连续未出特殊数"计数，会被原地更新。
+function generateSecretProblem(k,i,noSpecialState){
+  const h=secretHiddenScore(k,i);
+  const capBase=secretAnswerCap(h);
+  const floorBase=Math.max(1,Math.round(capBase*0.3));
+  const wantSpecialCheck=h>=501;
+  let wantSpecial=false;
+  if(wantSpecialCheck){
+    wantSpecial=(noSpecialState.v>=2)||Math.random()<0.4;
+  }
+  let types=secretAllowedTypes(h);
+  const specialTypes=types.filter(t=>t===4||t===5||t===6||t===7);
+  if(wantSpecial && specialTypes.length) types=specialTypes;
+  else wantSpecial=false;
+  const type=types[getRandomInt(0,types.length-1)];
+  const cap=capBase;
+  const floor=Math.max(1,Math.round(cap*0.3));
+  let q=null;
+  if(wantSpecial){
+    // 依次尝试全部可用特殊题型（优先提示更容易唯一的加法/加乘型），
+    // 保证「连续两题未出则下一题必出」不会因某一种题型构造失败而落空。
+    const order=specialTypes.slice().sort((a,b)=>{
+      const rank=x=>(x===4||x===6)?0:1;
+      return rank(a)-rank(b);
+    });
+    for(const st of order){
+      // ④⑥ 特殊数位于加数位置，遮任意位后候选仍集中，上限放宽到 0.4；⑤⑦ 维持 0.1
+      const ratio=(st===4||st===6)?0.4:0.1;
+      const spCap=Math.max(10,Math.round(capBase*ratio));
+      const spFloor=Math.max(1,Math.round(spCap*0.3));
+      q=secretMakeSpecial(st,spFloor,spCap);
+      if(q){ noSpecialState.v=0; return q; }
+    }
+    // 所有特殊题型均失败：退回普通题，保底计数保留，下一题继续强制
+    types=secretAllowedTypes(h);
+  }
+  if(noSpecialState.v!==undefined && wantSpecialCheck && !wantSpecial) noSpecialState.v++;
+  const t2=types[getRandomInt(0,types.length-1)];
+  const V=getRandomInt(floor,cap);
+  if(t2===1){
+    const a=getRandomInt(1,V-1);
+    q={text:a+' + '+(V-a),hints:null,answer:V,special:false};
+  }else if(t2===2){
+    let pairs=secretFactorPairs(V);
+    if(!pairs.length){ q={text:'2 × '+Math.round(V/2),hints:null,answer:2*Math.round(V/2),special:false}; }
+    else{ const pr=pairs[getRandomInt(0,pairs.length-1)]; q={text:pr[0]+' × '+pr[1],hints:null,answer:V,special:false}; }
+  }else{ // t2 === 3
+    let a=2,b=2,c=V-4;
+    for(let z=0;z<200;z++){
+      a=getRandomInt(2,Math.max(2,Math.floor(Math.sqrt(V))+2));
+      b=getRandomInt(2,Math.max(2,Math.floor(V/a)));
+      c=V-a*b;
+      if(c>=1) break;
+    }
+    if(c<1){ a=2;b=2;c=V-4; }
+    q={text:a+' × '+b+' + '+c,hints:null,answer:V,special:false};
+  }
+  return q;
+}
+// 关卡分数线：need=全对所需题数；最低分=全对且被动掉血到丝血；满分=每题5秒
+function secretStarLines(k){
+  const b=secretBonuses(k);
+  const enemyHP=Math.round(1000*(1+b.hp/100));
+  const need=Math.ceil(enemyHP/500);
+  const mul=1+b.dmg/100;
+  const tMin=(1000+250*need-1)/(5*mul*need);
+  const minScore=need*1000/(3+tMin);
+  const maxScore=need*125;
+  return {enemyHP:enemyHP,need:need,minScore:minScore,twoScore:(minScore+maxScore)/2,maxScore:maxScore,bonus:b};
+}
+
+document.addEventListener('keydown',(e)=>{
+  if(!gameActive||answerLocked) return;
+  const k=e.key;
+  if(currentMode==='compare'){
+    if(k==='<'||k==='='||k==='>'){ e.preventDefault(); currentInput=k; updateInputDisplay(); checkAnswer(); }
+  }else{
+    if(k>='0'&&k<='9') handleCalcKey(k);
+    else if(k==='Backspace'||k==='Delete'){e.preventDefault();handleCalcKey('删除');}
+    else if(k==='Enter') handleCalcKey('提交');
+  }
+});
+
+/* ================= 秘境挑战 · 战斗系统 ================= */
+const SECRET_SAVE_KEY='mathbrain_secret_v1';
+const SECRET_MAX_LEVEL=99;
+const sec={
+  select:document.getElementById('secretSelectScreen'),
+  battle:document.getElementById('secretBattleScreen'),
+  result:document.getElementById('secretResultScreen'),
+  grid:document.getElementById('secretGrid'),
+  levelTitle:document.getElementById('secretLevelTitle'),
+  score:document.getElementById('secretScore'),
+  problem:document.getElementById('secretProblem'),
+  hints:document.getElementById('secretHints'),
+  input:document.getElementById('secretInputDisplay'),
+  bonus:document.getElementById('secretBonus'),
+  passive:document.getElementById('secretPassive'),
+  heroFill:document.getElementById('heroHpFill'),
+  heroText:document.getElementById('heroHpText'),
+  monFill:document.getElementById('monsterHpFill'),
+  monText:document.getElementById('monsterHpText'),
+  hero:document.getElementById('heroFighter'),
+  monster:document.getElementById('monsterFighter'),
+  keyboard:document.getElementById('secretKeyboard'),
+  rTitle:document.getElementById('secretResultTitle'),
+  rStars:document.getElementById('secretResultStars'),
+  rStats:document.getElementById('secretResultStats'),
+  rLines:document.getElementById('secretResultLines')
+};
+let secretState=null,secretTick=null;
+
+function loadSecretSaves(){
+  try{
+    let raw=null;
+    if(window.AndroidStore&&window.AndroidStore.getHistory) raw=window.AndroidStore.getHistory(SECRET_SAVE_KEY);
+    if(!raw) raw=localStorage.getItem(SECRET_SAVE_KEY);
+    const o=raw?JSON.parse(raw):null;
+    return (o&&typeof o==='object'&&!Array.isArray(o))?o:{};
+  }catch(e){return {};}
+}
+function saveSecretSaves(o){
+  const s=JSON.stringify(o);
+  try{ if(window.AndroidStore&&window.AndroidStore.setHistory) window.AndroidStore.setHistory(SECRET_SAVE_KEY,s); }catch(e){}
+  try{ localStorage.setItem(SECRET_SAVE_KEY,s); }catch(e){}
+}
+function secretStarHTML(n){
+  let s='';
+  for(let i=0;i<3;i++) s+='<span class="'+(i<n?'on':'')+'">★</span>';
+  return s;
+}
+function secretStarsFor(v,lines){
+  if(v>=lines.maxScore) return 3;
+  if(v>=lines.twoScore) return 2;
+  if(v>=lines.minScore) return 1;
+  return 0;
+}
+function renderSecretGrid(){
+  const saves=loadSecretSaves();
+  let html='';
+  for(let k=1;k<=SECRET_MAX_LEVEL;k++){
+    const rec=saves[k]||{best:0,stars:0};
+    html+='<div class="secret-cell '+(rec.stars>0?'cleared':'')+'" data-k="'+k+'">'+
+      '<div class="lv">第'+k+'关</div><div class="st">'+secretStarHTML(rec.stars)+'</div>'+
+      '<div class="bs">'+(rec.best>0?(Math.round(rec.best)+'分'):'未挑战')+'</div></div>';
+  }
+  sec.grid.innerHTML=html;
+  sec.grid.querySelectorAll('.secret-cell').forEach(el=>{
+    el.addEventListener('click',()=>secretStartLevel(Number(el.dataset.k)));
+  });
+}
+function secretShow(which){
+  startScreen.style.display='none';gameScreen.style.display='none';resultScreen.style.display='none';
+  sec.select.style.display='none';sec.battle.style.display='none';sec.result.style.display='none';
+  // v8.2：秘境战斗过程中不显示持有的货币（金币/钥匙），其余页面正常显示
+  const coinBadge=document.querySelector('.coin-badge');
+  if(coinBadge) coinBadge.style.display=(which==='battle')?'none':'flex';
+  const petEl=document.getElementById('petScreen'); if(petEl) petEl.style.display='none';
+  const rankEl=document.getElementById('rankScreen'); if(rankEl) rankEl.style.display='none';
+  if(which==='menu'){ startScreen.style.display='flex'; renderCoins(); }
+  else if(which==='select'){ sec.select.style.display='flex'; renderSecretGrid(); }
+  else if(which==='battle') sec.battle.style.display='flex';
+  else if(which==='result') sec.result.style.display='flex';
+  else if(which==='pet'){ petEl.style.display='flex'; renderPet(); renderCoins(); }
+  else if(which==='rank'){ rankEl.style.display='flex'; renderRank(); renderCoins(); }
+}
+function secretInitKeyboard(){
+  sec.keyboard.innerHTML='';
+  ['1','2','3','4','5','6','7','8','9','删除','0','提交'].forEach(t=>{
+    const b=document.createElement('button');
+    b.className='key '+(t==='删除'?'key-del':(t==='提交'?'key-submit':''));
+    b.textContent=t;
+    b.addEventListener('click',()=>secretKey(t));
+    sec.keyboard.appendChild(b);
+  });
+}
+function secretKey(t){
+  const s=secretState;
+  if(!s||!s.active||s.locked) return;
+  if(t==='删除') s.input=s.input.slice(0,-1);
+  else if(t==='提交'){ secretSubmit(); return; }
+  else s.input+=t;
+  sec.input.textContent=s.input||' ';
+}
+function secretStartLevel(k){
+  const lines=secretStarLines(k);
+  // v7.0：本局开始时锁定宠物心情与技能状态
+  const v7=applyDailyDecay(loadV7(),Date.now());
+  saveV7(v7);
+  const mood=v7.mood;
+  const reduction=moodBurnReduction(mood);
+  secretState={
+    level:k,active:true,locked:false,input:'',idx:0,
+    playerHP:1000,enemyHP:lines.enemyHP,enemyMax:lines.enemyHP,
+    score:0,correct:0,wrong:0,qStart:0,q:null,
+    noSpecial:{v:0},lines:lines,startedAt:Date.now(),
+    mood:mood,burnReduction:reduction,
+    steadfastReady:hasSteadfast(mood),   // 不屈意志：本局可用一次
+    shieldReady:hasHardShield(mood),     // 硬核护盾：本局首次挨刀免伤
+    steadfastActive:false,steadfastTimer:null
+  };
+  clearSteadfastVisual();
+  sec.levelTitle.textContent='第 '+k+' 关 · 炎魔';
+  sec.bonus.textContent='敌方加成：🛡+'+lines.bonus.hp+'%　🗡+'+lines.bonus.dmg+'%';
+  const rawDps=5*(1+lines.bonus.dmg/100);
+  const effDps=Math.max(0,rawDps-reduction);
+  sec.passive.textContent='🔥 炽热烈焰：-'+rawDps.toFixed(1)+' / 秒'
+    +(reduction>0?'　🐈 猫咪减免 -'+reduction.toFixed(1)+' → -'+effDps.toFixed(1)+' / 秒':'');
+  secretShow('battle');
+  secretInitKeyboard();
+  secretUpdateHP();
+  secretNextProblem();
+  if(secretTick) clearInterval(secretTick);
+  secretTick=setInterval(secretBurn,100);
+}
+// 不屈意志：进入 5 秒不死状态（血条保持 0，角色与猫发光闪烁）
+function triggerSteadfast(){
+  const s=secretState;
+  if(!s||!s.steadfastReady||s.steadfastActive) return false;
+  s.steadfastReady=false;
+  s.steadfastActive=true;
+  s.playerHP=0;
+  if(sec.hero) sec.hero.classList.add('steadfast-glow');
+  const bcat=document.getElementById('battleCat');
+  if(bcat) bcat.classList.add('steadfast-glow');
+  clearTimeout(s.steadfastTimer);
+  s.steadfastTimer=setTimeout(()=>{
+    // 5 秒到仍未回血 → 死亡
+    if(s==secretState && s.steadfastActive && s.active){
+      s.steadfastActive=false;
+      clearSteadfastVisual();
+      secretFinish(false);
+    }
+  },5000);
+  return true;
+}
+function clearSteadfastVisual(){
+  if(sec&&sec.hero) sec.hero.classList.remove('steadfast-glow');
+  const bcat=document.getElementById('battleCat');
+  if(bcat) bcat.classList.remove('steadfast-glow');
+}
+// 恢复 250 血（答对时），若处于不屈意志则解除保护继续游戏
+function recoverFromSteadfast(){
+  const s=secretState;
+  if(!s||!s.steadfastActive) return;
+  s.steadfastActive=false;
+  clearTimeout(s.steadfastTimer);
+  clearSteadfastVisual();
+}
+function secretBurn(){
+  const s=secretState;
+  if(!s||!s.active) return;
+  if(s.steadfastActive){ secretUpdateHP(); return; }   // 不屈意志期间灼烧不致死，血维持0
+  const rawDps=5*(1+s.lines.bonus.dmg/100);
+  const dps=Math.max(0,rawDps-s.burnReduction);
+  s.playerHP=Math.max(0,s.playerHP-dps*0.1);
+  secretUpdateHP();
+  if(s.playerHP<=0){
+    // 生命归零：先看不屈意志能否触发
+    if(!triggerSteadfast()) secretFinish(false);
+  }
+}
+// 算式强制单行：按中间区域实际宽度自动缩放字号，避免长算式折行
+function secretFitProblem(){
+  const el=sec.problem, box=el.parentElement;
+  if(!box) return;
+  el.style.fontSize='';
+  // v8.2：扣除 combat-mid 左右 padding，给算式两侧留出安全间距，避免数字撞到战士/妖怪
+  const cs=getComputedStyle(box);
+  const padX=(parseFloat(cs.paddingLeft)||0)+(parseFloat(cs.paddingRight)||0);
+  const avail=Math.max(60,(box.clientWidth||420)-padX-8);
+  const w=el.scrollWidth||0;
+  if(w>avail) el.style.fontSize=Math.max(11,Math.floor(28*avail/w))+'px';
+}
+function secretNextProblem(){
+  const s=secretState;
+  if(!s||!s.active) return;
+  s.idx++;
+  const q=generateSecretProblem(s.level,s.idx,s.noSpecial);
+  s.q=q; s.qStart=performance.now(); s.input='';
+  sec.input.textContent=' ';
+  sec.problem.innerHTML=q.text.replace(/🔥/g,'<span class="fire">🔥</span>');
+  secretFitProblem();
+  sec.hints.textContent=(q.hints&&q.hints.length)
+    ? '提示：'+q.hints.map((h,i)=>['①','②','③','④'][i]+secretDigitName(h.p)+'位是'+h.v).join('　')
+    : '';
+  s.locked=false;
+}
+function secretUpdateHP(){
+  const s=secretState; if(!s) return;
+  sec.heroFill.style.width=Math.max(0,s.playerHP/1000*100)+'%';
+  sec.heroText.textContent=Math.ceil(s.playerHP)+' / 1000';
+  sec.monFill.style.width=Math.max(0,s.enemyHP/s.enemyMax*100)+'%';
+  sec.monText.textContent=Math.ceil(s.enemyHP)+' / '+s.enemyMax;
+  sec.score.textContent=Math.round(s.score)+' 分';
+}
+// 抛体运动：x=x0+vx·t，y=y0+vy·t+½gt²（g 向下），在 T 秒命中目标
+function secretThrow(fromId,toId,icon,dmg,color,onHit){
+  const a=document.getElementById(fromId).getBoundingClientRect();
+  const b=document.getElementById(toId).getBoundingClientRect();
+  const x0=a.left+a.width/2,y0=a.top+a.height/2;
+  const x1=b.left+b.width/2,y1=b.top+b.height/2;
+  const el=document.createElement('div');
+  el.className='projectile';el.textContent=icon;
+  el.style.left=x0+'px';el.style.top=y0+'px';
+  document.body.appendChild(el);
+  const T=0.62,G=1500;
+  const vx=(x1-x0)/T, vy=(y1-y0-0.5*G*T*T)/T;
+  const t0=performance.now();
+  function frame(now){
+    const t=(now-t0)/1000;
+    if(t>=T){
+      el.remove();
+      const r=document.getElementById(toId).getBoundingClientRect();
+      const f=document.createElement('div');
+      f.className='dmg-float';f.textContent='-'+Math.round(dmg);f.style.color=color;
+      f.style.left=(r.left+r.width/2)+'px';f.style.top=r.top+'px';
+      document.body.appendChild(f);
+      setTimeout(()=>f.remove(),1000);
+      const target=document.getElementById(toId);
+      target.classList.remove('hit-flash');void target.offsetWidth;target.classList.add('hit-flash');
+      if(onHit) onHit();
+      return;
+    }
+    el.style.left=(x0+vx*t)+'px';
+    el.style.top=(y0+vy*t+0.5*G*t*t)+'px';
+    el.style.transform='translate(-50%,-50%) rotate('+(t/T*720)+'deg)';
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+function secretSubmit(){
+  const s=secretState;
+  if(!s||!s.active||s.locked||!s.input) return;
+  s.locked=true;
+  const elapsed=(performance.now()-s.qStart)/1000;
+  let correct=false;
+  try{ correct=(BigInt(s.input)===BigInt(s.q.answer)); }catch(e){}
+  if(correct){
+    s.score+=1000/(3+elapsed);              // 仅答对计分，答错 0 分
+    s.correct++;
+    // 不屈意志期间答对：恢复 250 血、解除保护、继续游戏
+    if(s.steadfastActive){
+      recoverFromSteadfast();
+      s.playerHP=250;
+    }else{
+      s.playerHP=Math.min(1000,s.playerHP+250);   // 与投弹同时回血
+    }
+    secretUpdateHP();
+    secretThrow('heroFighter','monsterFighter','💣',500,'#ffd54f',()=>{
+      s.enemyHP=Math.max(0,s.enemyHP-500);
+      secretUpdateHP();
+      if(s.enemyHP<=0){ secretFinish(true); return; }
+      secretNextProblem();
+    });
+  }else{
+    s.wrong++;
+    const dmg=200*(1+s.lines.bonus.dmg/100);
+    secretThrow('monsterFighter','heroFighter','🔪',dmg,'#ff6b6b',()=>{
+      // 硬核护盾：本局第一次挨刀免伤（优先于不屈意志判定）
+      if(s.shieldReady){
+        s.shieldReady=false;
+        if(sec.hero){ sec.hero.classList.remove('shield-flash'); void sec.hero.offsetWidth; sec.hero.classList.add('shield-flash'); }
+        secretNextProblem();
+        return;
+      }
+      // 不屈意志期间挨刀 → 依旧死亡
+      if(s.steadfastActive){
+        s.steadfastActive=false;
+        clearTimeout(s.steadfastTimer);
+        clearSteadfastVisual();
+        secretFinish(false);
+        return;
+      }
+      s.playerHP=Math.max(0,s.playerHP-dmg);
+      secretUpdateHP();
+      if(s.playerHP<=0){
+        // 挨刀归零也触发不屈意志；若无则直接失败
+        // v8.5 修复：触发成功后必须解锁并出下一题（secretNextProblem 是唯一 s.locked=false 处），
+        // 否则提交时置的 s.locked=true 永远不解除，玩家无法答题只能等 5 秒 timer 死亡
+        if(triggerSteadfast()){
+          secretNextProblem();
+        }else{
+          secretFinish(false);
+        }
+        return;
+      }
+      secretNextProblem();
+    });
+  }
+  sec.score.textContent=Math.round(s.score)+' 分';
+}
+function secretFinish(win){
+  const s=secretState;
+  if(!s||!s.active) return;
+  s.active=false;
+  s.steadfastActive=false;
+  clearTimeout(s.steadfastTimer);
+  clearSteadfastVisual();
+  clearInterval(secretTick);
+  const final=Math.round(s.score);
+  const stars=win?secretStarsFor(final,s.lines):0;
+  let keyGot=0;
+  if(win){
+    const saves=loadSecretSaves();
+    const cur=saves[s.level]||{best:0,stars:0};
+    saves[s.level]={best:Math.max(cur.best,final),stars:Math.max(cur.stars,stars)};
+    saveSecretSaves(saves);
+    keyGot=claimSecretKey(s.level);          // v8.0：40关起每关首次通关发1钥匙
+  }
+  window._lastKeyGot=keyGot;
+  sec.rTitle.textContent=win?'讨伐成功':'讨伐失败';
+  sec.rTitle.className='sr-title'+(win?'':' lose');
+  sec.rStars.innerHTML=secretStarHTML(stars);
+  const used=((Date.now()-s.startedAt)/1000).toFixed(1);
+  sec.rStats.innerHTML='本次得分：<b>'+final+'</b><br>答对 '+s.correct+' 题 · 答错 '+s.wrong+' 题 · 用时 '+used+' 秒'
+    +(keyGot?'<br><span style="color:#ffe680;">🗝️ 首次通关奖励：钥匙 +1</span>':'');
+  sec.rLines.innerHTML='⭐ '+s.lines.minScore.toFixed(0)+' 分　⭐⭐ '+s.lines.twoScore.toFixed(0)+' 分　⭐⭐⭐ '+s.lines.maxScore.toFixed(0)+' 分<br>妖怪血量 '+s.enemyMax+' · 需 '+s.lines.need+' 个炸弹'+(win?'':'（未通关不计成绩）');
+  secretShow('result');
+}
+document.getElementById('modeSecret').addEventListener('click',()=>secretShow('select'));
+document.getElementById('secretBackMenu').addEventListener('click',()=>secretShow('menu'));
+document.getElementById('secretBackList').addEventListener('click',()=>{
+  if(secretState){ secretState.active=false; clearTimeout(secretState.steadfastTimer); }
+  clearInterval(secretTick);
+  clearSteadfastVisual();
+  secretShow('select');
+});
+document.getElementById('secretRetryBtn').addEventListener('click',()=>secretStartLevel(secretState.level));
+document.getElementById('secretResultBack').addEventListener('click',()=>secretShow('select'));
+document.addEventListener('keydown',(e)=>{
+  const s=secretState;
+  if(!s||!s.active||s.locked) return;
+  const k=e.key;
+  if(k>='0'&&k<='9') secretKey(k);
+  else if(k==='Backspace'||k==='Delete'){ e.preventDefault(); secretKey('删除'); }
+  else if(k==='Enter') secretKey('提交');
+});
+
+/* ================= v7.0 我的宠物 ================= */
+const petEl={
+  screen:document.getElementById('petScreen'),
+  cat:document.getElementById('petCat'),
+  mood:document.getElementById('moodValue'),
+  moodMax:document.getElementById('moodMax'),
+  fill:document.getElementById('moodFill'),
+  levelInfo:document.getElementById('petLevelInfo'),
+  skills:document.getElementById('petSkills'),
+  feed:document.getElementById('feedBtn'),
+  feed10:document.getElementById('feed10Btn'),
+  upgrade:document.getElementById('upgradeBtn'),
+  msg:document.getElementById('petMsg')
+};
+function petMsg(text){
+  if(!petEl.msg) return;
+  petEl.msg.textContent=text;
+  clearTimeout(petMsg._t);
+  petMsg._t=setTimeout(()=>{ if(petEl.msg) petEl.msg.textContent=''; },2400);
+}
+function renderPet(){
+  if(!petEl.screen) return;
+  const v7=applyDailyDecay(loadV7(),Date.now());
+  saveV7(v7);
+  const cfg=petCfgFor(v7.petLevel);
+  if(petEl.mood) petEl.mood.textContent=Math.round(v7.mood);
+  if(petEl.moodMax) petEl.moodMax.textContent='/ '+cfg.m;
+  if(petEl.fill) petEl.fill.style.width=Math.min(100,Math.max(0,(v7.mood-PET_MIN_MOOD)/(cfg.m-PET_MIN_MOOD)*100))+'%';
+  if(petEl.levelInfo) petEl.levelInfo.textContent='等级 '+v7.petLevel+' · '+(cfg.k>0?('每日凌晨 3:00 衰减 '+cfg.k+'%'):'心情不再每日衰减')+' · 心情下限 '+PET_MIN_MOOD+' / 上限 '+cfg.m+' · 钥匙 🗝️ '+v7.keys;
+  if(petEl.skills){
+    const s=[];
+    s.push(hasSteadfast(v7.mood)?'<span class="pet-skill-on">✨ 不屈意志已解锁（生命归零时 5 秒不死）</span>':'🔒 不屈意志（心情达 8000 解锁）');
+    s.push(hasHardShield(v7.mood)?'<span class="pet-skill-on">🛡 硬核护盾已解锁（每局首次挨刀免伤）</span>':'🔒 硬核护盾（心情达 20000 解锁）');
+    petEl.skills.innerHTML=s.join('<br>');
+  }
+  if(petEl.upgrade){
+    if(cfg.price===null){ petEl.upgrade.textContent='已满级'; petEl.upgrade.disabled=true; }
+    else{
+      const cost='（'+cfg.price+' 🐈'+(cfg.keyPrice>0?' + '+cfg.keyPrice+' 🗝️':'')+'）';
+      petEl.upgrade.textContent='升级宠物'+cost;
+      petEl.upgrade.disabled=v7.coins<cfg.price || v7.keys<cfg.keyPrice;
+    }
+  }
+  if(petEl.feed) petEl.feed.disabled=v7.coins<10;
+  if(petEl.feed10) petEl.feed10.disabled=v7.coins<99;
+  renderCoins();
+}
+function petFeed(cost,gain){
+  const v7=applyDailyDecay(loadV7(),Date.now());
+  if(v7.coins<cost){ petMsg('金币不够啦～'); return; }
+  const cfg=petCfgFor(v7.petLevel);
+  if(v7.mood>=cfg.m){ petMsg('猫咪已经心情满格了！'); return; }
+  v7.coins-=cost;
+  v7.mood=clampMood(v7.mood+gain,v7.petLevel);
+  saveV7(v7);
+  renderPet();
+  petMsg('猫咪开心地吃掉了食物，心情 +'+gain+'！');
+}
+function petUpgrade(){
+  const v7=applyDailyDecay(loadV7(),Date.now());
+  const cfg=petCfgFor(v7.petLevel);
+  if(cfg.price===null){ petMsg('已经是满级啦！'); return; }
+  if(v7.coins<cfg.price){ petMsg('金币不够升级～'); return; }
+  if(v7.keys<cfg.keyPrice){ petMsg('钥匙不够升级～'); return; }
+  v7.coins-=cfg.price;
+  v7.keys-=cfg.keyPrice;
+  v7.petLevel+=1;
+  v7.mood=clampMood(v7.mood,v7.petLevel);
+  saveV7(v7);
+  renderPet();
+  petMsg('升级成功！现在是 '+v7.petLevel+' 级猫咪！');
+}
+if(petEl.feed) petEl.feed.addEventListener('click',()=>petFeed(10,20));   // v8.4：单次投喂心情 +5→+20
+if(petEl.feed10) petEl.feed10.addEventListener('click',()=>petFeed(99,200)); // v8.4：投喂×10 +50→+200（10×20）
+if(petEl.upgrade) petEl.upgrade.addEventListener('click',petUpgrade);
+document.getElementById('modePet').addEventListener('click',()=>secretShow('pet'));
+document.getElementById('petBackMenu').addEventListener('click',()=>secretShow('menu'));
+document.getElementById('rankEntryBtn').addEventListener('click',()=>secretShow('rank'));
+document.getElementById('rankBackBtn').addEventListener('click',()=>secretShow('pet'));
+
+/* ================= v8.0 全球排行榜（娱乐向，数据固定） ================= */
+// 总人数 n：由关卡人数分布反推（过40关及以上的 634083 人 = 前 0.6%）
+const RANK_N=105680504;
+// 固定前20名（用户指定）：心情值从 25680→25570，对应通关 97→90 关
+const RANK_TOP20=[
+  ['3972',25680],['3123',25670],['1904',25660],['8652',25650],['4478',25650],
+  ['3265',25630],['9013',25630],['6739',25630],['2580',25610],['7146',25610],
+  ['3892',25610],['5407',25610],['8264',25590],['1938',25590],['4675',25590],
+  ['9502',25590],['6281',25590],['3059',25570],['7814',25570],['2496',25570]
+];
+// 玩家名次（越小越强）：按用户给的分段公式
+function rankOf(mood,n){
+  n=n||RANK_N;
+  if(mood>=20200) return n*0.006;
+  if(mood>=20000) return n*0.015;
+  if(mood>=600)   return n*300/mood;
+  return n*(0.5+(600-mood)*0.0008);
+}
+// 超过玩家的百分比 = (总人数-名次)/总人数，四舍五入 0.01%，封顶 99.99%
+function pctOf(mood,n){
+  n=n||RANK_N;
+  const pct=(1-rankOf(mood,n)/n)*100;
+  return Math.min(99.99,Math.round(pct*100)/100);
+}
+function fmtRank(r){ return Math.max(1,Math.round(r)).toLocaleString('zh-CN'); }
+function renderRank(){
+  const box=document.getElementById('rankList');
+  if(!box) return;
+  const v7=applyDailyDecay(loadV7(),Date.now());
+  const myMood=Math.round(v7.mood);
+  const rows=[];
+  // 玩家心情若达到前20门槛(≥25570)，插入到对应并列位置（并列时玩家最前）
+  let myRank,inserted=false;
+  if(myMood>=RANK_TOP20[19][1]){
+    // 计算前20中严格大于玩家心情的人数 → 玩家应处名次
+    let ahead=0;
+    for(const [,m] of RANK_TOP20){ if(m>myMood) ahead++; }
+    myRank=ahead+1;
+    // 生成榜单：先放 ahead 个更高的假玩家，再插入玩家，其余顺延；并列假玩家排在玩家之后
+    for(let i=0;i<ahead;i++){
+      rows.push({idx:i+1,uid:RANK_TOP20[i][0],mood:RANK_TOP20[i][1],me:false});
+    }
+    rows.push({idx:myRank,uid:'您',mood:myMood,me:true,pct:pctOf(myMood)});
+    for(let i=ahead;i<RANK_TOP20.length;i++){
+      rows.push({idx:i+2,uid:RANK_TOP20[i][0],mood:RANK_TOP20[i][1],me:false});
+    }
+    inserted=true;
+  }else{
+    // 未进前20：固定显示前20，玩家单独列在最后
+    for(let i=0;i<RANK_TOP20.length;i++){
+      rows.push({idx:i+1,uid:RANK_TOP20[i][0],mood:RANK_TOP20[i][1],me:false});
+    }
+    myRank=Math.round(rankOf(myMood));
+  }
+  let html='';
+  for(const r of rows){
+    if(r.me){
+      html+='<div class="rank-row me"><span class="rk-idx">'+fmtRank(r.idx)+'.</span>'
+        +'<span class="rk-pct">(超过'+r.pct.toFixed(2)+'%)</span>'
+        +'<span class="rk-uid">您</span><span class="rk-mood">'+r.mood+'</span></div>';
+    }else{
+      html+='<div class="rank-row"><span class="rk-idx">'+r.idx+'.</span>'
+        +'<span class="rk-uid">用户'+r.uid+'****</span><span class="rk-mood">'+r.mood+'</span></div>';
+    }
+  }
+  if(!inserted){
+    html+='<div class="rank-row me"><span class="rk-idx">'+fmtRank(myRank)+'.</span>'
+      +'<span class="rk-pct">(超过'+pctOf(myMood).toFixed(2)+'%)</span>'
+      +'<span class="rk-uid">您</span><span class="rk-mood">'+myMood+'</span></div>';
+  }
+  box.innerHTML=html;
+}
+
+/* ================= 初始化 ================= */
+initKeyboard();   // 默认按 calc 渲染，进游戏时会重新初始化
+initStartDecor();
+secretInitKeyboard();
+// v7.0：页面加载即执行每日衰减并渲染金币
+(function initV7(){
+  const v7=applyDailyDecay(loadV7(),Date.now());
+  saveV7(v7);
+  renderCoins();
+})();
+</script>
+</body>
+</html>

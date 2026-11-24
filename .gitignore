@@ -1,0 +1,16 @@
+# ===== 体积大 / 本地生成的工具链与缓存 =====
+.build/tools/
+.build/app/.gradle/
+.build/app/app/build/
+
+# ===== 构建过程临时产物 =====
+.build/*.png
+.build/*_preview.html
+.build/v*_check.js
+.build/v*_*.png
+*.log
+
+# ===== 系统文件 =====
+Thumbs.db
+.DS_Store
+desktop.ini

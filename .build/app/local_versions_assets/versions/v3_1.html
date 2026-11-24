@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最强大脑测试 · 无限挑战</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI','Microsoft YaHei',sans-serif;}
+
+body{
+  background:linear-gradient(135deg,#0f0c29 0%,#302b63 45%,#24243e 100%);
+  background-size:200% 200%;
+  animation:bgShift 18s ease infinite;
+  color:#fff;min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;padding:20px;overflow-x:hidden;
+}
+@keyframes bgShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+.container{
+  max-width:800px;width:100%;
+  background:rgba(8,8,24,.78);
+  border:1px solid rgba(160,140,255,.25);
+  border-radius:20px;padding:30px;
+  box-shadow:0 10px 40px rgba(0,0,0,.6),inset 0 0 60px rgba(90,60,200,.12);
+  margin-top:20px;position:relative;backdrop-filter:blur(6px);
+}
+
+/* ===== 开始页美化 ===== */
+.start-screen{position:relative;overflow:hidden;padding:10px 0 20px;}
+.start-decor{position:absolute;inset:-20px;pointer-events:none;z-index:0;}
+.float-symbol{
+  position:absolute;color:#b9a6ff;font-weight:bold;
+  animation:floatUp linear infinite;user-select:none;
+}
+@keyframes floatUp{
+  from{transform:translateY(40px) rotate(0deg);opacity:0;}
+  15%{opacity:.9;}
+  85%{opacity:.9;}
+  to{transform:translateY(-160px) rotate(70deg);opacity:0;}
+}
+.start-content{position:relative;z-index:1;text-align:center;}
+
+.badge{
+  display:inline-block;padding:6px 18px;border-radius:99px;
+  background:linear-gradient(90deg,rgba(255,235,59,.18),rgba(255,120,60,.18));
+  border:1px solid rgba(255,235,59,.45);color:#ffe680;
+  font-size:.9rem;letter-spacing:2px;margin-bottom:14px;
+}
+.main-title{
+  font-size:3.4rem;letter-spacing:6px;line-height:1.1;
+  background:linear-gradient(90deg,#ffeb3b,#ff8a65,#ffeb3b);
+  background-size:200% auto;-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:#ffeb3b;
+  filter:drop-shadow(0 0 18px rgba(255,200,60,.45));
+  animation:shine 5s linear infinite;
+}
+@keyframes shine{to{background-position:200% center;}}
+.tagline{color:#cfc7f5;font-size:1.05rem;margin:10px 0 26px;letter-spacing:1px;}
+
+.feature-cards{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;}
+.feature-card{
+  flex:1 1 160px;max-width:210px;min-width:140px;
+  background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.14);border-radius:16px;
+  padding:18px 12px;transition:transform .25s,box-shadow .25s,border-color .25s;
+}
+.feature-card:hover{transform:translateY(-6px);border-color:rgba(255,235,59,.5);box-shadow:0 12px 28px rgba(0,0,0,.4);}
+.feature-icon{font-size:2rem;margin-bottom:8px;filter:drop-shadow(0 0 8px rgba(255,255,255,.3));}
+.feature-title{font-size:1.15rem;font-weight:bold;color:#ffe680;margin-bottom:6px;}
+.feature-desc{font-size:.85rem;color:#b9b2dd;line-height:1.5;}
+
+.rules-box{
+  background:rgba(0,0,0,.3);border:1px solid rgba(160,140,255,.22);
+  border-radius:14px;padding:16px 20px;margin-bottom:24px;
+  font-size:.95rem;color:#d5cef2;line-height:1.9;text-align:left;
+  max-width:520px;margin-left:auto;margin-right:auto;
+}
+.rules-box p{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.btn{
+  position:relative;overflow:hidden;
+  background:linear-gradient(90deg,#5a10f0,#9e3df2,#5a10f0);
+  background-size:200% auto;color:#fff;border:none;
+  padding:16px 48px;font-size:1.55rem;font-weight:bold;letter-spacing:2px;
+  border-radius:50px;cursor:pointer;margin-top:8px;transition:transform .3s,box-shadow .3s;
+  box-shadow:0 8px 24px rgba(120,40,220,.55);animation:btnShine 4s linear infinite;
+}
+@keyframes btnShine{to{background-position:200% center;}}
+.btn:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 14px 30px rgba(140,60,240,.7);}
+.btn:active{transform:translateY(1px) scale(.99);}
+.btn span{display:inline-block;transition:transform .3s;}
+.btn:hover span{transform:translateX(6px);}
+.hint{color:#888;font-size:.82rem;margin-top:16px;}
+
+/* ===== 游戏界面 ===== */
+.screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;transition:all .5s ease;}
+.game-screen,.result-screen{display:none;}
+.game-header{display:flex;justify-content:space-between;width:100%;margin-bottom:24px;padding-bottom:15px;border-bottom:2px solid #444;gap:10px;flex-wrap:wrap;}
+.stage,.life,.score{font-size:1.35rem;font-weight:bold;}
+.life{color:#ff6b6b;}.score{color:#4caf50;}
+
+.problem-container{
+  background:rgba(24,22,44,.92);padding:30px;border-radius:15px;margin:16px 0;
+  width:100%;text-align:center;border:2px solid rgba(90,110,220,.55);
+  box-shadow:0 6px 20px rgba(0,0,0,.35);
+}
+.problem{
+  font-size:3.4rem;font-weight:bold;color:#ffeb3b;margin-bottom:8px;
+  font-family:'Courier New',monospace;word-break:break-all;
+  text-shadow:0 0 14px rgba(255,235,59,.25);
+}
+.difficulty-indicator{font-size:1.1rem;color:#ff9800;margin-top:6px;font-weight:bold;}
+.timer{font-size:1.1rem;color:#bb86fc;margin-top:10px;}
+
+.input-display{
+  font-size:2.3rem;min-height:62px;margin-top:18px;padding:10px 14px;
+  background:rgba(0,0,0,.55);border-radius:10px;border:1px solid #555;
+  color:#bb86fc;font-family:'Courier New',monospace;
+  white-space:nowrap;overflow-x:auto;text-align:center;
+}
+.input-display::-webkit-scrollbar{height:6px;}
+.input-display::-webkit-scrollbar-thumb{background:#666;border-radius:3px;}
+
+.keyboard{display:grid;grid-template-columns:repeat(3,1fr);grid-gap:14px;margin-top:24px;width:100%;max-width:400px;}
+.key{
+  background:#333;color:#fff;border:none;padding:20px 10px;font-size:1.8rem;
+  border-radius:10px;cursor:pointer;transition:all .2s;font-weight:bold;
+}
+.key:hover{background:#444;}.key:active{background:#555;transform:scale(.95);}
+.key-wide{grid-column:span 2;}
+.key-del{background:#c62828;}.key-del:hover{background:#e53935;}
+.key-submit{background:#2e7d32;}.key-submit:hover{background:#43a047;}
+
+.life-bar{width:100%;height:20px;background:#333;border-radius:10px;margin-top:8px;overflow:hidden;}
+.life-fill{height:100%;background:linear-gradient(90deg,#ff5252,#ff8a80);border-radius:10px;transition:width .25s linear;}
+
+.milestone-toast{
+  position:fixed;top:14%;left:50%;transform:translate(-50%,-20px);
+  background:linear-gradient(90deg,rgba(255,215,0,.92),rgba(255,140,0,.92));
+  color:#3a2600;font-size:0.75rem;font-weight:bold;letter-spacing:1px;
+  padding:12px 34px;border-radius:99px;z-index:1001;
+  box-shadow:0 0 40px rgba(255,200,60,.7);opacity:0;pointer-events:none;
+  transition:opacity .35s,transform .35s;
+}
+.milestone-toast.show{opacity:1;transform:translate(-50%,0);}
+
+/* ===== 星星特效（屏幕边缘） ===== */
+.star-overlay{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1000;}
+.star-particle{
+  position:absolute;color:#ffd54f;line-height:1;
+  text-shadow:0 0 10px #ffb300,0 0 22px #ff8f00;
+  animation:starFloat 1.9s cubic-bezier(.2,.7,.3,1) forwards;
+}
+@keyframes starFloat{
+  0%{opacity:0;transform:scale(.2) translateY(0) rotate(0deg);}
+  18%{opacity:1;transform:scale(1.35) translateY(-8px) rotate(45deg);}
+  100%{opacity:0;transform:scale(.4) translateY(-90px) rotate(200deg);}
+}
+
+/* ===== 结果页 ===== */
+.result-screen{text-align:center;}
+.result-title{font-size:3rem;color:#ffeb3b;margin-bottom:26px;text-shadow:0 0 16px rgba(255,235,59,.4);}
+.result-stats{font-size:1.7rem;line-height:1.9;}
+.result-stats span{color:#7cf7a0;font-weight:bold;}
+.progress-bar{width:100%;height:30px;background:#333;border-radius:15px;margin:30px 0;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#4caf50,#8bc34a,#ffeb3b);border-radius:15px;transition:width .7s ease;}
+
+.footer{margin-top:26px;text-align:center;color:#777;font-size:.88rem;}
+
+@media(max-width:600px){
+  .container{padding:16px;}
+  .main-title{font-size:2.4rem;letter-spacing:3px;}
+  .feature-card{flex:1 1 45%;min-width:120px;padding:12px 8px;}
+  .problem{font-size:2.4rem;}
+  .input-display{font-size:1.6rem;}
+  .key{padding:15px 5px;font-size:1.5rem;}
+  .game-header{flex-direction:column;align-items:center;gap:8px;}
+  .result-stats{font-size:1.35rem;}
+  .rules-box p{white-space:normal;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="screen start-screen" id="startScreen">
+    <div class="start-decor" id="startDecor"></div>
+    <div class="start-content">
+      <div class="badge">数学心算 · 无限挑战</div>
+      <h1 class="main-title">最强大脑</h1>
+      <p class="tagline">挑战你的计算极限 · 看看你能走到第几关</p>
+
+      <div class="feature-cards">
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-title">无限关卡</div>
+          <div class="feature-desc">加减法起步<br>乘法一路膨胀</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">❤️</div>
+          <div class="feature-title">生命计时</div>
+          <div class="feature-desc">答对回血 · 答错扣血<br>稳住十秒一题</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🏆</div>
+          <div class="feature-title">全球排名</div>
+          <div class="feature-desc">以分数论英雄<br>冲击前 0.05%</div>
+        </div>
+      </div>
+
+      <div class="rules-box">
+        <p>⏱️ 生命随时间流逝，归零即结束 · 答对回血、答错扣血</p>
+        <p>🎯 得分 = 关卡 × 连击系数 × 速度系数</p>
+        <p>🔥 连击越高得分越猛，答错会让连击倒退</p>
+        <p>✨ 每通过 10 关，屏幕边缘星光闪耀</p>
+      </div>
+
+      <button class="btn" id="startBtn">开始挑战 <span>→</span></button>
+      <p class="hint">支持键盘数字输入 · Enter 提交 · Backspace 删除</p>
+    </div>
+  </div>
+
+  <div class="screen game-screen" id="gameScreen">
+    <div class="game-header">
+      <div class="stage">第 <span id="stageNum">1</span> 关</div>
+      <div class="life">生命 <span id="lifeValue">100</span>%</div>
+      <div class="score">得分 <span id="scoreValue">0</span></div>
+    </div>
+    <div class="life-bar"><div class="life-fill" id="lifeFill" style="width:100%;"></div></div>
+
+    <div class="problem-container">
+      <div class="problem" id="problemText">3 + 5</div>
+      <div class="difficulty-indicator" id="difficultyText">简单</div>
+      <div class="timer" id="timerText">用时: 0.0秒</div>
+      <div class="input-display" id="inputDisplay"></div>
+    </div>
+
+    <div class="keyboard" id="keyboard"></div>
+  </div>
+
+  <div class="screen result-screen" id="resultScreen">
+    <h2 class="result-title">挑战结束</h2>
+    <div class="result-stats">
+      <p>通过关卡: <span id="finalStage">0</span></p>
+      <p>最终得分: <span id="finalScore">0</span></p>
+      <p>超过了 <span id="percentile">0</span>% 的玩家</p>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%;"></div></div>
+    <button class="btn" id="restartBtn">再来一次 <span>↻</span></button>
+  </div>
+</div>
+
+<div class="footer">设计用于数学能力测试 · 挑战你的计算速度与准确性</div>
+
+<div class="star-overlay" id="starOverlay"></div>
+<div class="milestone-toast" id="milestoneToast"></div>
+
+<script>
+/* ================= 游戏状态 ================= */
+const MAX_LIFE = 200;   // 血量上限（翻倍，容错更高）
+const HISTORY_KEY = 'mathbrain_stage_history_v1';
+const HISTORY_SIZE = 10;
+let startStage = 1;     // 本局起点（由历史最高关决定）
+let currentStage = 1;
+let life = MAX_LIFE;
+let score = 0;
+let streak = 0;
+let currentInput = "";
+let currentProblem = "";
+let currentAnswer = 0n;      // 用 BigInt 支持超大乘积
+let startTime = 0;
+let lifeInterval = null;
+let gameActive = false;
+let answerLocked = false;    // 判题锁：答对后到下一题生成前，禁止重复判题
+
+/* ================= 历史记录与起点 =================
+   记录过去 10 次游玩"达到的关卡"（死亡时所在关），
+   下次起点 = 这 10 次的最高值 - 50（最低为 1）。                */
+function loadHistory(){
+  try{
+    // APK 内优先用原生存储（file:// 下更可靠），浏览器预览回退到 localStorage
+    if(window.AndroidStore && window.AndroidStore.getHistory){
+      const raw=window.AndroidStore.getHistory();
+      const arr=raw?JSON.parse(raw):[];
+      return Array.isArray(arr)?arr:[];
+    }
+    const raw=localStorage.getItem(HISTORY_KEY);
+    const arr=raw?JSON.parse(raw):[];
+    return Array.isArray(arr)?arr:[];
+  }catch(e){return [];}
+}
+function saveHistory(arr){
+  const s=JSON.stringify(arr);
+  try{ if(window.AndroidStore && window.AndroidStore.setHistory){ window.AndroidStore.setHistory(s); } }catch(e){}
+  try{ localStorage.setItem(HISTORY_KEY,s); }catch(e){}
+}
+function recordStage(){
+  const hist=loadHistory();
+  hist.push(currentStage);              // 本局到达的关卡
+  while(hist.length>HISTORY_SIZE) hist.shift();
+  saveHistory(hist);
+}
+function computeStartStage(){
+  const hist=loadHistory();
+  if(hist.length===0) return 1;
+  const best=Math.max.apply(null,hist);
+  return Math.max(1,best-50);
+}
+// 已过关卡按"0错、0秒"满分累计：得分公式 a*b*c，b=streak+20，c=5（0秒）
+function skippedScore(fromStage){
+  let s=0;
+  for(let i=1;i<fromStage;i++){
+    s+=Math.ceil(i*(i+20)*5);
+  }
+  return s;
+}
+// 热身：本局前 20 关的难度按 起点+19 关的 (5%,10%,...,100%) 向下取整缩放
+function warmupStage(stage){
+  const T=startStage+19;
+  const idx=stage-startStage;          // 0..19
+  if(idx>=0 && idx<20){
+    return Math.floor(T*(idx+1)/20);
+  }
+  return stage;
+}
+
+/* ================= 数值规则 ================= */
+
+// 加减法：关卡 -> 加数/被减数上限（答案不受限）
+function getAddLimit(stage){
+  if(stage<=5)  return 10;
+  if(stage<=10) return 20;
+  if(stage<=20) return 50;
+  if(stage<=30) return 100;
+  if(stage<=40) return 300;
+  return 1000; // 41~50
+}
+
+// 乘法因数范围表（51关起）
+const MUL_RANGES = [
+  {from:51, to:60,  min:10,  max:20},
+  {from:61, to:70,  min:10,  max:30},
+  {from:71, to:80,  min:20,  max:50},
+  {from:81, to:90,  min:30,  max:70},
+  {from:91, to:100, min:40,  max:100},
+  {from:101,to:110, min:100, max:200},
+  {from:111,to:120, min:100, max:300},
+  {from:121,to:130, min:200, max:500},
+  {from:131,to:140, min:300, max:700},
+  {from:141,to:150, min:400, max:1000}
+];
+// 151关起：每 50 关整体膨胀 10 倍（基准 400~1000），无上限
+function getMulRange(stage){
+  for(const r of MUL_RANGES){
+    if(stage>=r.from && stage<=r.to) return {min:r.min,max:r.max};
+  }
+  const block = Math.floor((stage-151)/50)+1;      // 151~200 => 1
+  const f = Math.pow(10,block);
+  return {min:400*f, max:1000*f};
+}
+
+// 乘法因数：个位不为 0；个位为 5 的概率降为原来的 30%（减少70%）
+function getMulFactor(min,max){
+  const digits=[1,2,3,4,5,6,7,8,9];
+  const weights=[1,1,1,1,0.3,1,1,1,1];
+  const total=8.3;
+  let r=Math.random()*total, d=9;
+  for(let i=0;i<digits.length;i++){
+    if(r<weights[i]){d=digits[i];break;}
+    r-=weights[i];
+  }
+  // 区间内个位为 d 的最小数
+  let first = min + ((d - (min%10) + 10)%10);
+  if(first>max) first-=10;
+  if(first<min || first>max){
+    // 该范围内没有此个位 → 退化为拒绝采样
+    let n,guard=0;
+    do{
+      n=getRandomInt(min,max);guard++;
+    }while((n%10===0 || (n%10===5 && Math.random()<0.7)) && guard<1000);
+    return n;
+  }
+  const count=Math.floor((max-first)/10)+1;
+  return first + 10*getRandomInt(0,count-1);
+}
+
+/* ================= 分数 -> 百分位（重新校准） =================
+   以「答对前 N-1 题」的累计分数为基准（典型中速 c≈4）：
+     ~5关 1,360 -> 20%      ~10关 5,720 -> 30%
+     ~20关 27,440 -> 40%    ~30关 73,160 -> 45%
+     ~40关 150,880 -> 48%   ~50关 268,600 -> 49%
+     51关 282,880 -> 50%  ★ 存活到乘法约一半人
+     60关 434,320 -> 65%    70关 656,040 -> 85%
+     80关 941,760 -> 95%    90关 1,300,680 -> 98.8%
+     100关 1,737,200 -> 99.7% ★ 约 0.3% 到达
+     120关 2,883,040 -> 99.88%
+     150关 5,404,800 -> 99.95% ★ 极少数专门练过的人
+     1000万 -> 99.99%（封顶）
+   分段线性插值，实际排名按分数而非关卡计算。                     */
+const PERCENTILE_TABLE=[
+  {score:0,       pct:0},
+  {score:1360,    pct:20},
+  {score:5720,    pct:30},
+  {score:27440,   pct:40},
+  {score:73160,   pct:45},
+  {score:150880,  pct:48},
+  {score:268600,  pct:49},
+  {score:282880,  pct:50},
+  {score:434320,  pct:65},
+  {score:656040,  pct:85},
+  {score:941760,  pct:95},
+  {score:1300680, pct:98.8},
+  {score:1737200, pct:99.7},
+  {score:2883040, pct:99.88},
+  {score:5404800, pct:99.95},
+  {score:10000000,pct:99.99}
+];
+function calculatePercentile(userScore){
+  const t=PERCENTILE_TABLE;
+  if(userScore<=t[0].score) return 0;
+  for(let i=1;i<t.length;i++){
+    if(userScore<=t[i].score){
+      const lo=t[i-1],hi=t[i];
+      return lo.pct+(hi.pct-lo.pct)*(userScore-lo.score)/(hi.score-lo.score);
+    }
+  }
+  return 99.99;
+}
+
+/* ================= DOM ================= */
+const startScreen=document.getElementById('startScreen');
+const gameScreen=document.getElementById('gameScreen');
+const resultScreen=document.getElementById('resultScreen');
+const startBtn=document.getElementById('startBtn');
+const restartBtn=document.getElementById('restartBtn');
+const stageNum=document.getElementById('stageNum');
+const lifeValue=document.getElementById('lifeValue');
+const scoreValue=document.getElementById('scoreValue');
+const problemText=document.getElementById('problemText');
+const inputDisplay=document.getElementById('inputDisplay');
+const timerText=document.getElementById('timerText');
+const difficultyText=document.getElementById('difficultyText');
+const lifeFill=document.getElementById('lifeFill');
+const finalStage=document.getElementById('finalStage');
+const finalScore=document.getElementById('finalScore');
+const percentile=document.getElementById('percentile');
+const progressFill=document.getElementById('progressFill');
+const keyboard=document.getElementById('keyboard');
+const starOverlay=document.getElementById('starOverlay');
+const milestoneToast=document.getElementById('milestoneToast');
+
+/* ================= 开始页装饰 ================= */
+function initStartDecor(){
+  const bg=document.getElementById('startDecor');
+  if(!bg) return;
+  bg.innerHTML='';
+  const symbols=['+','−','×','÷','√','π','∑','7','3','9','5','%'];
+  for(let i=0;i<28;i++){
+    const s=document.createElement('span');
+    s.className='float-symbol';
+    s.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    s.style.left=(Math.random()*100)+'%';
+    s.style.top=(Math.random()*100)+'%';
+    s.style.fontSize=(14+Math.random()*26)+'px';
+    s.style.animationDuration=(8+Math.random()*10)+'s';
+    s.style.animationDelay=(-Math.random()*12)+'s';
+    bg.appendChild(s);
+  }
+}
+
+/* ================= 键盘 ================= */
+function initKeyboard(){
+  const keys=[
+    {text:'1',class:''},{text:'2',class:''},{text:'3',class:''},
+    {text:'4',class:''},{text:'5',class:''},{text:'6',class:''},
+    {text:'7',class:''},{text:'8',class:''},{text:'9',class:''},
+    {text:'删除',class:'key-del'},{text:'0',class:''},{text:'提交',class:'key-submit'}
+  ];
+  keyboard.innerHTML='';
+  keys.forEach(k=>{
+    const b=document.createElement('button');
+    b.className='key '+k.class;
+    b.textContent=k.text;
+    b.addEventListener('click',()=>handleKeyPress(k.text));
+    keyboard.appendChild(b);
+  });
+}
+function handleKeyPress(key){
+  if(!gameActive) return;
+  if(key==='删除'){ currentInput=currentInput.slice(0,-1); }
+  else if(key==='提交'){ checkAnswer(); return; }
+  else { currentInput+=key; }   // 已取消 14 位上限，心算大师随便输
+  updateInputDisplay();
+}
+function updateInputDisplay(){ inputDisplay.textContent=currentInput||' '; }
+
+/* ================= 流程控制 ================= */
+startBtn.addEventListener('click',()=>{
+  startScreen.style.display='none';
+  gameScreen.style.display='flex';
+  initGame();
+});
+restartBtn.addEventListener('click',()=>{
+  resultScreen.style.display='none';
+  startScreen.style.display='flex';
+  initStartDecor();
+});
+
+function initGame(){
+  startStage=computeStartStage();
+  currentStage=startStage;
+  // 被跳过的关卡全按满分算（0错、0秒）：分数与连击都延续
+  score=skippedScore(startStage);
+  streak=startStage-1;
+  life=MAX_LIFE;currentInput="";answerLocked=false;gameActive=true;
+  updateUI();generateProblem();initKeyboard();
+  if(lifeInterval) clearInterval(lifeInterval);
+  lifeInterval=setInterval(decreaseLife,250);   // 每 0.25 秒扣 1/3（原 1 的 1/3）
+  startTime=Date.now();updateTimer();
+}
+function decreaseLife(){
+  if(!gameActive) return;
+  life=Math.max(0,life-1/3);
+  lifeFill.style.width=(life/MAX_LIFE*100)+'%';
+  lifeValue.textContent=Math.round(life/MAX_LIFE*100);
+  if(life<=0) endGame();
+}
+function updateTimer(){
+  if(!gameActive) return;
+  timerText.textContent='用时: '+((Date.now()-startTime)/1000).toFixed(1)+'秒';
+  setTimeout(updateTimer,100);
+}
+
+/* ================= 出题 ================= */
+function generateProblem(){
+  // 热身期只改变"题目内容/难度标注"，关号、得分、特效仍按真实 currentStage
+  const dStage=warmupStage(currentStage);
+  if(dStage<=50) generateAddSub(dStage);
+  else generateMul(dStage);
+  problemText.textContent=currentProblem;
+  currentInput="";updateInputDisplay();
+  startTime=Date.now();
+  updateDifficultyLabel(dStage);
+}
+
+function generateAddSub(stage){
+  const L=getAddLimit(stage);
+  const isAdd=Math.random()<0.5;
+  let a,b,op;
+  if(stage<=20){
+    // 无大小约束，仅限制加数/被减数 <= L
+    a=getRandomInt(1,L);b=getRandomInt(1,L);
+    if(isAdd){op='+';currentAnswer=BigInt(a+b);}
+    else{
+      op='−';
+      if(a<b){const t=a;a=b;b=t;}
+      currentAnswer=BigInt(a-b);
+    }
+  }else{
+    // 21 关起的大小约束
+    if(isAdd){
+      const big=getRandomInt(Math.floor(0.75*L)+1,L);       // 大加数 > 75%L
+      const small=getRandomInt(Math.floor(0.4*L)+1,big);    // 小加数 > 40%L 且 <= 大加数
+      a=Math.random()<0.5?big:small;
+      b=(a===big)?small:big;
+      op='+';currentAnswer=BigInt(big+small);
+    }else{
+      const minuend=getRandomInt(Math.floor(0.75*L)+1,L);   // 被减数 > 75%L
+      const subMax=Math.ceil(minuend*0.8)-1;                // 减数 < 被减数*0.8
+      const subtrahend=getRandomInt(Math.floor(0.2*L)+1,subMax); // 且 > 20%L
+      a=minuend;b=subtrahend;op='−';currentAnswer=BigInt(minuend-subtrahend);
+    }
+  }
+  currentProblem=a+' '+op+' '+b;
+}
+
+function generateMul(stage){
+  const range=getMulRange(stage);
+  const a=getMulFactor(range.min,range.max);
+  const b=getMulFactor(range.min,range.max);
+  currentProblem=a+' × '+b;
+  currentAnswer=BigInt(a)*BigInt(b);
+}
+
+function fmtBig(n){
+  if(n<1e6) return n.toLocaleString('en-US');
+  return n.toExponential(2).replace('e+','e');
+}
+function updateDifficultyLabel(stage){
+  let text,color;
+  if(stage<=30){
+    text='简单';color='#4caf50';
+  }else if(stage<=50){
+    text='中等';color='#ff9800';
+  }else if(stage<=100){
+    text='困难';color='#ff5722';
+  }else{
+    // 101 关起：深红色问号，营造神秘恐怖氛围
+    text='？？？';color='#8b0000';
+  }
+  difficultyText.textContent=text;
+  difficultyText.style.color=color;
+  if(stage>100){
+    difficultyText.style.textShadow='0 0 14px rgba(180,0,0,0.9)';
+    difficultyText.style.letterSpacing='8px';
+  }else{
+    difficultyText.style.textShadow='none';
+    difficultyText.style.letterSpacing='normal';
+  }
+}
+
+/* ================= 判题 ================= */
+function checkAnswer(){
+  if(!gameActive || answerLocked) return;
+  if(currentInput==="") return;             // 空输入直接忽略，防止空提交被当作 0 或重复扣分
+  let userAnswer;
+  try{ userAnswer=BigInt(currentInput); }
+  catch(e){ return; }
+  const elapsed=(Date.now()-startTime)/1000;
+
+  if(userAnswer===currentAnswer){
+    answerLocked=true;                     // 立刻上锁，防止连点重复得分/回血
+    streak++;
+    life=Math.min(MAX_LIFE,life+40/3);     // 回血降为原来的 1/3，上限翻倍
+
+    const a=currentStage;
+    const b=Math.max(15,streak+20);
+    const c=Math.ceil((5-elapsed*0.2)*10)/10;
+    score+=Math.ceil(a*b*c);
+
+    currentStage++;                        // 取消 100 关通关上限
+
+    // 每通过 10 关触发星光
+    if((currentStage-1)%10===0){
+      spawnStars();
+      showMilestone('第 '+(currentStage-1)+' 关达成 ✦');
+    }
+
+    problemText.style.color='#4caf50';
+    setTimeout(()=>{
+      problemText.style.color='#ffeb3b';
+      generateProblem();
+      answerLocked=false;                  // 新题就绪后解锁
+    },300);
+  }else{
+    streak-=2;                             // 原 -4，影响减半
+    life=Math.max(0,life-3);               // 原扣 10，降 70% => 扣 3
+    currentInput="";updateInputDisplay();  // 答错自动清空输入框
+    problemText.style.color='#f44336';
+    setTimeout(()=>{problemText.style.color='#ffeb3b';},300);
+    if(life<=0){endGame();return;}
+  }
+  updateUI();
+}
+
+function updateUI(){
+  stageNum.textContent=currentStage;
+  lifeValue.textContent=Math.round(life/MAX_LIFE*100);
+  lifeFill.style.width=(life/MAX_LIFE*100)+'%';
+  scoreValue.textContent=Math.round(score);
+}
+
+/* ================= 特效 ================= */
+function spawnStars(){
+  const count=34;
+  for(let i=0;i<count;i++){
+    const s=document.createElement('div');
+    s.className='star-particle';
+    s.textContent=Math.random()<0.65?'★':'✦';
+    const edge=Math.floor(Math.random()*4);
+    if(edge===0){s.style.left=(Math.random()*100)+'%';s.style.top='0%';}
+    else if(edge===1){s.style.left=(Math.random()*100)+'%';s.style.top='98%';}
+    else if(edge===2){s.style.left='0%';s.style.top=(Math.random()*100)+'%';}
+    else{s.style.left='98%';s.style.top=(Math.random()*100)+'%';}
+    s.style.fontSize=(14+Math.random()*22)+'px';
+    s.style.animationDelay=(Math.random()*0.35)+'s';
+    starOverlay.appendChild(s);
+    setTimeout(()=>s.remove(),2600);
+  }
+}
+function showMilestone(text){
+  milestoneToast.textContent=text;
+  milestoneToast.classList.add('show');
+  clearTimeout(showMilestone._t);
+  showMilestone._t=setTimeout(()=>milestoneToast.classList.remove('show'),1800);
+}
+
+/* ================= 结束 ================= */
+function endGame(){
+  gameActive=false;
+  clearInterval(lifeInterval);
+  recordStage();                           // 记录本次到达关卡，供下局计算起点
+  finalStage.textContent=currentStage-1;
+  finalScore.textContent=Math.round(score);
+  const pct=calculatePercentile(score);
+  percentile.textContent=pct.toFixed(2);
+  progressFill.style.width=pct+'%';
+  gameScreen.style.display='none';
+  resultScreen.style.display='flex';
+}
+
+/* ================= 工具 ================= */
+function getRandomInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+
+document.addEventListener('keydown',(e)=>{
+  if(!gameActive) return;
+  const k=e.key;
+  if(k>='0'&&k<='9') handleKeyPress(k);
+  else if(k==='Backspace'||k==='Delete'){e.preventDefault();handleKeyPress('删除');}
+  else if(k==='Enter') handleKeyPress('提交');
+});
+
+/* ================= 初始化 ================= */
+initKeyboard();
+initStartDecor();
+</script>
+<div id="__vcBack" style="position:fixed;right:10px;top:10px;z-index:99999;"><a href="../index.html#versions" style="display:inline-block;padding:8px 12px;background:rgba(20,16,40,.85);color:#ffd54f;border:1px solid #7c4dff;border-radius:10px;font:600 13px/1.2 system-ui;text-decoration:none;box-shadow:0 2px 10px rgba(0,0,0,.4);">⬅ 版本中心</a></div></body>
+</html>

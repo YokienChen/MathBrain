@@ -1,0 +1,39 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.mathbrain.game'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.mathbrain.game"
+        minSdk 21
+        targetSdk 34
+        versionCode 29
+        versionName "1.0.4"
+    }
+
+    // v1.0.1：应用内版本控制已移除，历史版本仅保留在 .build/app/local_versions_assets，不再打进 APK
+
+    signingConfigs {
+        release {
+            storeFile file('../game.jks')
+            storePassword 'mathbrain2026'
+            keyAlias 'mathbrain'
+            keyPassword 'mathbrain2026'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
