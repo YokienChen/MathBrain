@@ -679,7 +679,7 @@ function validExpPair(b1,b2){
   if(mn<2) return false;
   return true;
 }
-// v5.3：双指数题 a^x ? b^y 的指数对分布（与是否保底触发无关，一律按此分布抽取）
+// v0.5.3：双指数题 a^x ? b^y 的指数对分布（与是否保底触发无关，一律按此分布抽取）
 // 40% → {2,3}；30% → {3,4}；其余 30% → 其它合法指数对
 function pickExpPair(){
   const r=Math.random();
@@ -924,7 +924,7 @@ function buildCompareCore(stage,type,cap,floor,lo,hi,opts){
     return {leftExpr:powExpr(p),rightExpr:encode(type.right,p.v),answer:'='};
   }
 
-  // ---------- 情形C：幂 vs 幂（v5.3：严格按指定指数对，x、y 顺序无所谓） ----------
+  // ---------- 情形C：幂 vs 幂（v0.5.3：严格按指定指数对，x、y 顺序无所谓） ----------
   // opts.expPair={x,y} 时，a^x 与 b^y 的指数对固定为 {x,y}（左右顺序随机）；
   // 只有当该对在当前 cap 下无法成题时，才依次回退到其它合法对。
   const wanted=(opts.expPair && typeof opts.expPair==='object') ? opts.expPair : null;
@@ -1053,7 +1053,7 @@ function generateCompare(contentStage,showStage){
 
   // ===== 双指数题（两边都是幂）=====
   // 出现概率 = 基础概率(doubleExpProb，不计保底) 或 连续3题未出必出。
-  // v5.3：无论保底触发还是基础概率触发，指数对一律按 pickExpPair() 分布抽取
+  // v0.5.3：无论保底触发还是基础概率触发，指数对一律按 pickExpPair() 分布抽取
   //       （40% {2,3}、30% {3,4}、其余 30% 其它合法对），x/y 顺序无所谓。
   // 注意只有 81 关起才有 pow-vs-pow 题型，故保底/概率仅在 showStage>=81 启用。
   const deProb=doubleExpProb(showStage);
@@ -1062,7 +1062,7 @@ function generateCompare(contentStage,showStage){
     forceDouble = (noDoubleExpCount>=3) || Math.random()<deProb;
     if(forceDouble){
       type={left:'pow',right:'pow'};
-      opts.expPair=pickExpPair();        // v5.3：固定本次的指数对（保底/概率同样适用）
+      opts.expPair=pickExpPair();        // v0.5.3：固定本次的指数对（保底/概率同样适用）
       lo=Math.max(0.4,lo-0.05);          // 差距比例下限再放宽 5 个百分点
     }else{
       // 非双指数局：从类型池排除 pow/pow，避免自然出现抬高双指数题概率
@@ -1867,10 +1867,10 @@ function secretSubmit(){
   if(!s||!s.active||s.locked||!s.input) return;
   s.locked=true;
   const elapsed=(performance.now()-s.qStart)/1000;
+  s.score+=1000/(3+elapsed);
   let correct=false;
   try{ correct=(BigInt(s.input)===BigInt(s.q.answer)); }catch(e){}
   if(correct){
-    s.score+=1000/(3+elapsed);              // 仅答对计分，答错 0 分
     s.correct++;
     s.playerHP=Math.min(1000,s.playerHP+250);   // 与投弹同时回血
     secretUpdateHP();
@@ -1936,5 +1936,5 @@ initKeyboard();   // 默认按 calc 渲染，进游戏时会重新初始化
 initStartDecor();
 secretInitKeyboard();
 </script>
-<div id="__vcBack" style="position:fixed;right:10px;top:10px;z-index:99999;"><a href="../index.html#versions" style="display:inline-block;padding:8px 12px;background:rgba(20,16,40,.85);color:#ffd54f;border:1px solid #7c4dff;border-radius:10px;font:600 13px/1.2 system-ui;text-decoration:none;box-shadow:0 2px 10px rgba(0,0,0,.4);">⬅ 版本中心</a></div></body>
+</body>
 </html>

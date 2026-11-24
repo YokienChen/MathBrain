@@ -265,7 +265,7 @@ body{
   background:linear-gradient(90deg,#2e7d32,#66bb6a,#a5d6a7);box-shadow:0 0 10px rgba(80,220,100,.7) inset;}
 .hp-track .fill.enemy{background:linear-gradient(90deg,#6a1b9a,#ab47bc,#ce93d8);box-shadow:0 0 10px rgba(200,100,255,.7) inset;}
 .combat-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;padding:0 10px;}
-/* v8.2：勇士左移、左侧更紧凑，给中间算式留出安全间距 */
+/* v0.8.2：勇士左移、左侧更紧凑，给中间算式留出安全间距 */
 #battleCatWrap{flex:0 0 30px;}
 #heroFighter{flex:0 0 108px;margin-left:-6px;}
 .secret-q{font-size:1.75rem;font-weight:bold;color:#ffeb3b;text-shadow:0 0 14px rgba(255,220,60,.45);text-align:center;line-height:1.35;white-space:nowrap;word-break:keep-all;display:inline-block;max-width:100%;}
@@ -303,7 +303,7 @@ body{
   .secret-bonus{font-size:.7rem;}
 }
 
-/* ===== v7.0 金币 / 猫咪气泡 / 宠物 ===== */
+/* ===== v0.7.0 金币 / 猫咪气泡 / 宠物 ===== */
 .coin-badge{
   position:absolute;top:14px;right:18px;z-index:8;
   display:flex;align-items:center;gap:6px;
@@ -373,7 +373,7 @@ body{
 .pet-btn.upgrade{background:linear-gradient(135deg,#b9a6ff,#7c4dff);color:#fff;border-color:rgba(180,150,255,.6);}
 .pet-btn.rank-entry{margin-top:4px;background:linear-gradient(135deg,#7fe9ff,#4fc3f7);border-color:rgba(127,233,255,.6);}
 .pet-msg{font-size:.85rem;color:#ffd54f;min-height:20px;}
-/* ===== v8.0 全球排行榜 ===== */
+/* ===== v0.8.0 全球排行榜 ===== */
 .rank-screen{display:none;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:8px 0;}
 .rank-title{color:#ffe680;letter-spacing:4px;font-size:1.5rem;}
 .rank-motto{display:flex;align-items:center;gap:8px;color:#d5cef2;font-size:.95rem;}
@@ -621,10 +621,10 @@ let answerLocked = false;    // 判题锁：答对后到下一题生成前，禁
 let noSpecialCount = 0;      // 比大小模式：π/e 连续未出现计数（保底5用）
 let noDoubleExpCount = 0;    // 比大小模式：双指数题连续未出现计数（保底3用）
 
-/* ================= v7.0 金币与宠物系统 ================= */
+/* ================= v0.7.0 金币与宠物系统 ================= */
 const V7_KEY='mathbrain_v7_v1';   // 沿用存档 key，向后兼容旧档（新增 keys/keyClaimed 字段）
 // 宠物等级表：index=等级 → {price:升级到下一级花费(金币), keyPrice:升级到下一级花费(钥匙), k:每日衰减%, m:心情上限}
-// v8.0：8升9 4500→3000，9升10 8000→4000；新增 10-70 级（双货币升级，10级起 k=0 不衰减）
+// v0.8.0：8升9 4500→3000，9升10 8000→4000；新增 10-70 级（双货币升级，10级起 k=0 不衰减）
 const PET_LEVELS={
   1:{price:200,keyPrice:0,k:4.5,m:125},2:{price:300,keyPrice:0,k:4.0,m:150},
   3:{price:400,keyPrice:0,k:3.5,m:175},4:{price:600,keyPrice:0,k:3.0,m:200},
@@ -712,7 +712,7 @@ function applyDailyDecay(v7,now){
 function petCfgFor(level){ return PET_LEVELS[level]||PET_LEVELS[1]; }
 // 金币结算：reached=达到关卡，start=本局起点，played=打的关数
 // 未打满20关打折扣 n=(played/20)^2，基数取 max(reached, start+20)
-// v8.0 平衡性调整：最终金币获取 ×4（v7.0 为 ×2，即最初表的 4 倍）
+// v0.8.0 平衡性调整：最终金币获取 ×4（v0.7.0 为 ×2，即最初表的 4 倍）
 function calcCoinsEarned(reached,start){
   const played=Math.max(0,reached-start);
   const base=Math.max(reached,start+20);
@@ -725,7 +725,7 @@ function addCoins(amount,now){
   saveV7(v7);
   return v7;
 }
-// v8.0：8.0 版本后首次通关第40关及以后秘境关卡，每关发 1 把钥匙（每关仅一次）
+// v0.8.0：8.0 版本后首次通关第40关及以后秘境关卡，每关发 1 把钥匙（每关仅一次）
 // 独立于历史通关记录：以 keyClaimed 数组为准，旧玩家此前通关的关卡仍可领取
 function claimSecretKey(level,now){
   if(!Number.isInteger(level)||level<40) return 0;
@@ -947,7 +947,7 @@ function validExpPair(b1,b2){
   if(mn<2) return false;
   return true;
 }
-// v5.3：双指数题 a^x ? b^y 的指数对分布（与是否保底触发无关，一律按此分布抽取）
+// v0.5.3：双指数题 a^x ? b^y 的指数对分布（与是否保底触发无关，一律按此分布抽取）
 // 40% → {2,3}；30% → {3,4}；其余 30% → 其它合法指数对
 function pickExpPair(){
   const r=Math.random();
@@ -1192,7 +1192,7 @@ function buildCompareCore(stage,type,cap,floor,lo,hi,opts){
     return {leftExpr:powExpr(p),rightExpr:encode(type.right,p.v),answer:'='};
   }
 
-  // ---------- 情形C：幂 vs 幂（v5.3：严格按指定指数对，x、y 顺序无所谓） ----------
+  // ---------- 情形C：幂 vs 幂（v0.5.3：严格按指定指数对，x、y 顺序无所谓） ----------
   // opts.expPair={x,y} 时，a^x 与 b^y 的指数对固定为 {x,y}（左右顺序随机）；
   // 只有当该对在当前 cap 下无法成题时，才依次回退到其它合法对。
   const wanted=(opts.expPair && typeof opts.expPair==='object') ? opts.expPair : null;
@@ -1321,7 +1321,7 @@ function generateCompare(contentStage,showStage){
 
   // ===== 双指数题（两边都是幂）=====
   // 出现概率 = 基础概率(doubleExpProb，不计保底) 或 连续3题未出必出。
-  // v5.3：无论保底触发还是基础概率触发，指数对一律按 pickExpPair() 分布抽取
+  // v0.5.3：无论保底触发还是基础概率触发，指数对一律按 pickExpPair() 分布抽取
   //       （40% {2,3}、30% {3,4}、其余 30% 其它合法对），x/y 顺序无所谓。
   // 注意只有 81 关起才有 pow-vs-pow 题型，故保底/概率仅在 showStage>=81 启用。
   const deProb=doubleExpProb(showStage);
@@ -1330,7 +1330,7 @@ function generateCompare(contentStage,showStage){
     forceDouble = (noDoubleExpCount>=3) || Math.random()<deProb;
     if(forceDouble){
       type={left:'pow',right:'pow'};
-      opts.expPair=pickExpPair();        // v5.3：固定本次的指数对（保底/概率同样适用）
+      opts.expPair=pickExpPair();        // v0.5.3：固定本次的指数对（保底/概率同样适用）
       lo=Math.max(0.4,lo-0.05);          // 差距比例下限再放宽 5 个百分点
     }else{
       // 非双指数局：从类型池排除 pow/pow，避免自然出现抬高双指数题概率
@@ -1395,7 +1395,7 @@ const keyboard=document.getElementById('keyboard');
 const starOverlay=document.getElementById('starOverlay');
 const milestoneToast=document.getElementById('milestoneToast');
 
-/* ================= v7.0 DOM 引用与渲染 ================= */
+/* ================= v0.7.0 DOM 引用与渲染 ================= */
 const coinValue=document.getElementById('coinValue');
 const catBubble=document.getElementById('catBubble');
 const PRAISE_LINES=[
@@ -1548,7 +1548,7 @@ function performQuit(){
     while(hist.length>HISTORY_SIZE) hist.shift();
     saveHistory(currentMode,hist);
   }
-  // v7.0 中途退出同样结算金币（按同一公式）
+  // v0.7.0 中途退出同样结算金币（按同一公式）
   const earned=calcCoinsEarned(reached,startStage);
   addCoins(earned);
   quitBtn.style.display='none';
@@ -1764,7 +1764,7 @@ function endGame(){
   recordStage();                           // 记录本次到达关卡，供下局计算起点（按模式）
   finalStage.textContent=currentStage-1;
   finalScore.textContent=Math.round(score);
-  // v7.0 金币结算：达到关卡 currentStage，本局起点 startStage
+  // v0.7.0 金币结算：达到关卡 currentStage，本局起点 startStage
   const reached=currentStage;
   const earned=calcCoinsEarned(reached,startStage);
   addCoins(earned);
@@ -2093,7 +2093,7 @@ function renderSecretGrid(){
 function secretShow(which){
   startScreen.style.display='none';gameScreen.style.display='none';resultScreen.style.display='none';
   sec.select.style.display='none';sec.battle.style.display='none';sec.result.style.display='none';
-  // v8.2：秘境战斗过程中不显示持有的货币（金币/钥匙），其余页面正常显示
+  // v0.8.2：秘境战斗过程中不显示持有的货币（金币/钥匙），其余页面正常显示
   const coinBadge=document.querySelector('.coin-badge');
   if(coinBadge) coinBadge.style.display=(which==='battle')?'none':'flex';
   const petEl=document.getElementById('petScreen'); if(petEl) petEl.style.display='none';
@@ -2125,7 +2125,7 @@ function secretKey(t){
 }
 function secretStartLevel(k){
   const lines=secretStarLines(k);
-  // v7.0：本局开始时锁定宠物心情与技能状态
+  // v0.7.0：本局开始时锁定宠物心情与技能状态
   const v7=applyDailyDecay(loadV7(),Date.now());
   saveV7(v7);
   const mood=v7.mood;
@@ -2210,7 +2210,7 @@ function secretFitProblem(){
   const el=sec.problem, box=el.parentElement;
   if(!box) return;
   el.style.fontSize='';
-  // v8.2：扣除 combat-mid 左右 padding，给算式两侧留出安全间距，避免数字撞到战士/妖怪
+  // v0.8.2：扣除 combat-mid 左右 padding，给算式两侧留出安全间距，避免数字撞到战士/妖怪
   const cs=getComputedStyle(box);
   const padX=(parseFloat(cs.paddingLeft)||0)+(parseFloat(cs.paddingRight)||0);
   const avail=Math.max(60,(box.clientWidth||420)-padX-8);
@@ -2345,7 +2345,7 @@ function secretFinish(win){
     const cur=saves[s.level]||{best:0,stars:0};
     saves[s.level]={best:Math.max(cur.best,final),stars:Math.max(cur.stars,stars)};
     saveSecretSaves(saves);
-    keyGot=claimSecretKey(s.level);          // v8.0：40关起每关首次通关发1钥匙
+    keyGot=claimSecretKey(s.level);          // v0.8.0：40关起每关首次通关发1钥匙
   }
   window._lastKeyGot=keyGot;
   sec.rTitle.textContent=win?'讨伐成功':'讨伐失败';
@@ -2376,7 +2376,7 @@ document.addEventListener('keydown',(e)=>{
   else if(k==='Enter') secretKey('提交');
 });
 
-/* ================= v7.0 我的宠物 ================= */
+/* ================= v0.7.0 我的宠物 ================= */
 const petEl={
   screen:document.getElementById('petScreen'),
   cat:document.getElementById('petCat'),
@@ -2456,7 +2456,7 @@ document.getElementById('petBackMenu').addEventListener('click',()=>secretShow('
 document.getElementById('rankEntryBtn').addEventListener('click',()=>secretShow('rank'));
 document.getElementById('rankBackBtn').addEventListener('click',()=>secretShow('pet'));
 
-/* ================= v8.0 全球排行榜（娱乐向，数据固定） ================= */
+/* ================= v0.8.0 全球排行榜（娱乐向，数据固定） ================= */
 // 总人数 n：由关卡人数分布反推（过40关及以上的 634083 人 = 前 0.6%）
 const RANK_N=105680504;
 // 固定前20名（用户指定）：心情值从 25680→25570，对应通关 97→90 关
@@ -2533,7 +2533,7 @@ function renderRank(){
 initKeyboard();   // 默认按 calc 渲染，进游戏时会重新初始化
 initStartDecor();
 secretInitKeyboard();
-// v7.0：页面加载即执行每日衰减并渲染金币
+// v0.7.0：页面加载即执行每日衰减并渲染金币
 (function initV7(){
   const v7=applyDailyDecay(loadV7(),Date.now());
   saveV7(v7);

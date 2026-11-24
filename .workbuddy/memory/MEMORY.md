@@ -10,3 +10,9 @@
 ## 构建环境
 - JAVA_HOME / ANDROID_HOME / GRADLE_HOME 位于 `.build/tools/`，Gradle 8.7，签名 digest `4ae1394a…`。
 - 版本三处同步：`build.gradle`（versionCode/versionName）、`MainActivity.java` 的 `return "x.y.z"`、HTML 顶部 `<!-- MathBrain vX -->` 及全文版本号。
+
+## 历史版本重编号（2026-11-24 21:54）
+- 用户要求把 v8.7 及以前所有版本号改成 v0.x.x（vX.Y→v0.X.Y），v1.0.x 与当前主源码不动。
+- 改了 85 个文件名（19 备份HTML + v8.7基线 + 两套各23 APK + 19 历史资源），以及 versions-meta.json、版本管理工具.html 的内嵌数据与硬编码判断、旧备份内部注释。
+- APK 内部 versionName 是编译进二进制的历史标识（如 5.3/8.7），只改文件名不改内部，保留历史归档真实性。
+- 版本工具回滚命令同步改为 `cp 数学_v<版本>_备份.html ...`。

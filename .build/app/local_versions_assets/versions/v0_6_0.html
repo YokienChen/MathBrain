@@ -265,7 +265,7 @@ body{
   background:linear-gradient(90deg,#2e7d32,#66bb6a,#a5d6a7);box-shadow:0 0 10px rgba(80,220,100,.7) inset;}
 .hp-track .fill.enemy{background:linear-gradient(90deg,#6a1b9a,#ab47bc,#ce93d8);box-shadow:0 0 10px rgba(200,100,255,.7) inset;}
 .combat-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;}
-.secret-q{font-size:1.75rem;font-weight:bold;color:#ffeb3b;text-shadow:0 0 14px rgba(255,220,60,.45);text-align:center;line-height:1.35;white-space:nowrap;word-break:keep-all;display:inline-block;max-width:100%;}
+.secret-q{font-size:1.75rem;font-weight:bold;color:#ffeb3b;text-shadow:0 0 14px rgba(255,220,60,.45);text-align:center;line-height:1.35;word-break:break-all;}
 .secret-q .fire{color:#ff7043;text-shadow:0 0 16px rgba(255,90,30,.95);animation:firePulse 1s ease infinite alternate;}
 @keyframes firePulse{from{transform:scale(1);}to{transform:scale(1.18);}}
 .secret-tip{font-size:.85rem;color:#9fe0ff;text-align:center;line-height:1.6;}
@@ -287,15 +287,6 @@ body{
 .sr-stars .on{color:#ffd54f;text-shadow:0 0 18px rgba(255,200,50,.9);}
 .sr-stats{font-size:1.1rem;line-height:1.9;color:#e6dcf7;}
 .sr-lines{font-size:.82rem;color:#a89bc4;line-height:1.7;}
-@media(max-width:600px){
-  .combat{padding:6px 4px 2px;gap:2px;}
-  .fighter{flex:0 0 88px;}
-  .fighter svg{width:68px;height:82px;}
-  .hp-track{width:88px;}
-  .secret-q{font-size:1.3rem;}
-  .secret-tip{font-size:.76rem;}
-  .secret-bonus{font-size:.7rem;}
-}
 </style>
 </head>
 <body>
@@ -688,7 +679,7 @@ function validExpPair(b1,b2){
   if(mn<2) return false;
   return true;
 }
-// v5.3：双指数题 a^x ? b^y 的指数对分布（与是否保底触发无关，一律按此分布抽取）
+// v0.5.3：双指数题 a^x ? b^y 的指数对分布（与是否保底触发无关，一律按此分布抽取）
 // 40% → {2,3}；30% → {3,4}；其余 30% → 其它合法指数对
 function pickExpPair(){
   const r=Math.random();
@@ -933,7 +924,7 @@ function buildCompareCore(stage,type,cap,floor,lo,hi,opts){
     return {leftExpr:powExpr(p),rightExpr:encode(type.right,p.v),answer:'='};
   }
 
-  // ---------- 情形C：幂 vs 幂（v5.3：严格按指定指数对，x、y 顺序无所谓） ----------
+  // ---------- 情形C：幂 vs 幂（v0.5.3：严格按指定指数对，x、y 顺序无所谓） ----------
   // opts.expPair={x,y} 时，a^x 与 b^y 的指数对固定为 {x,y}（左右顺序随机）；
   // 只有当该对在当前 cap 下无法成题时，才依次回退到其它合法对。
   const wanted=(opts.expPair && typeof opts.expPair==='object') ? opts.expPair : null;
@@ -1062,7 +1053,7 @@ function generateCompare(contentStage,showStage){
 
   // ===== 双指数题（两边都是幂）=====
   // 出现概率 = 基础概率(doubleExpProb，不计保底) 或 连续3题未出必出。
-  // v5.3：无论保底触发还是基础概率触发，指数对一律按 pickExpPair() 分布抽取
+  // v0.5.3：无论保底触发还是基础概率触发，指数对一律按 pickExpPair() 分布抽取
   //       （40% {2,3}、30% {3,4}、其余 30% 其它合法对），x/y 顺序无所谓。
   // 注意只有 81 关起才有 pow-vs-pow 题型，故保底/概率仅在 showStage>=81 启用。
   const deProb=doubleExpProb(showStage);
@@ -1071,7 +1062,7 @@ function generateCompare(contentStage,showStage){
     forceDouble = (noDoubleExpCount>=3) || Math.random()<deProb;
     if(forceDouble){
       type={left:'pow',right:'pow'};
-      opts.expPair=pickExpPair();        // v5.3：固定本次的指数对（保底/概率同样适用）
+      opts.expPair=pickExpPair();        // v0.5.3：固定本次的指数对（保底/概率同样适用）
       lo=Math.max(0.4,lo-0.05);          // 差距比例下限再放宽 5 个百分点
     }else{
       // 非双指数局：从类型池排除 pow/pow，避免自然出现抬高双指数题概率
@@ -1485,29 +1476,22 @@ function getRandomInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;
 /* ================================================================
    秘境挑战 · 出题引擎（纯逻辑，不依赖 DOM）
    ================================================================ */
-// 敌方血量加成表 [关卡] = 血量加成%；1-5 关 0。血量加成规则不变。
+// 敌方加成表 [关卡] = [血量加成%, 伤害加成%]；1-5 关 0/0
 const SECRET_BONUS_TABLE={
-  6:10,7:20,8:30,9:40,10:50,
-  11:70,12:90,13:110,14:130,15:150,
-  16:165,17:182,18:200,19:220,20:242,
-  21:266,22:293,23:322,24:354,25:389,
-  26:428,27:471,28:518,29:570,30:627,
-  31:690,32:759,33:835,34:919,35:1011,
-  36:1112,37:1223,38:1345,39:1480,40:1628,41:1791
+  6:[10,3],7:[20,6],8:[30,10],9:[40,13],10:[50,16],
+  11:[70,23],12:[90,30],13:[110,36],14:[130,43],15:[150,50],
+  16:[165,55],17:[182,60],18:[200,66],19:[220,73],20:[242,80],
+  21:[266,88],22:[293,97],23:[322,107],24:[354,118],25:[389,129],
+  26:[428,142],27:[471,157],28:[518,172],29:[570,190],30:[627,209],
+  31:[690,220],32:[759,220],33:[835,220],34:[919,220],35:[1011,220],
+  36:[1112,250],37:[1223,280],38:[1345,310],39:[1480,340],40:[1628,370],41:[1791,400]
 };
-// 伤害加成：1-5关 0；6-30关 = 血量加成的1/10向下取整；31/32/33/34 = 70/80/90/100；35关起每关+20，封顶400
-function secretDmgBonus(k){
-  if(k<=5) return 0;
-  if(k<=30) return Math.floor((SECRET_BONUS_TABLE[k]||0)/10);
-  if(k<=34) return [70,80,90,100][k-31];
-  return Math.min(400, 100+(k-34)*20);
-}
 function secretBonuses(k){
-  let hp;
-  if(k<=5) hp=0;
-  else if(k<=41) hp=SECRET_BONUS_TABLE[k]||0;
-  else { hp=1791; for(let i=42;i<=k;i++) hp=Math.min(3900,Math.round(hp*1.04)); }
-  return {hp:hp,dmg:secretDmgBonus(k)};        // 血量上限 3900%，伤害上限 400%
+  if(k<=5) return {hp:0,dmg:0};
+  if(k<=41){ const a=SECRET_BONUS_TABLE[k]||[0,0]; return {hp:a[0],dmg:a[1]}; }
+  let hp=1791;
+  for(let i=42;i<=k;i++) hp=Math.min(3900,Math.round(hp*1.04));
+  return {hp:hp,dmg:400};                    // 42 关起伤害固定 400%，血量上限 3900%
 }
 // 第 k 关第 i 题的隐藏分：前20题 k,2k,…,20k；之后每题 +max(1,floor(0.3k))
 function secretHiddenScore(k,i){
@@ -1543,10 +1527,7 @@ function secretFireNumber(n,pos){
   const pow=Math.pow(10,pos);
   const high=Math.floor(n/(pow*10));
   const low=n%pow;
-  // 省略前导零：最高位被遮时直接以🔥开头，避免 0🔥6 这类难看显示
-  const head=high>0?String(high):'';
-  const tail=pos>0?String(low).padStart(pos,'0'):'';
-  return head+'🔥'+tail;
+  return String(high)+'🔥'+(low>0?String(low).padStart(pos,'0'):(pos>0?'0'.repeat(pos):''));
 }
 // 特殊题：枚举被遮住那一位 0-9 的所有答案，挑 1-4 条"答案某位是几"提示，保证唯一
 function secretGreedHints(ans,list){
@@ -1577,16 +1558,14 @@ function secretFactorPairs(V){
   return out;
 }
 // 构造一道特殊数题，返回 {text,hints,answer} 或 null
-// 隐藏位在 0(个)/1(十)/2(百) 中随机，让🔥不只出现在个位
 function secretMakeSpecial(type,floor,cap){
+  const POS=0;   // 隐藏个位，保证数字位数不变、候选集中
   for(let attempt=0;attempt<900;attempt++){
     const V=getRandomInt(floor,cap);
-    let a,b,c,text,calc,target,POS;
+    let a,b,c,text,calc;
     if(type===4){
       if(V<12) continue;
-      b=getRandomInt(10,Math.min(999,V-1)); a=V-b;
-      if(a<1) continue;
-      target=b; POS=getRandomInt(0,String(b).length-1);
+      b=getRandomInt(10,Math.min(99,V-1)); a=V-b;
       text=a+' + '+secretFireNumber(b,POS);
       calc=d=>a+secretReplaceDigit(b,POS,d);
     }else if(type===5){
@@ -1595,32 +1574,28 @@ function secretMakeSpecial(type,floor,cap){
       const pr=pairs[getRandomInt(0,pairs.length-1)];
       a=pr[0]; b=pr[1];
       if(b<10){ const t=a;a=b;b=t; }
-      target=b; POS=getRandomInt(0,String(b).length-1);
       text=a+' × '+secretFireNumber(b,POS);
       calc=d=>a*secretReplaceDigit(b,POS,d);
     }else if(type===6){
       if(V<14) continue;
-      c=getRandomInt(10,Math.min(999,V-4));
+      c=getRandomInt(10,Math.min(99,V-4));
       const pairs=secretFactorPairs(V-c);
       if(!pairs.length) continue;
       const pr=pairs[getRandomInt(0,pairs.length-1)];
       a=pr[0]; b=pr[1];
-      target=c; POS=getRandomInt(0,String(c).length-1);
       text=a+' × '+b+' + '+secretFireNumber(c,POS);
       calc=d=>a*b+secretReplaceDigit(c,POS,d);
     }else{ // type 7
-      b=getRandomInt(10,Math.min(999,Math.floor((V-1)/2)));
-      if(b<10) continue;
+      b=getRandomInt(10,99);
       const aMax=Math.floor((V-1)/b);
       if(aMax<2) continue;
       a=getRandomInt(2,aMax); c=V-a*b;
       if(c<1) continue;
-      target=b; POS=getRandomInt(0,String(b).length-1);
       text=a+' × '+secretFireNumber(b,POS)+' + '+c;
       calc=d=>a*secretReplaceDigit(b,POS,d)+c;
     }
     const map={};
-    const originalDigit=secretDigitAt(target,POS);
+    const originalDigit=secretDigitAt((type===6?c:b),POS);
     for(let d=0;d<=9;d++){ const v=calc(d); map[v]=(map[v]||0)+1; }
     const list=Object.keys(map).map(Number);
     if(list.length<2) continue;
@@ -1647,22 +1622,18 @@ function generateSecretProblem(k,i,noSpecialState){
   if(wantSpecial && specialTypes.length) types=specialTypes;
   else wantSpecial=false;
   const type=types[getRandomInt(0,types.length-1)];
-  const cap=capBase;
+  const cap=wantSpecial?Math.max(10,Math.round(capBase*0.1)):capBase;
   const floor=Math.max(1,Math.round(cap*0.3));
   let q=null;
   if(wantSpecial){
-    // 依次尝试全部可用特殊题型（优先提示更容易唯一的加法/加乘型），
+    // 依次尝试全部可用特殊题型（优先个位提示必然唯一的加法/加乘型），
     // 保证「连续两题未出则下一题必出」不会因某一种题型构造失败而落空。
     const order=specialTypes.slice().sort((a,b)=>{
       const rank=x=>(x===4||x===6)?0:1;
       return rank(a)-rank(b);
     });
     for(const st of order){
-      // ④⑥ 特殊数位于加数位置，遮任意位后候选仍集中，上限放宽到 0.4；⑤⑦ 维持 0.1
-      const ratio=(st===4||st===6)?0.4:0.1;
-      const spCap=Math.max(10,Math.round(capBase*ratio));
-      const spFloor=Math.max(1,Math.round(spCap*0.3));
-      q=secretMakeSpecial(st,spFloor,spCap);
+      q=secretMakeSpecial(st,floor,cap);
       if(q){ noSpecialState.v=0; return q; }
     }
     // 所有特殊题型均失败：退回普通题，保底计数保留，下一题继续强制
@@ -1835,15 +1806,6 @@ function secretBurn(){
   secretUpdateHP();
   if(s.playerHP<=0) secretFinish(false);
 }
-// 算式强制单行：按中间区域实际宽度自动缩放字号，避免长算式折行
-function secretFitProblem(){
-  const el=sec.problem, box=el.parentElement;
-  if(!box) return;
-  el.style.fontSize='';
-  const avail=Math.max(60,(box.clientWidth||420)-10);
-  const w=el.scrollWidth||0;
-  if(w>avail) el.style.fontSize=Math.max(12,Math.floor(28*avail/w))+'px';
-}
 function secretNextProblem(){
   const s=secretState;
   if(!s||!s.active) return;
@@ -1852,7 +1814,6 @@ function secretNextProblem(){
   s.q=q; s.qStart=performance.now(); s.input='';
   sec.input.textContent=' ';
   sec.problem.innerHTML=q.text.replace(/🔥/g,'<span class="fire">🔥</span>');
-  secretFitProblem();
   sec.hints.textContent=(q.hints&&q.hints.length)
     ? '提示：'+q.hints.map((h,i)=>['①','②','③','④'][i]+secretDigitName(h.p)+'位是'+h.v).join('　')
     : '';
@@ -1906,10 +1867,10 @@ function secretSubmit(){
   if(!s||!s.active||s.locked||!s.input) return;
   s.locked=true;
   const elapsed=(performance.now()-s.qStart)/1000;
+  s.score+=1000/(3+elapsed);
   let correct=false;
   try{ correct=(BigInt(s.input)===BigInt(s.q.answer)); }catch(e){}
   if(correct){
-    s.score+=1000/(3+elapsed);              // 仅答对计分，答错 0 分
     s.correct++;
     s.playerHP=Math.min(1000,s.playerHP+250);   // 与投弹同时回血
     secretUpdateHP();

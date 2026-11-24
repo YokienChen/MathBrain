@@ -265,7 +265,7 @@ body{
   background:linear-gradient(90deg,#2e7d32,#66bb6a,#a5d6a7);box-shadow:0 0 10px rgba(80,220,100,.7) inset;}
 .hp-track .fill.enemy{background:linear-gradient(90deg,#6a1b9a,#ab47bc,#ce93d8);box-shadow:0 0 10px rgba(200,100,255,.7) inset;}
 .combat-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;}
-.secret-q{font-size:1.75rem;font-weight:bold;color:#ffeb3b;text-shadow:0 0 14px rgba(255,220,60,.45);text-align:center;line-height:1.35;white-space:nowrap;word-break:keep-all;display:inline-block;max-width:100%;}
+.secret-q{font-size:1.75rem;font-weight:bold;color:#ffeb3b;text-shadow:0 0 14px rgba(255,220,60,.45);text-align:center;line-height:1.35;word-break:break-all;}
 .secret-q .fire{color:#ff7043;text-shadow:0 0 16px rgba(255,90,30,.95);animation:firePulse 1s ease infinite alternate;}
 @keyframes firePulse{from{transform:scale(1);}to{transform:scale(1.18);}}
 .secret-tip{font-size:.85rem;color:#9fe0ff;text-align:center;line-height:1.6;}
@@ -287,90 +287,10 @@ body{
 .sr-stars .on{color:#ffd54f;text-shadow:0 0 18px rgba(255,200,50,.9);}
 .sr-stats{font-size:1.1rem;line-height:1.9;color:#e6dcf7;}
 .sr-lines{font-size:.82rem;color:#a89bc4;line-height:1.7;}
-@media(max-width:600px){
-  .combat{padding:6px 4px 2px;gap:2px;}
-  .fighter{flex:0 0 88px;}
-  .fighter svg{width:68px;height:82px;}
-  .hp-track{width:88px;}
-  .secret-q{font-size:1.3rem;}
-  .secret-tip{font-size:.76rem;}
-  .secret-bonus{font-size:.7rem;}
-}
-
-/* ===== v7.0 金币 / 猫咪气泡 / 宠物 ===== */
-.coin-badge{
-  position:absolute;top:14px;right:18px;z-index:8;
-  display:flex;align-items:center;gap:6px;
-  padding:5px 12px 5px 6px;border-radius:99px;
-  background:linear-gradient(135deg,rgba(255,214,64,.2),rgba(255,160,20,.12));
-  border:1px solid rgba(255,214,64,.6);color:#ffe082;font-weight:bold;font-size:1rem;
-  box-shadow:0 0 16px rgba(255,190,40,.35);cursor:default;user-select:none;
-}
-.coin-icon{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:24px;height:24px;border-radius:50%;font-size:13px;
-  background:radial-gradient(circle at 35% 30%,#fff3b0,#ffca28 55%,#f9a825);
-  border:2px solid #ffd54f;box-shadow:inset 0 0 4px rgba(120,70,0,.6),0 0 8px rgba(255,200,40,.6);
-  vertical-align:middle;
-}
-/* 普通模式猫咪 + 气泡 */
-.cat-row{display:flex;align-items:flex-end;justify-content:center;gap:10px;min-height:56px;margin:-8px 0 6px;}
-.cat-buddy{font-size:2.2rem;line-height:1;filter:drop-shadow(0 3px 8px rgba(0,0,0,.5));cursor:pointer;user-select:none;
-  animation:catBob 2.6s ease-in-out infinite;}
-@keyframes catBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
-.cat-bubble{
-  position:relative;max-width:360px;padding:9px 14px;border-radius:14px 14px 14px 4px;
-  background:linear-gradient(135deg,#fff8e1,#ffe0b2);color:#5d4037;font-size:.9rem;font-weight:600;
-  box-shadow:0 6px 18px rgba(0,0,0,.35);opacity:0;transform:translateY(8px) scale(.94);
-  transition:opacity .3s,transform .3s;pointer-events:none;
-}
-.cat-bubble.show{opacity:1;transform:translateY(0) scale(1);}
-.cat-bubble::before{content:'';position:absolute;left:-7px;bottom:8px;border:7px solid transparent;border-right-color:#ffe0b2;border-left:0;}
-/* 秘境战士旁小猫 */
-.sb-cat{font-size:1.7rem;line-height:1;filter:drop-shadow(0 3px 6px rgba(0,0,0,.5));margin-bottom:2px;animation:catBob 2.2s ease-in-out infinite;}
-.hero-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
-/* 不屈意志光效 */
-.steadfast-glow{animation:steadfastGlow .5s ease-in-out infinite alternate;}
-@keyframes steadfastGlow{
-  from{filter:drop-shadow(0 0 6px #fff) drop-shadow(0 0 10px #ffd54f) brightness(1.2);}
-  to{filter:drop-shadow(0 0 18px #fff) drop-shadow(0 0 30px #ffd54f) brightness(1.8);}
-}
-.steadfast-banner{
-  position:absolute;top:44%;left:50%;transform:translateX(-50%);
-  font-size:1.6rem;font-weight:bold;color:#fff8e1;letter-spacing:4px;
-  text-shadow:0 0 18px #ffb300,0 0 34px #ff6f00;z-index:20;pointer-events:none;
-  animation:sfPulse .5s ease-in-out infinite alternate;
-}
-@keyframes sfPulse{from{opacity:.7;transform:translateX(-50%) scale(.96);}to{opacity:1;transform:translateX(-50%) scale(1.06);}}
-.shield-flash{animation:shieldFlash .6s ease-out;}
-@keyframes shieldFlash{0%{filter:drop-shadow(0 0 26px #4fc3f7) brightness(2);}100%{filter:none;}}
-/* 我的宠物页 */
-.pet-screen{display:none;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:8px 0;}
-.pet-cat{font-size:5.4rem;line-height:1;filter:drop-shadow(0 8px 18px rgba(0,0,0,.5));animation:catBob 3s ease-in-out infinite;}
-.pet-desc{font-size:.92rem;color:#d5cef2;line-height:1.7;max-width:460px;}
-.mood-box{width:100%;max-width:460px;}
-.mood-label{display:flex;justify-content:space-between;font-size:.92rem;color:#ffe082;margin-bottom:6px;}
-.mood-track{height:20px;border-radius:99px;background:rgba(0,0,0,.5);border:1px solid rgba(255,214,64,.4);overflow:hidden;position:relative;}
-.mood-fill{height:100%;width:0%;border-radius:99px;transition:width .35s ease;
-  background:linear-gradient(90deg,#ff8a65,#ffd54f,#fff59d);box-shadow:0 0 12px rgba(255,200,60,.6) inset;}
-.pet-info{font-size:.8rem;color:#a89bc4;line-height:1.8;}
-.pet-skills{font-size:.82rem;color:#b9a6ff;line-height:1.8;min-height:30px;}
-.pet-skill-on{color:#7fe9ff;text-shadow:0 0 8px rgba(80,220,255,.5);}
-.pet-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:460px;}
-.pet-btn{
-  padding:10px 18px;border-radius:12px;cursor:pointer;font-size:.95rem;font-weight:bold;
-  border:1px solid rgba(255,214,64,.5);color:#2a1a00;
-  background:linear-gradient(135deg,#ffe082,#ffb300);transition:transform .15s,filter .15s;
-}
-.pet-btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.1);}
-.pet-btn:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.6);}
-.pet-btn.upgrade{background:linear-gradient(135deg,#b9a6ff,#7c4dff);color:#fff;border-color:rgba(180,150,255,.6);}
-.pet-msg{font-size:.85rem;color:#ffd54f;min-height:20px;}
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="coin-badge" title="金币"><span class="coin-icon">🐈</span><span id="coinValue">0</span></div>
   <div class="screen start-screen" id="startScreen">
     <div class="start-decor" id="startDecor"></div>
     <div class="start-content">
@@ -399,12 +319,6 @@ body{
           <div class="mode-desc">• 逐关讨伐妖怪，赢或输才结束<br>• 炸弹与飞刀，烈焰每秒灼烧<br>• 谜题藏起一位，靠提示推理</div>
         </div>
       </div>
-      <div class="mode-card pet" id="modePet" style="max-width:300px;margin:0 auto 18px;">
-        <div class="mode-icon">🐈</div>
-        <div class="mode-title">我的宠物</div>
-        <div class="mode-sub">MY PET</div>
-        <div class="mode-desc" style="text-align:center;">照顾猫咪，一起变强<br>查看心情 · 投喂 · 升级</div>
-      </div>
 
       <div class="rules-box">
         <p>⏱️ 生命随时间流逝，归零即结束 · 答对回血、答错扣血</p>
@@ -427,11 +341,6 @@ body{
     </div>
     <div class="life-bar"><div class="life-fill" id="lifeFill" style="width:100%;"></div></div>
 
-    <div class="cat-row">
-      <div class="cat-buddy" id="catBuddy" title="你的猫咪伙伴">🐈</div>
-      <div class="cat-bubble" id="catBubble"></div>
-    </div>
-
     <div class="problem-container">
       <div class="problem" id="problemText">3 + 5</div>
       <div class="difficulty-indicator" id="difficultyText">简单</div>
@@ -447,7 +356,6 @@ body{
     <div class="result-stats">
       <p>通过关卡: <span id="finalStage">0</span></p>
       <p>最终得分: <span id="finalScore">0</span></p>
-      <p style="color:#ffe082;">🪙 本局金币 +<span id="coinEarned">0</span></p>
       <p id="percentileRow">超过了 <span id="percentile">0</span>% 的玩家</p>
     </div>
     <div class="progress-bar" id="progressRow"><div class="progress-fill" id="progressFill" style="width:0%;"></div></div>
@@ -474,9 +382,6 @@ body{
       <span class="sb-score" id="secretScore">0 分</span>
     </div>
     <div class="combat">
-      <div class="hero-wrap" id="battleCatWrap" style="flex:0 0 46px;" title="宠物同行">
-        <div class="sb-cat" id="battleCat">🐈</div>
-      </div>
       <div class="fighter" id="heroFighter">
         <div class="hp-label" id="heroHpText">1000 / 1000</div>
         <div class="hp-track"><div class="fill" id="heroHpFill"></div></div>
@@ -544,28 +449,8 @@ body{
       <button class="result-restart" id="secretResultBack">关卡列表 ☰</button>
     </div>
   </div>
-
-  <div class="screen pet-screen" id="petScreen">
-    <button class="secret-back" id="petBackMenu" style="align-self:flex-start;">← 主菜单</button>
-    <h2 style="color:#ffe680;letter-spacing:4px;">我 的 宠 物</h2>
-    <div class="pet-cat" id="petCat">🐈</div>
-    <div class="pet-desc">可爱的宠物生来就是为了与你作伴，悉心照顾你的宠物，打败更强的敌人！</div>
-    <div class="mood-box">
-      <div class="mood-label"><span>宠物心情 <b id="moodValue">125</b></span><span id="moodMax">/ 125</span></div>
-      <div class="mood-track"><div class="mood-fill" id="moodFill"></div></div>
-    </div>
-    <div class="pet-info" id="petLevelInfo">等级 1 · 每日凌晨 3:00 衰减 4.5% · 心情下限 100 / 上限 125</div>
-    <div class="pet-skills" id="petSkills"></div>
-    <div class="pet-actions">
-      <button class="pet-btn" id="feedBtn">投喂（10 金币 · 心情 +5）</button>
-      <button class="pet-btn" id="feed10Btn">投喂×10（99 金币 · 心情 +50）</button>
-      <button class="pet-btn upgrade" id="upgradeBtn">升级宠物</button>
-    </div>
-    <div class="pet-msg" id="petMsg"></div>
-  </div>
 </div>
 
-<div class="steadfast-banner" id="steadfastBanner" style="display:none;">✨ 不屈意志 ✨</div>
 <div class="footer">设计用于数学能力测试 · 挑战你的计算速度与准确性</div>
 
 <div class="star-overlay" id="starOverlay"></div>
@@ -591,100 +476,6 @@ let gameActive = false;
 let answerLocked = false;    // 判题锁：答对后到下一题生成前，禁止重复判题
 let noSpecialCount = 0;      // 比大小模式：π/e 连续未出现计数（保底5用）
 let noDoubleExpCount = 0;    // 比大小模式：双指数题连续未出现计数（保底3用）
-
-/* ================= v7.0 金币与宠物系统 ================= */
-const V7_KEY='mathbrain_v7_v1';
-// 宠物等级表：index=等级 → {price:升级到下一级花费, k:每日衰减%, m:心情上限}
-const PET_LEVELS={
-  1:{price:200,k:4.5,m:125},2:{price:300,k:4.0,m:150},3:{price:400,k:3.5,m:175},
-  4:{price:600,k:3.0,m:200},5:{price:800,k:2.5,m:250},6:{price:1400,k:2.0,m:500},
-  7:{price:2000,k:1.5,m:1000},8:{price:4500,k:1.0,m:3000},9:{price:8000,k:0.5,m:8000},
-  10:{price:null,k:0,m:20000}
-};
-const PET_MIN_MOOD=100;
-function defaultV7(){ return {coins:0,petLevel:1,mood:PET_MIN_MOOD,lastDecay:0}; }
-function loadV7(){
-  try{
-    let raw=null;
-    if(window.AndroidStore&&window.AndroidStore.getHistory) raw=window.AndroidStore.getHistory(V7_KEY);
-    if(!raw) raw=localStorage.getItem(V7_KEY);
-    const o=raw?JSON.parse(raw):null;
-    const d=defaultV7();
-    if(!o||typeof o!=='object'||Array.isArray(o)) return d;
-    return {
-      coins:Math.max(0,Math.floor(Number(o.coins)||0)),
-      petLevel:Math.min(10,Math.max(1,Math.floor(Number(o.petLevel)||1))),
-      mood:Number(o.mood)||d.mood,
-      lastDecay:Number(o.lastDecay)||0
-    };
-  }catch(e){return defaultV7();}
-}
-function saveV7(o){
-  const s=JSON.stringify(o);
-  try{ if(window.AndroidStore&&window.AndroidStore.setHistory) window.AndroidStore.setHistory(V7_KEY,s); }catch(e){}
-  try{ localStorage.setItem(V7_KEY,s); }catch(e){}
-}
-// 当前宠物配置
-function petCfg(){ return PET_LEVELS[loadV7().petLevel]; }
-// 心情上限随等级变化，超出则截断
-function clampMood(v,level){
-  const m=PET_LEVELS[level]||PET_LEVELS[1];
-  return Math.min(m.m,Math.max(PET_MIN_MOOD,v));
-}
-// 上次凌晨3点的时间戳（若 now 当天3点已过则返回当天3点，否则昨天3点）
-// now 可为 Date 或毫秒时间戳
-function last3am(now){
-  const n=(now instanceof Date)?now.getTime():Number(now)||Date.now();
-  const d=new Date(n);
-  d.setHours(3,0,0,0);
-  if(n<d.getTime()) d.setDate(d.getDate()-1);
-  return d.getTime();
-}
-// 按经过了多少个"凌晨3点"逐次衰减：每次 mood*= (1-k/100)，下限100
-function applyDailyDecay(v7,now){
-  now=now||Date.now();
-  const target=last3am(now);
-  if(!v7.lastDecay) { v7.lastDecay=target; return v7; }
-  if(target<=v7.lastDecay) return v7;
-  const k=petCfgFor(v7.petLevel).k;
-  // 计算跨过了几个3点
-  let crossings=0,cur=v7.lastDecay;
-  while(true){
-    const next=last3am(cur+24*3600*1000);
-    if(next>target) break;
-    crossings++;cur=next;
-    if(crossings>100000) break;
-  }
-  if(crossings>0){
-    v7.mood=clampMood(v7.mood*Math.pow(1-k/100,crossings),v7.petLevel);
-  }
-  v7.lastDecay=target;
-  return v7;
-}
-function petCfgFor(level){ return PET_LEVELS[level]||PET_LEVELS[1]; }
-// 金币结算：reached=达到关卡，start=本局起点，played=打的关数
-// 未打满20关打折扣 n=(played/20)^2，基数取 max(reached, start+20)
-// 平衡性调整：最终金币获取 ×2（先按原公式四舍五入再翻倍）
-function calcCoinsEarned(reached,start){
-  const played=Math.max(0,reached-start);
-  const base=Math.max(reached,start+20);
-  const n=played>=20?1:Math.pow(played/20,2);
-  return Math.round(base*n)*2;
-}
-function addCoins(amount,now){
-  const v7=applyDailyDecay(loadV7(),now);
-  v7.coins+=amount;
-  saveV7(v7);
-  return v7;
-}
-// 秘境被动灼烧加成：心情≥1000 时每秒减少 mood/3000（四舍五入到0.1），上限3
-function moodBurnReduction(mood){
-  if(mood<1000) return 0;
-  return Math.min(3,Math.round((mood/3000)*10)/10);
-}
-// 技能解锁（按当前心情）
-function hasSteadfast(mood){ return mood>=8000; }   // 不屈意志
-function hasHardShield(mood){ return mood>=20000; }  // 硬核护盾
 
 /* ================= 历史记录与起点（按模式分开） =================
    每种模式各自记录过去 10 次"达到的关卡"，
@@ -888,7 +679,7 @@ function validExpPair(b1,b2){
   if(mn<2) return false;
   return true;
 }
-// v5.3：双指数题 a^x ? b^y 的指数对分布（与是否保底触发无关，一律按此分布抽取）
+// v0.5.3：双指数题 a^x ? b^y 的指数对分布（与是否保底触发无关，一律按此分布抽取）
 // 40% → {2,3}；30% → {3,4}；其余 30% → 其它合法指数对
 function pickExpPair(){
   const r=Math.random();
@@ -1133,7 +924,7 @@ function buildCompareCore(stage,type,cap,floor,lo,hi,opts){
     return {leftExpr:powExpr(p),rightExpr:encode(type.right,p.v),answer:'='};
   }
 
-  // ---------- 情形C：幂 vs 幂（v5.3：严格按指定指数对，x、y 顺序无所谓） ----------
+  // ---------- 情形C：幂 vs 幂（v0.5.3：严格按指定指数对，x、y 顺序无所谓） ----------
   // opts.expPair={x,y} 时，a^x 与 b^y 的指数对固定为 {x,y}（左右顺序随机）；
   // 只有当该对在当前 cap 下无法成题时，才依次回退到其它合法对。
   const wanted=(opts.expPair && typeof opts.expPair==='object') ? opts.expPair : null;
@@ -1262,7 +1053,7 @@ function generateCompare(contentStage,showStage){
 
   // ===== 双指数题（两边都是幂）=====
   // 出现概率 = 基础概率(doubleExpProb，不计保底) 或 连续3题未出必出。
-  // v5.3：无论保底触发还是基础概率触发，指数对一律按 pickExpPair() 分布抽取
+  // v0.5.3：无论保底触发还是基础概率触发，指数对一律按 pickExpPair() 分布抽取
   //       （40% {2,3}、30% {3,4}、其余 30% 其它合法对），x/y 顺序无所谓。
   // 注意只有 81 关起才有 pow-vs-pow 题型，故保底/概率仅在 showStage>=81 启用。
   const deProb=doubleExpProb(showStage);
@@ -1271,7 +1062,7 @@ function generateCompare(contentStage,showStage){
     forceDouble = (noDoubleExpCount>=3) || Math.random()<deProb;
     if(forceDouble){
       type={left:'pow',right:'pow'};
-      opts.expPair=pickExpPair();        // v5.3：固定本次的指数对（保底/概率同样适用）
+      opts.expPair=pickExpPair();        // v0.5.3：固定本次的指数对（保底/概率同样适用）
       lo=Math.max(0.4,lo-0.05);          // 差距比例下限再放宽 5 个百分点
     }else{
       // 非双指数局：从类型池排除 pow/pow，避免自然出现抬高双指数题概率
@@ -1335,35 +1126,6 @@ const progressFill=document.getElementById('progressFill');
 const keyboard=document.getElementById('keyboard');
 const starOverlay=document.getElementById('starOverlay');
 const milestoneToast=document.getElementById('milestoneToast');
-
-/* ================= v7.0 DOM 引用与渲染 ================= */
-const coinValue=document.getElementById('coinValue');
-const catBubble=document.getElementById('catBubble');
-const PRAISE_LINES=[
-  '太棒啦！这题都难不住你～','好厉害，继续保持这个节奏！','你的大脑在发光诶 ✨',
-  '干净利落，堪比数学家！','又对一题，猫咪为你鼓掌～','这速度，绝了！',
-  '聪明如你，答案手到擒来！','连胜的感觉是不是超爽？','你又在进步了，真为你骄傲！',
-  '完美！这就是最强大脑的实力！'
-];
-const FOCUS_LINES=[
-  '哎呀，认真一点哦～','别急，看清楚再答。','失误啦，集中注意力！',
-  '深呼吸，下一题稳住。','猫咪在看着你呢，仔细点～','粗心了，再专注一些！',
-  '这题不难，再想想？','别慌，慢慢来就好。','打起精神，你可以的！','专心一点，答案就在眼前。'
-];
-function renderCoins(){
-  if(!coinValue) return;
-  try{ coinValue.textContent=loadV7().coins; }catch(e){ coinValue.textContent='0'; }
-}
-let catBubbleTimer=null;
-function showCatBubble(text){
-  if(!catBubble) return;
-  catBubble.textContent=text;
-  catBubble.classList.add('show');
-  clearTimeout(catBubbleTimer);
-  catBubbleTimer=setTimeout(()=>catBubble.classList.remove('show'),2200);
-}
-function catPraise(){ showCatBubble(PRAISE_LINES[Math.floor(Math.random()*PRAISE_LINES.length)]); }
-function catFocus(){ showCatBubble(FOCUS_LINES[Math.floor(Math.random()*FOCUS_LINES.length)]); }
 
 /* ================= 开始页装饰 ================= */
 function initStartDecor(){
@@ -1448,7 +1210,6 @@ backMenuBtn.addEventListener('click',()=>{
   resultScreen.style.display='none';
   startScreen.style.display='flex';
   initStartDecor();
-  renderCoins();
 });
 
 /* ---------- 中途退出：连点两下才退，防误触 ---------- */
@@ -1484,14 +1245,10 @@ function performQuit(){
     while(hist.length>HISTORY_SIZE) hist.shift();
     saveHistory(currentMode,hist);
   }
-  // v7.0 中途退出同样结算金币（按同一公式）
-  const earned=calcCoinsEarned(reached,startStage);
-  addCoins(earned);
   quitBtn.style.display='none';
   gameScreen.style.display='none';
   startScreen.style.display='flex';
   initStartDecor();
-  renderCoins();
 }
 
 function initGame(){
@@ -1625,7 +1382,6 @@ function checkAnswer(){
     if((currentStage-1)%10===0){
       spawnStars();
       showMilestone('第 '+(currentStage-1)+' 关达成 ✦');
-      catPraise();                             // 每过10关猫咪冒夸奖气泡
     }
 
     problemText.style.color='#4caf50';
@@ -1636,7 +1392,6 @@ function checkAnswer(){
     },300);
   }else{
     streak-=2;
-    catFocus();                                // 答错时猫咪冒提醒气泡
     if(currentMode==='compare'){
       // 比大小：答错立即进下一关（本题 0 分），掉血×3，上锁防连点误触
       life=Math.max(0,life-10.8);            // 比大小错血再+20%（9→10.8）
@@ -1700,13 +1455,6 @@ function endGame(){
   recordStage();                           // 记录本次到达关卡，供下局计算起点（按模式）
   finalStage.textContent=currentStage-1;
   finalScore.textContent=Math.round(score);
-  // v7.0 金币结算：达到关卡 currentStage，本局起点 startStage
-  const reached=currentStage;
-  const earned=calcCoinsEarned(reached,startStage);
-  addCoins(earned);
-  renderCoins();
-  const coinEarnedEl=document.getElementById('coinEarned');
-  if(coinEarnedEl) coinEarnedEl.textContent=earned;
   if(currentMode==='calc'){
     percentileRow.style.display='';
     progressRow.style.display='';
@@ -1728,29 +1476,22 @@ function getRandomInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;
 /* ================================================================
    秘境挑战 · 出题引擎（纯逻辑，不依赖 DOM）
    ================================================================ */
-// 敌方血量加成表 [关卡] = 血量加成%；1-5 关 0。血量加成规则不变。
+// 敌方加成表 [关卡] = [血量加成%, 伤害加成%]；1-5 关 0/0
 const SECRET_BONUS_TABLE={
-  6:10,7:20,8:30,9:40,10:50,
-  11:70,12:90,13:110,14:130,15:150,
-  16:165,17:182,18:200,19:220,20:242,
-  21:266,22:293,23:322,24:354,25:389,
-  26:428,27:471,28:518,29:570,30:627,
-  31:690,32:759,33:835,34:919,35:1011,
-  36:1112,37:1223,38:1345,39:1480,40:1628,41:1791
+  6:[10,3],7:[20,6],8:[30,10],9:[40,13],10:[50,16],
+  11:[70,23],12:[90,30],13:[110,36],14:[130,43],15:[150,50],
+  16:[165,55],17:[182,60],18:[200,66],19:[220,73],20:[242,80],
+  21:[266,88],22:[293,97],23:[322,107],24:[354,118],25:[389,129],
+  26:[428,142],27:[471,157],28:[518,172],29:[570,190],30:[627,209],
+  31:[690,220],32:[759,220],33:[835,220],34:[919,220],35:[1011,220],
+  36:[1112,250],37:[1223,280],38:[1345,310],39:[1480,340],40:[1628,370],41:[1791,400]
 };
-// 伤害加成：1-5关 0；6-30关 = 血量加成的1/10向下取整；31/32/33/34 = 70/80/90/100；35关起每关+20，封顶400
-function secretDmgBonus(k){
-  if(k<=5) return 0;
-  if(k<=30) return Math.floor((SECRET_BONUS_TABLE[k]||0)/10);
-  if(k<=34) return [70,80,90,100][k-31];
-  return Math.min(400, 100+(k-34)*20);
-}
 function secretBonuses(k){
-  let hp;
-  if(k<=5) hp=0;
-  else if(k<=41) hp=SECRET_BONUS_TABLE[k]||0;
-  else { hp=1791; for(let i=42;i<=k;i++) hp=Math.min(3900,Math.round(hp*1.04)); }
-  return {hp:hp,dmg:secretDmgBonus(k)};        // 血量上限 3900%，伤害上限 400%
+  if(k<=5) return {hp:0,dmg:0};
+  if(k<=41){ const a=SECRET_BONUS_TABLE[k]||[0,0]; return {hp:a[0],dmg:a[1]}; }
+  let hp=1791;
+  for(let i=42;i<=k;i++) hp=Math.min(3900,Math.round(hp*1.04));
+  return {hp:hp,dmg:400};                    // 42 关起伤害固定 400%，血量上限 3900%
 }
 // 第 k 关第 i 题的隐藏分：前20题 k,2k,…,20k；之后每题 +max(1,floor(0.3k))
 function secretHiddenScore(k,i){
@@ -1786,10 +1527,7 @@ function secretFireNumber(n,pos){
   const pow=Math.pow(10,pos);
   const high=Math.floor(n/(pow*10));
   const low=n%pow;
-  // 省略前导零：最高位被遮时直接以🔥开头，避免 0🔥6 这类难看显示
-  const head=high>0?String(high):'';
-  const tail=pos>0?String(low).padStart(pos,'0'):'';
-  return head+'🔥'+tail;
+  return String(high)+'🔥'+(low>0?String(low).padStart(pos,'0'):(pos>0?'0'.repeat(pos):''));
 }
 // 特殊题：枚举被遮住那一位 0-9 的所有答案，挑 1-4 条"答案某位是几"提示，保证唯一
 function secretGreedHints(ans,list){
@@ -1820,16 +1558,14 @@ function secretFactorPairs(V){
   return out;
 }
 // 构造一道特殊数题，返回 {text,hints,answer} 或 null
-// 隐藏位在 0(个)/1(十)/2(百) 中随机，让🔥不只出现在个位
 function secretMakeSpecial(type,floor,cap){
+  const POS=0;   // 隐藏个位，保证数字位数不变、候选集中
   for(let attempt=0;attempt<900;attempt++){
     const V=getRandomInt(floor,cap);
-    let a,b,c,text,calc,target,POS;
+    let a,b,c,text,calc;
     if(type===4){
       if(V<12) continue;
-      b=getRandomInt(10,Math.min(999,V-1)); a=V-b;
-      if(a<1) continue;
-      target=b; POS=getRandomInt(0,String(b).length-1);
+      b=getRandomInt(10,Math.min(99,V-1)); a=V-b;
       text=a+' + '+secretFireNumber(b,POS);
       calc=d=>a+secretReplaceDigit(b,POS,d);
     }else if(type===5){
@@ -1838,32 +1574,28 @@ function secretMakeSpecial(type,floor,cap){
       const pr=pairs[getRandomInt(0,pairs.length-1)];
       a=pr[0]; b=pr[1];
       if(b<10){ const t=a;a=b;b=t; }
-      target=b; POS=getRandomInt(0,String(b).length-1);
       text=a+' × '+secretFireNumber(b,POS);
       calc=d=>a*secretReplaceDigit(b,POS,d);
     }else if(type===6){
       if(V<14) continue;
-      c=getRandomInt(10,Math.min(999,V-4));
+      c=getRandomInt(10,Math.min(99,V-4));
       const pairs=secretFactorPairs(V-c);
       if(!pairs.length) continue;
       const pr=pairs[getRandomInt(0,pairs.length-1)];
       a=pr[0]; b=pr[1];
-      target=c; POS=getRandomInt(0,String(c).length-1);
       text=a+' × '+b+' + '+secretFireNumber(c,POS);
       calc=d=>a*b+secretReplaceDigit(c,POS,d);
     }else{ // type 7
-      b=getRandomInt(10,Math.min(999,Math.floor((V-1)/2)));
-      if(b<10) continue;
+      b=getRandomInt(10,99);
       const aMax=Math.floor((V-1)/b);
       if(aMax<2) continue;
       a=getRandomInt(2,aMax); c=V-a*b;
       if(c<1) continue;
-      target=b; POS=getRandomInt(0,String(b).length-1);
       text=a+' × '+secretFireNumber(b,POS)+' + '+c;
       calc=d=>a*secretReplaceDigit(b,POS,d)+c;
     }
     const map={};
-    const originalDigit=secretDigitAt(target,POS);
+    const originalDigit=secretDigitAt((type===6?c:b),POS);
     for(let d=0;d<=9;d++){ const v=calc(d); map[v]=(map[v]||0)+1; }
     const list=Object.keys(map).map(Number);
     if(list.length<2) continue;
@@ -1890,22 +1622,18 @@ function generateSecretProblem(k,i,noSpecialState){
   if(wantSpecial && specialTypes.length) types=specialTypes;
   else wantSpecial=false;
   const type=types[getRandomInt(0,types.length-1)];
-  const cap=capBase;
+  const cap=wantSpecial?Math.max(10,Math.round(capBase*0.1)):capBase;
   const floor=Math.max(1,Math.round(cap*0.3));
   let q=null;
   if(wantSpecial){
-    // 依次尝试全部可用特殊题型（优先提示更容易唯一的加法/加乘型），
+    // 依次尝试全部可用特殊题型（优先个位提示必然唯一的加法/加乘型），
     // 保证「连续两题未出则下一题必出」不会因某一种题型构造失败而落空。
     const order=specialTypes.slice().sort((a,b)=>{
       const rank=x=>(x===4||x===6)?0:1;
       return rank(a)-rank(b);
     });
     for(const st of order){
-      // ④⑥ 特殊数位于加数位置，遮任意位后候选仍集中，上限放宽到 0.4；⑤⑦ 维持 0.1
-      const ratio=(st===4||st===6)?0.4:0.1;
-      const spCap=Math.max(10,Math.round(capBase*ratio));
-      const spFloor=Math.max(1,Math.round(spCap*0.3));
-      q=secretMakeSpecial(st,spFloor,spCap);
+      q=secretMakeSpecial(st,floor,cap);
       if(q){ noSpecialState.v=0; return q; }
     }
     // 所有特殊题型均失败：退回普通题，保底计数保留，下一题继续强制
@@ -2029,12 +1757,10 @@ function renderSecretGrid(){
 function secretShow(which){
   startScreen.style.display='none';gameScreen.style.display='none';resultScreen.style.display='none';
   sec.select.style.display='none';sec.battle.style.display='none';sec.result.style.display='none';
-  const petEl=document.getElementById('petScreen'); if(petEl) petEl.style.display='none';
-  if(which==='menu'){ startScreen.style.display='flex'; renderCoins(); }
+  if(which==='menu') startScreen.style.display='flex';
   else if(which==='select'){ sec.select.style.display='flex'; renderSecretGrid(); }
   else if(which==='battle') sec.battle.style.display='flex';
   else if(which==='result') sec.result.style.display='flex';
-  else if(which==='pet'){ petEl.style.display='flex'; renderPet(); renderCoins(); }
 }
 function secretInitKeyboard(){
   sec.keyboard.innerHTML='';
@@ -2056,28 +1782,15 @@ function secretKey(t){
 }
 function secretStartLevel(k){
   const lines=secretStarLines(k);
-  // v7.0：本局开始时锁定宠物心情与技能状态
-  const v7=applyDailyDecay(loadV7(),Date.now());
-  saveV7(v7);
-  const mood=v7.mood;
-  const reduction=moodBurnReduction(mood);
   secretState={
     level:k,active:true,locked:false,input:'',idx:0,
     playerHP:1000,enemyHP:lines.enemyHP,enemyMax:lines.enemyHP,
     score:0,correct:0,wrong:0,qStart:0,q:null,
-    noSpecial:{v:0},lines:lines,startedAt:Date.now(),
-    mood:mood,burnReduction:reduction,
-    steadfastReady:hasSteadfast(mood),   // 不屈意志：本局可用一次
-    shieldReady:hasHardShield(mood),     // 硬核护盾：本局首次挨刀免伤
-    steadfastActive:false,steadfastTimer:null
+    noSpecial:{v:0},lines:lines,startedAt:Date.now()
   };
-  clearSteadfastVisual();
   sec.levelTitle.textContent='第 '+k+' 关 · 炎魔';
   sec.bonus.textContent='敌方加成：🛡+'+lines.bonus.hp+'%　🗡+'+lines.bonus.dmg+'%';
-  const rawDps=5*(1+lines.bonus.dmg/100);
-  const effDps=Math.max(0,rawDps-reduction);
-  sec.passive.textContent='🔥 炽热烈焰：-'+rawDps.toFixed(1)+' / 秒'
-    +(reduction>0?'　🐈 猫咪减免 -'+reduction.toFixed(1)+' → -'+effDps.toFixed(1)+' / 秒':'');
+  sec.passive.textContent='🔥 炽热烈焰：-'+(5*(1+lines.bonus.dmg/100)).toFixed(1)+' / 秒';
   secretShow('battle');
   secretInitKeyboard();
   secretUpdateHP();
@@ -2085,65 +1798,13 @@ function secretStartLevel(k){
   if(secretTick) clearInterval(secretTick);
   secretTick=setInterval(secretBurn,100);
 }
-// 不屈意志：进入 5 秒不死状态（血条保持 0，角色与猫发光闪烁）
-function triggerSteadfast(){
-  const s=secretState;
-  if(!s||!s.steadfastReady||s.steadfastActive) return false;
-  s.steadfastReady=false;
-  s.steadfastActive=true;
-  s.playerHP=0;
-  const banner=document.getElementById('steadfastBanner');
-  if(banner) banner.style.display='block';
-  if(sec.hero) sec.hero.classList.add('steadfast-glow');
-  const bcat=document.getElementById('battleCat');
-  if(bcat) bcat.classList.add('steadfast-glow');
-  clearTimeout(s.steadfastTimer);
-  s.steadfastTimer=setTimeout(()=>{
-    // 5 秒到仍未回血 → 死亡
-    if(s==secretState && s.steadfastActive && s.active){
-      s.steadfastActive=false;
-      clearSteadfastVisual();
-      secretFinish(false);
-    }
-  },5000);
-  return true;
-}
-function clearSteadfastVisual(){
-  const banner=document.getElementById('steadfastBanner');
-  if(banner) banner.style.display='none';
-  if(sec&&sec.hero) sec.hero.classList.remove('steadfast-glow');
-  const bcat=document.getElementById('battleCat');
-  if(bcat) bcat.classList.remove('steadfast-glow');
-}
-// 恢复 250 血（答对时），若处于不屈意志则解除保护继续游戏
-function recoverFromSteadfast(){
-  const s=secretState;
-  if(!s||!s.steadfastActive) return;
-  s.steadfastActive=false;
-  clearTimeout(s.steadfastTimer);
-  clearSteadfastVisual();
-}
 function secretBurn(){
   const s=secretState;
   if(!s||!s.active) return;
-  if(s.steadfastActive){ secretUpdateHP(); return; }   // 不屈意志期间灼烧不致死，血维持0
-  const rawDps=5*(1+s.lines.bonus.dmg/100);
-  const dps=Math.max(0,rawDps-s.burnReduction);
+  const dps=5*(1+s.lines.bonus.dmg/100);
   s.playerHP=Math.max(0,s.playerHP-dps*0.1);
   secretUpdateHP();
-  if(s.playerHP<=0){
-    // 生命归零：先看不屈意志能否触发
-    if(!triggerSteadfast()) secretFinish(false);
-  }
-}
-// 算式强制单行：按中间区域实际宽度自动缩放字号，避免长算式折行
-function secretFitProblem(){
-  const el=sec.problem, box=el.parentElement;
-  if(!box) return;
-  el.style.fontSize='';
-  const avail=Math.max(60,(box.clientWidth||420)-10);
-  const w=el.scrollWidth||0;
-  if(w>avail) el.style.fontSize=Math.max(12,Math.floor(28*avail/w))+'px';
+  if(s.playerHP<=0) secretFinish(false);
 }
 function secretNextProblem(){
   const s=secretState;
@@ -2153,7 +1814,6 @@ function secretNextProblem(){
   s.q=q; s.qStart=performance.now(); s.input='';
   sec.input.textContent=' ';
   sec.problem.innerHTML=q.text.replace(/🔥/g,'<span class="fire">🔥</span>');
-  secretFitProblem();
   sec.hints.textContent=(q.hints&&q.hints.length)
     ? '提示：'+q.hints.map((h,i)=>['①','②','③','④'][i]+secretDigitName(h.p)+'位是'+h.v).join('　')
     : '';
@@ -2212,13 +1872,7 @@ function secretSubmit(){
   if(correct){
     s.score+=1000/(3+elapsed);              // 仅答对计分，答错 0 分
     s.correct++;
-    // 不屈意志期间答对：恢复 250 血、解除保护、继续游戏
-    if(s.steadfastActive){
-      recoverFromSteadfast();
-      s.playerHP=250;
-    }else{
-      s.playerHP=Math.min(1000,s.playerHP+250);   // 与投弹同时回血
-    }
+    s.playerHP=Math.min(1000,s.playerHP+250);   // 与投弹同时回血
     secretUpdateHP();
     secretThrow('heroFighter','monsterFighter','💣',500,'#ffd54f',()=>{
       s.enemyHP=Math.max(0,s.enemyHP-500);
@@ -2230,28 +1884,9 @@ function secretSubmit(){
     s.wrong++;
     const dmg=200*(1+s.lines.bonus.dmg/100);
     secretThrow('monsterFighter','heroFighter','🔪',dmg,'#ff6b6b',()=>{
-      // 硬核护盾：本局第一次挨刀免伤（优先于不屈意志判定）
-      if(s.shieldReady){
-        s.shieldReady=false;
-        if(sec.hero){ sec.hero.classList.remove('shield-flash'); void sec.hero.offsetWidth; sec.hero.classList.add('shield-flash'); }
-        secretNextProblem();
-        return;
-      }
-      // 不屈意志期间挨刀 → 依旧死亡
-      if(s.steadfastActive){
-        s.steadfastActive=false;
-        clearTimeout(s.steadfastTimer);
-        clearSteadfastVisual();
-        secretFinish(false);
-        return;
-      }
       s.playerHP=Math.max(0,s.playerHP-dmg);
       secretUpdateHP();
-      if(s.playerHP<=0){
-        // 挨刀归零也触发不屈意志；若无则直接失败
-        if(!triggerSteadfast()) secretFinish(false);
-        return;
-      }
+      if(s.playerHP<=0){ secretFinish(false); return; }
       secretNextProblem();
     });
   }
@@ -2261,9 +1896,6 @@ function secretFinish(win){
   const s=secretState;
   if(!s||!s.active) return;
   s.active=false;
-  s.steadfastActive=false;
-  clearTimeout(s.steadfastTimer);
-  clearSteadfastVisual();
   clearInterval(secretTick);
   const final=Math.round(s.score);
   const stars=win?secretStarsFor(final,s.lines):0;
@@ -2284,9 +1916,8 @@ function secretFinish(win){
 document.getElementById('modeSecret').addEventListener('click',()=>secretShow('select'));
 document.getElementById('secretBackMenu').addEventListener('click',()=>secretShow('menu'));
 document.getElementById('secretBackList').addEventListener('click',()=>{
-  if(secretState){ secretState.active=false; clearTimeout(secretState.steadfastTimer); }
+  if(secretState) secretState.active=false;
   clearInterval(secretTick);
-  clearSteadfastVisual();
   secretShow('select');
 });
 document.getElementById('secretRetryBtn').addEventListener('click',()=>secretStartLevel(secretState.level));
@@ -2300,88 +1931,10 @@ document.addEventListener('keydown',(e)=>{
   else if(k==='Enter') secretKey('提交');
 });
 
-/* ================= v7.0 我的宠物 ================= */
-const petEl={
-  screen:document.getElementById('petScreen'),
-  cat:document.getElementById('petCat'),
-  mood:document.getElementById('moodValue'),
-  moodMax:document.getElementById('moodMax'),
-  fill:document.getElementById('moodFill'),
-  levelInfo:document.getElementById('petLevelInfo'),
-  skills:document.getElementById('petSkills'),
-  feed:document.getElementById('feedBtn'),
-  feed10:document.getElementById('feed10Btn'),
-  upgrade:document.getElementById('upgradeBtn'),
-  msg:document.getElementById('petMsg')
-};
-function petMsg(text){
-  if(!petEl.msg) return;
-  petEl.msg.textContent=text;
-  clearTimeout(petMsg._t);
-  petMsg._t=setTimeout(()=>{ if(petEl.msg) petEl.msg.textContent=''; },2400);
-}
-function renderPet(){
-  if(!petEl.screen) return;
-  const v7=applyDailyDecay(loadV7(),Date.now());
-  saveV7(v7);
-  const cfg=petCfgFor(v7.petLevel);
-  if(petEl.mood) petEl.mood.textContent=Math.round(v7.mood);
-  if(petEl.moodMax) petEl.moodMax.textContent='/ '+cfg.m;
-  if(petEl.fill) petEl.fill.style.width=Math.min(100,Math.max(0,(v7.mood-PET_MIN_MOOD)/(cfg.m-PET_MIN_MOOD)*100))+'%';
-  if(petEl.levelInfo) petEl.levelInfo.textContent='等级 '+v7.petLevel+' · 每日凌晨 3:00 衰减 '+cfg.k+'% · 心情下限 '+PET_MIN_MOOD+' / 上限 '+cfg.m;
-  if(petEl.skills){
-    const s=[];
-    s.push(hasSteadfast(v7.mood)?'<span class="pet-skill-on">✨ 不屈意志已解锁（生命归零时 5 秒不死）</span>':'🔒 不屈意志（心情达 8000 解锁）');
-    s.push(hasHardShield(v7.mood)?'<span class="pet-skill-on">🛡 硬核护盾已解锁（每局首次挨刀免伤）</span>':'🔒 硬核护盾（心情达 20000 解锁）');
-    petEl.skills.innerHTML=s.join('<br>');
-  }
-  if(petEl.upgrade){
-    if(cfg.price===null){ petEl.upgrade.textContent='已满级'; petEl.upgrade.disabled=true; }
-    else{ petEl.upgrade.textContent='升级宠物（'+cfg.price+' 金币）'; petEl.upgrade.disabled=v7.coins<cfg.price; }
-  }
-  if(petEl.feed) petEl.feed.disabled=v7.coins<10;
-  if(petEl.feed10) petEl.feed10.disabled=v7.coins<99;
-  renderCoins();
-}
-function petFeed(cost,gain){
-  const v7=applyDailyDecay(loadV7(),Date.now());
-  if(v7.coins<cost){ petMsg('金币不够啦～'); return; }
-  const cfg=petCfgFor(v7.petLevel);
-  if(v7.mood>=cfg.m){ petMsg('猫咪已经心情满格了！'); return; }
-  v7.coins-=cost;
-  v7.mood=clampMood(v7.mood+gain,v7.petLevel);
-  saveV7(v7);
-  renderPet();
-  petMsg('猫咪开心地吃掉了食物，心情 +'+gain+'！');
-}
-function petUpgrade(){
-  const v7=applyDailyDecay(loadV7(),Date.now());
-  const cfg=petCfgFor(v7.petLevel);
-  if(cfg.price===null){ petMsg('已经是满级啦！'); return; }
-  if(v7.coins<cfg.price){ petMsg('金币不够升级～'); return; }
-  v7.coins-=cfg.price;
-  v7.petLevel+=1;
-  v7.mood=clampMood(v7.mood,v7.petLevel);
-  saveV7(v7);
-  renderPet();
-  petMsg('升级成功！现在是 '+v7.petLevel+' 级猫咪！');
-}
-if(petEl.feed) petEl.feed.addEventListener('click',()=>petFeed(10,5));
-if(petEl.feed10) petEl.feed10.addEventListener('click',()=>petFeed(99,50));
-if(petEl.upgrade) petEl.upgrade.addEventListener('click',petUpgrade);
-document.getElementById('modePet').addEventListener('click',()=>secretShow('pet'));
-document.getElementById('petBackMenu').addEventListener('click',()=>secretShow('menu'));
-
 /* ================= 初始化 ================= */
 initKeyboard();   // 默认按 calc 渲染，进游戏时会重新初始化
 initStartDecor();
 secretInitKeyboard();
-// v7.0：页面加载即执行每日衰减并渲染金币
-(function initV7(){
-  const v7=applyDailyDecay(loadV7(),Date.now());
-  saveV7(v7);
-  renderCoins();
-})();
 </script>
-<div id="__vcBack" style="position:fixed;right:10px;top:10px;z-index:99999;"><a href="../index.html#versions" style="display:inline-block;padding:8px 12px;background:rgba(20,16,40,.85);color:#ffd54f;border:1px solid #7c4dff;border-radius:10px;font:600 13px/1.2 system-ui;text-decoration:none;box-shadow:0 2px 10px rgba(0,0,0,.4);">⬅ 版本中心</a></div></body>
+</body>
 </html>

@@ -264,10 +264,7 @@ body{
 .hp-track .fill{height:100%;width:100%;transition:width .28s ease;
   background:linear-gradient(90deg,#2e7d32,#66bb6a,#a5d6a7);box-shadow:0 0 10px rgba(80,220,100,.7) inset;}
 .hp-track .fill.enemy{background:linear-gradient(90deg,#6a1b9a,#ab47bc,#ce93d8);box-shadow:0 0 10px rgba(200,100,255,.7) inset;}
-.combat-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;padding:0 10px;}
-/* v8.2：勇士左移、左侧更紧凑，给中间算式留出安全间距 */
-#battleCatWrap{flex:0 0 30px;}
-#heroFighter{flex:0 0 108px;margin-left:-6px;}
+.combat-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;}
 .secret-q{font-size:1.75rem;font-weight:bold;color:#ffeb3b;text-shadow:0 0 14px rgba(255,220,60,.45);text-align:center;line-height:1.35;white-space:nowrap;word-break:keep-all;display:inline-block;max-width:100%;}
 .secret-q .fire{color:#ff7043;text-shadow:0 0 16px rgba(255,90,30,.95);animation:firePulse 1s ease infinite alternate;}
 @keyframes firePulse{from{transform:scale(1);}to{transform:scale(1.18);}}
@@ -293,109 +290,20 @@ body{
 @media(max-width:600px){
   .combat{padding:6px 4px 2px;gap:2px;}
   .fighter{flex:0 0 88px;}
-  #battleCatWrap{flex:0 0 22px;}
-  #heroFighter{flex:0 0 74px;margin-left:-4px;}
   .fighter svg{width:68px;height:82px;}
   .hp-track{width:88px;}
-  .combat-mid{padding:0 4px;}
   .secret-q{font-size:1.3rem;}
   .secret-tip{font-size:.76rem;}
   .secret-bonus{font-size:.7rem;}
 }
-
-/* ===== v7.0 金币 / 猫咪气泡 / 宠物 ===== */
-.coin-badge{
-  position:absolute;top:14px;right:18px;z-index:8;
-  display:flex;align-items:center;gap:6px;
-  padding:5px 12px 5px 6px;border-radius:99px;
-  background:linear-gradient(135deg,rgba(255,214,64,.2),rgba(255,160,20,.12));
-  border:1px solid rgba(255,214,64,.6);color:#ffe082;font-weight:bold;font-size:1rem;
-  box-shadow:0 0 16px rgba(255,190,40,.35);cursor:default;user-select:none;
-}
-.coin-icon{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:24px;height:24px;border-radius:50%;font-size:13px;
-  background:radial-gradient(circle at 35% 30%,#fff3b0,#ffca28 55%,#f9a825);
-  border:2px solid #ffd54f;box-shadow:inset 0 0 4px rgba(120,70,0,.6),0 0 8px rgba(255,200,40,.6);
-  vertical-align:middle;
-}
-/* 普通模式猫咪 + 气泡 */
-.cat-row{display:flex;align-items:flex-end;justify-content:center;gap:10px;min-height:56px;margin:-8px 0 6px;}
-.cat-buddy{font-size:2.2rem;line-height:1;filter:drop-shadow(0 3px 8px rgba(0,0,0,.5));cursor:pointer;user-select:none;
-  animation:catBob 2.6s ease-in-out infinite;}
-@keyframes catBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
-.cat-bubble{
-  position:relative;max-width:360px;padding:9px 14px;border-radius:14px 14px 14px 4px;
-  background:linear-gradient(135deg,#fff8e1,#ffe0b2);color:#5d4037;font-size:.9rem;font-weight:600;
-  box-shadow:0 6px 18px rgba(0,0,0,.35);opacity:0;transform:translateY(8px) scale(.94);
-  transition:opacity .3s,transform .3s;pointer-events:none;
-}
-.cat-bubble.show{opacity:1;transform:translateY(0) scale(1);}
-.cat-bubble::before{content:'';position:absolute;left:-7px;bottom:8px;border:7px solid transparent;border-right-color:#ffe0b2;border-left:0;}
-/* 秘境战士旁小猫 */
-.sb-cat{font-size:1.7rem;line-height:1;filter:drop-shadow(0 3px 6px rgba(0,0,0,.5));margin-bottom:2px;animation:catBob 2.2s ease-in-out infinite;}
-.hero-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
-/* 不屈意志光效 */
-.steadfast-glow{animation:steadfastGlow .5s ease-in-out infinite alternate;}
-@keyframes steadfastGlow{
-  from{filter:drop-shadow(0 0 6px #fff) drop-shadow(0 0 10px #ffd54f) brightness(1.2);}
-  to{filter:drop-shadow(0 0 18px #fff) drop-shadow(0 0 30px #ffd54f) brightness(1.8);}
-}
-.steadfast-banner{
-  position:absolute;top:44%;left:50%;transform:translateX(-50%);
-  font-size:1.6rem;font-weight:bold;color:#fff8e1;letter-spacing:4px;
-  text-shadow:0 0 18px #ffb300,0 0 34px #ff6f00;z-index:20;pointer-events:none;
-  animation:sfPulse .5s ease-in-out infinite alternate;
-}
-@keyframes sfPulse{from{opacity:.7;transform:translateX(-50%) scale(.96);}to{opacity:1;transform:translateX(-50%) scale(1.06);}}
-.shield-flash{animation:shieldFlash .6s ease-out;}
-@keyframes shieldFlash{0%{filter:drop-shadow(0 0 26px #4fc3f7) brightness(2);}100%{filter:none;}}
-/* 我的宠物页 */
-.pet-screen{display:none;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:8px 0;}
-.pet-cat{font-size:5.4rem;line-height:1;filter:drop-shadow(0 8px 18px rgba(0,0,0,.5));animation:catBob 3s ease-in-out infinite;}
-.pet-desc{font-size:.92rem;color:#d5cef2;line-height:1.7;max-width:460px;}
-.mood-box{width:100%;max-width:460px;}
-.mood-label{display:flex;justify-content:space-between;font-size:.92rem;color:#ffe082;margin-bottom:6px;}
-.mood-track{height:20px;border-radius:99px;background:rgba(0,0,0,.5);border:1px solid rgba(255,214,64,.4);overflow:hidden;position:relative;}
-.mood-fill{height:100%;width:0%;border-radius:99px;transition:width .35s ease;
-  background:linear-gradient(90deg,#ff8a65,#ffd54f,#fff59d);box-shadow:0 0 12px rgba(255,200,60,.6) inset;}
-.pet-info{font-size:.8rem;color:#a89bc4;line-height:1.8;}
-.pet-skills{font-size:.82rem;color:#b9a6ff;line-height:1.8;min-height:30px;}
-.pet-skill-on{color:#7fe9ff;text-shadow:0 0 8px rgba(80,220,255,.5);}
-.pet-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:460px;}
-.pet-btn{
-  padding:10px 18px;border-radius:12px;cursor:pointer;font-size:.95rem;font-weight:bold;
-  border:1px solid rgba(255,214,64,.5);color:#2a1a00;
-  background:linear-gradient(135deg,#ffe082,#ffb300);transition:transform .15s,filter .15s;
-}
-.pet-btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.1);}
-.pet-btn:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.6);}
-.pet-btn.upgrade{background:linear-gradient(135deg,#b9a6ff,#7c4dff);color:#fff;border-color:rgba(180,150,255,.6);}
-.pet-btn.rank-entry{margin-top:4px;background:linear-gradient(135deg,#7fe9ff,#4fc3f7);border-color:rgba(127,233,255,.6);}
-.pet-msg{font-size:.85rem;color:#ffd54f;min-height:20px;}
-/* ===== v8.0 全球排行榜 ===== */
-.rank-screen{display:none;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:8px 0;}
-.rank-title{color:#ffe680;letter-spacing:4px;font-size:1.5rem;}
-.rank-motto{display:flex;align-items:center;gap:8px;color:#d5cef2;font-size:.95rem;}
-.rank-cat{font-size:1.6rem;}
-.rank-list{width:100%;max-width:460px;display:flex;flex-direction:column;gap:3px;font-size:.88rem;}
-.rank-row{display:flex;align-items:center;gap:8px;padding:5px 10px;border-radius:8px;background:rgba(255,255,255,.05);}
-.rank-row:nth-child(odd){background:rgba(255,255,255,.09);}
-.rank-row.me{background:linear-gradient(135deg,rgba(255,214,64,.28),rgba(255,160,20,.18));border:1px solid rgba(255,214,64,.7);font-weight:bold;color:#ffe680;margin-top:8px;}
-.rank-row .rk-idx{color:#ffe082;min-width:34px;text-align:right;font-variant-numeric:tabular-nums;}
-.rank-row .rk-uid{flex:1;text-align:left;color:#d5cef2;}
-.rank-row.me .rk-uid{color:#fff3c4;}
-.rank-row .rk-mood{color:#7fe9ff;font-variant-numeric:tabular-nums;}
-.rank-row.me .rk-mood{color:#fff3c4;}
-.rank-row .rk-pct{color:#b9a6ff;font-size:.82rem;}
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="coin-badge" title="金币"><span class="coin-icon">🐈</span><span id="coinValue">0</span><span class="key-count" title="钥匙" style="margin-left:8px;padding-left:8px;border-left:1px solid rgba(255,214,64,.4);">🗝️ <span id="keyValue">0</span></span></div>
   <div class="screen start-screen" id="startScreen">
     <div class="start-decor" id="startDecor"></div>
     <div class="start-content">
+      <div class="badge">双模式 · 无限挑战</div>
       <h1 class="main-title">最强大脑</h1>
       <p class="tagline">挑战你的计算极限 · 看看你能走到第几关</p>
 
@@ -420,12 +328,6 @@ body{
           <div class="mode-desc">• 逐关讨伐妖怪，赢或输才结束<br>• 炸弹与飞刀，烈焰每秒灼烧<br>• 谜题藏起一位，靠提示推理</div>
         </div>
       </div>
-      <div class="mode-card pet" id="modePet" style="max-width:300px;margin:0 auto 18px;">
-        <div class="mode-icon">🐈</div>
-        <div class="mode-title">我的宠物</div>
-        <div class="mode-sub">MY PET</div>
-        <div class="mode-desc" style="text-align:center;">照顾猫咪，一起变强<br>查看心情 · 投喂 · 升级</div>
-      </div>
 
       <div class="rules-box">
         <p>⏱️ 生命随时间流逝，归零即结束 · 答对回血、答错扣血</p>
@@ -448,11 +350,6 @@ body{
     </div>
     <div class="life-bar"><div class="life-fill" id="lifeFill" style="width:100%;"></div></div>
 
-    <div class="cat-row">
-      <div class="cat-buddy" id="catBuddy" title="你的猫咪伙伴">🐈</div>
-      <div class="cat-bubble" id="catBubble"></div>
-    </div>
-
     <div class="problem-container">
       <div class="problem" id="problemText">3 + 5</div>
       <div class="difficulty-indicator" id="difficultyText">简单</div>
@@ -468,7 +365,6 @@ body{
     <div class="result-stats">
       <p>通过关卡: <span id="finalStage">0</span></p>
       <p>最终得分: <span id="finalScore">0</span></p>
-      <p style="color:#ffe082;">🪙 本局金币 +<span id="coinEarned">0</span></p>
       <p id="percentileRow">超过了 <span id="percentile">0</span>% 的玩家</p>
     </div>
     <div class="progress-bar" id="progressRow"><div class="progress-fill" id="progressFill" style="width:0%;"></div></div>
@@ -495,9 +391,6 @@ body{
       <span class="sb-score" id="secretScore">0 分</span>
     </div>
     <div class="combat">
-      <div class="hero-wrap" id="battleCatWrap" title="宠物同行">
-        <div class="sb-cat" id="battleCat">🐈</div>
-      </div>
       <div class="fighter" id="heroFighter">
         <div class="hp-label" id="heroHpText">1000 / 1000</div>
         <div class="hp-track"><div class="fill" id="heroHpFill"></div></div>
@@ -565,36 +458,8 @@ body{
       <button class="result-restart" id="secretResultBack">关卡列表 ☰</button>
     </div>
   </div>
-
-  <div class="screen pet-screen" id="petScreen">
-    <button class="secret-back" id="petBackMenu" style="align-self:flex-start;">← 主菜单</button>
-    <h2 style="color:#ffe680;letter-spacing:4px;">我 的 宠 物</h2>
-    <div class="pet-cat" id="petCat">🐈</div>
-    <div class="pet-desc">可爱的宠物生来就是为了与你作伴，悉心照顾你的宠物，打败更强的敌人！</div>
-    <div class="mood-box">
-      <div class="mood-label"><span>宠物心情 <b id="moodValue">125</b></span><span id="moodMax">/ 125</span></div>
-      <div class="mood-track"><div class="mood-fill" id="moodFill"></div></div>
-    </div>
-    <div class="pet-info" id="petLevelInfo">等级 1 · 每日凌晨 3:00 衰减 4.5% · 心情下限 100 / 上限 125</div>
-    <div class="pet-skills" id="petSkills"></div>
-    <div class="pet-actions">
-      <button class="pet-btn" id="feedBtn">投喂（10 🐈）</button>
-      <button class="pet-btn" id="feed10Btn">投喂×10（99 🐈）</button>
-      <button class="pet-btn upgrade" id="upgradeBtn">升级宠物</button>
-    </div>
-    <button class="pet-btn rank-entry" id="rankEntryBtn">📊 查看排行榜</button>
-    <div class="pet-msg" id="petMsg"></div>
-  </div>
-
-  <div class="screen rank-screen" id="rankScreen">
-    <button class="secret-back" id="rankBackBtn" style="align-self:flex-start;">← 返回宠物</button>
-    <h2 class="rank-title">全球排行榜</h2>
-    <div class="rank-motto"><span class="rank-cat">🐈</span><span>以乐观面对困难，战胜恐惧！</span></div>
-    <div class="rank-list" id="rankList"></div>
-  </div>
 </div>
 
-<div class="steadfast-banner" id="steadfastBanner" style="display:none;">✨ 不屈意志 ✨</div>
 <div class="footer">设计用于数学能力测试 · 挑战你的计算速度与准确性</div>
 
 <div class="star-overlay" id="starOverlay"></div>
@@ -620,130 +485,6 @@ let gameActive = false;
 let answerLocked = false;    // 判题锁：答对后到下一题生成前，禁止重复判题
 let noSpecialCount = 0;      // 比大小模式：π/e 连续未出现计数（保底5用）
 let noDoubleExpCount = 0;    // 比大小模式：双指数题连续未出现计数（保底3用）
-
-/* ================= v7.0 金币与宠物系统 ================= */
-const V7_KEY='mathbrain_v7_v1';   // 沿用存档 key，向后兼容旧档（新增 keys/keyClaimed 字段）
-// 宠物等级表：index=等级 → {price:升级到下一级花费(金币), keyPrice:升级到下一级花费(钥匙), k:每日衰减%, m:心情上限}
-// v8.0：8升9 4500→3000，9升10 8000→4000；新增 10-70 级（双货币升级，10级起 k=0 不衰减）
-const PET_LEVELS={
-  1:{price:200,keyPrice:0,k:4.5,m:125},2:{price:300,keyPrice:0,k:4.0,m:150},
-  3:{price:400,keyPrice:0,k:3.5,m:175},4:{price:600,keyPrice:0,k:3.0,m:200},
-  5:{price:800,keyPrice:0,k:2.5,m:250},6:{price:1400,keyPrice:0,k:2.0,m:500},
-  7:{price:2000,keyPrice:0,k:1.5,m:1000},8:{price:3000,keyPrice:0,k:1.0,m:3000},
-  9:{price:4000,keyPrice:0,k:0.5,m:8000}
-};
-// 生成 10-70 级配置：上限按分段公式，升级需金币+1钥匙，k=0（每日不衰减）
-(function buildPetLevels(){
-  const bands=[
-    [10,14,2000,18000,200],[15,19,2400,18300,180],[20,24,2800,18700,160],
-    [25,29,3200,19200,140],[30,34,3600,19800,120],[35,39,4000,20500,100],
-    [40,44,4400,21300,80],[45,49,4800,22200,60],[50,54,5200,23200,40],
-    [55,59,5600,23750,30],[60,64,6000,24350,20],[65,69,6400,25000,10]
-  ];
-  for(const [lo,hi,price,base,mul] of bands){
-    for(let L=lo;L<=hi;L++) PET_LEVELS[L]={price:price,keyPrice:1,k:0,m:base+L*mul};
-  }
-  PET_LEVELS[70]={price:null,keyPrice:null,k:0,m:25700};   // 满级
-})();
-const PET_MAX_LEVEL=70;
-const PET_MIN_MOOD=100;
-function defaultV7(){ return {coins:0,keys:0,keyClaimed:[],petLevel:1,mood:PET_MIN_MOOD,lastDecay:0}; }
-function loadV7(){
-  try{
-    let raw=null;
-    if(window.AndroidStore&&window.AndroidStore.getHistory) raw=window.AndroidStore.getHistory(V7_KEY);
-    if(!raw) raw=localStorage.getItem(V7_KEY);
-    const o=raw?JSON.parse(raw):null;
-    const d=defaultV7();
-    if(!o||typeof o!=='object'||Array.isArray(o)) return d;
-    let claimed=Array.isArray(o.keyClaimed)?o.keyClaimed.filter(x=>Number.isInteger(x)&&x>=40):[];
-    return {
-      coins:Math.max(0,Math.floor(Number(o.coins)||0)),
-      keys:Math.max(0,Math.floor(Number(o.keys)||0)),
-      keyClaimed:claimed,
-      petLevel:Math.min(PET_MAX_LEVEL,Math.max(1,Math.floor(Number(o.petLevel)||1))),
-      mood:Number(o.mood)||d.mood,
-      lastDecay:Number(o.lastDecay)||0
-    };
-  }catch(e){return defaultV7();}
-}
-function saveV7(o){
-  const s=JSON.stringify(o);
-  try{ if(window.AndroidStore&&window.AndroidStore.setHistory) window.AndroidStore.setHistory(V7_KEY,s); }catch(e){}
-  try{ localStorage.setItem(V7_KEY,s); }catch(e){}
-}
-// 当前宠物配置
-function petCfg(){ return PET_LEVELS[loadV7().petLevel]; }
-// 心情上限随等级变化，超出则截断
-function clampMood(v,level){
-  const m=PET_LEVELS[level]||PET_LEVELS[1];
-  return Math.min(m.m,Math.max(PET_MIN_MOOD,v));
-}
-// 上次凌晨3点的时间戳（若 now 当天3点已过则返回当天3点，否则昨天3点）
-// now 可为 Date 或毫秒时间戳
-function last3am(now){
-  const n=(now instanceof Date)?now.getTime():Number(now)||Date.now();
-  const d=new Date(n);
-  d.setHours(3,0,0,0);
-  if(n<d.getTime()) d.setDate(d.getDate()-1);
-  return d.getTime();
-}
-// 按经过了多少个"凌晨3点"逐次衰减：每次 mood*= (1-k/100)，下限100
-function applyDailyDecay(v7,now){
-  now=now||Date.now();
-  const target=last3am(now);
-  if(!v7.lastDecay) { v7.lastDecay=target; return v7; }
-  if(target<=v7.lastDecay) return v7;
-  const k=petCfgFor(v7.petLevel).k;
-  // 计算跨过了几个3点
-  let crossings=0,cur=v7.lastDecay;
-  while(true){
-    const next=last3am(cur+24*3600*1000);
-    if(next>target) break;
-    crossings++;cur=next;
-    if(crossings>100000) break;
-  }
-  if(crossings>0){
-    v7.mood=clampMood(v7.mood*Math.pow(1-k/100,crossings),v7.petLevel);
-  }
-  v7.lastDecay=target;
-  return v7;
-}
-function petCfgFor(level){ return PET_LEVELS[level]||PET_LEVELS[1]; }
-// 金币结算：reached=达到关卡，start=本局起点，played=打的关数
-// 未打满20关打折扣 n=(played/20)^2，基数取 max(reached, start+20)
-// v8.0 平衡性调整：最终金币获取 ×4（v7.0 为 ×2，即最初表的 4 倍）
-function calcCoinsEarned(reached,start){
-  const played=Math.max(0,reached-start);
-  const base=Math.max(reached,start+20);
-  const n=played>=20?1:Math.pow(played/20,2);
-  return Math.round(base*n)*4;
-}
-function addCoins(amount,now){
-  const v7=applyDailyDecay(loadV7(),now);
-  v7.coins+=amount;
-  saveV7(v7);
-  return v7;
-}
-// v8.0：8.0 版本后首次通关第40关及以后秘境关卡，每关发 1 把钥匙（每关仅一次）
-// 独立于历史通关记录：以 keyClaimed 数组为准，旧玩家此前通关的关卡仍可领取
-function claimSecretKey(level,now){
-  if(!Number.isInteger(level)||level<40) return 0;
-  const v7=applyDailyDecay(loadV7(),now);
-  if(v7.keyClaimed.indexOf(level)>=0) return 0;
-  v7.keyClaimed.push(level);
-  v7.keys+=1;
-  saveV7(v7);
-  return 1;
-}
-// 秘境被动灼烧加成：心情≥1000 时每秒减少 mood/3000（四舍五入到0.1），上限3
-function moodBurnReduction(mood){
-  if(mood<1000) return 0;
-  return Math.min(3,Math.round((mood/3000)*10)/10);
-}
-// 技能解锁（按当前心情）
-function hasSteadfast(mood){ return mood>=8000; }   // 不屈意志
-function hasHardShield(mood){ return mood>=20000; }  // 硬核护盾
 
 /* ================= 历史记录与起点（按模式分开） =================
    每种模式各自记录过去 10 次"达到的关卡"，
@@ -947,7 +688,7 @@ function validExpPair(b1,b2){
   if(mn<2) return false;
   return true;
 }
-// v5.3：双指数题 a^x ? b^y 的指数对分布（与是否保底触发无关，一律按此分布抽取）
+// v0.5.3：双指数题 a^x ? b^y 的指数对分布（与是否保底触发无关，一律按此分布抽取）
 // 40% → {2,3}；30% → {3,4}；其余 30% → 其它合法指数对
 function pickExpPair(){
   const r=Math.random();
@@ -1192,7 +933,7 @@ function buildCompareCore(stage,type,cap,floor,lo,hi,opts){
     return {leftExpr:powExpr(p),rightExpr:encode(type.right,p.v),answer:'='};
   }
 
-  // ---------- 情形C：幂 vs 幂（v5.3：严格按指定指数对，x、y 顺序无所谓） ----------
+  // ---------- 情形C：幂 vs 幂（v0.5.3：严格按指定指数对，x、y 顺序无所谓） ----------
   // opts.expPair={x,y} 时，a^x 与 b^y 的指数对固定为 {x,y}（左右顺序随机）；
   // 只有当该对在当前 cap 下无法成题时，才依次回退到其它合法对。
   const wanted=(opts.expPair && typeof opts.expPair==='object') ? opts.expPair : null;
@@ -1321,7 +1062,7 @@ function generateCompare(contentStage,showStage){
 
   // ===== 双指数题（两边都是幂）=====
   // 出现概率 = 基础概率(doubleExpProb，不计保底) 或 连续3题未出必出。
-  // v5.3：无论保底触发还是基础概率触发，指数对一律按 pickExpPair() 分布抽取
+  // v0.5.3：无论保底触发还是基础概率触发，指数对一律按 pickExpPair() 分布抽取
   //       （40% {2,3}、30% {3,4}、其余 30% 其它合法对），x/y 顺序无所谓。
   // 注意只有 81 关起才有 pow-vs-pow 题型，故保底/概率仅在 showStage>=81 启用。
   const deProb=doubleExpProb(showStage);
@@ -1330,7 +1071,7 @@ function generateCompare(contentStage,showStage){
     forceDouble = (noDoubleExpCount>=3) || Math.random()<deProb;
     if(forceDouble){
       type={left:'pow',right:'pow'};
-      opts.expPair=pickExpPair();        // v5.3：固定本次的指数对（保底/概率同样适用）
+      opts.expPair=pickExpPair();        // v0.5.3：固定本次的指数对（保底/概率同样适用）
       lo=Math.max(0.4,lo-0.05);          // 差距比例下限再放宽 5 个百分点
     }else{
       // 非双指数局：从类型池排除 pow/pow，避免自然出现抬高双指数题概率
@@ -1394,40 +1135,6 @@ const progressFill=document.getElementById('progressFill');
 const keyboard=document.getElementById('keyboard');
 const starOverlay=document.getElementById('starOverlay');
 const milestoneToast=document.getElementById('milestoneToast');
-
-/* ================= v7.0 DOM 引用与渲染 ================= */
-const coinValue=document.getElementById('coinValue');
-const catBubble=document.getElementById('catBubble');
-const PRAISE_LINES=[
-  '太棒啦！这题都难不住你～','好厉害，继续保持这个节奏！','你的大脑在发光诶 ✨',
-  '干净利落，堪比数学家！','又对一题，猫咪为你鼓掌～','这速度，绝了！',
-  '聪明如你，答案手到擒来！','连胜的感觉是不是超爽？','你又在进步了，真为你骄傲！',
-  '完美！这就是最强大脑的实力！'
-];
-const FOCUS_LINES=[
-  '哎呀，认真一点哦～','别急，看清楚再答。','失误啦，集中注意力！',
-  '深呼吸，下一题稳住。','猫咪在看着你呢，仔细点～','粗心了，再专注一些！',
-  '这题不难，再想想？','别慌，慢慢来就好。','打起精神，你可以的！','专心一点，答案就在眼前。'
-];
-function renderCoins(){
-  if(!coinValue) return;
-  try{
-    const v7=loadV7();
-    coinValue.textContent=v7.coins;
-    const kv=document.getElementById('keyValue');
-    if(kv) kv.textContent=v7.keys;
-  }catch(e){ coinValue.textContent='0'; }
-}
-let catBubbleTimer=null;
-function showCatBubble(text){
-  if(!catBubble) return;
-  catBubble.textContent=text;
-  catBubble.classList.add('show');
-  clearTimeout(catBubbleTimer);
-  catBubbleTimer=setTimeout(()=>catBubble.classList.remove('show'),2200);
-}
-function catPraise(){ showCatBubble(PRAISE_LINES[Math.floor(Math.random()*PRAISE_LINES.length)]); }
-function catFocus(){ showCatBubble(FOCUS_LINES[Math.floor(Math.random()*FOCUS_LINES.length)]); }
 
 /* ================= 开始页装饰 ================= */
 function initStartDecor(){
@@ -1512,7 +1219,6 @@ backMenuBtn.addEventListener('click',()=>{
   resultScreen.style.display='none';
   startScreen.style.display='flex';
   initStartDecor();
-  renderCoins();
 });
 
 /* ---------- 中途退出：连点两下才退，防误触 ---------- */
@@ -1548,14 +1254,10 @@ function performQuit(){
     while(hist.length>HISTORY_SIZE) hist.shift();
     saveHistory(currentMode,hist);
   }
-  // v7.0 中途退出同样结算金币（按同一公式）
-  const earned=calcCoinsEarned(reached,startStage);
-  addCoins(earned);
   quitBtn.style.display='none';
   gameScreen.style.display='none';
   startScreen.style.display='flex';
   initStartDecor();
-  renderCoins();
 }
 
 function initGame(){
@@ -1689,7 +1391,6 @@ function checkAnswer(){
     if((currentStage-1)%10===0){
       spawnStars();
       showMilestone('第 '+(currentStage-1)+' 关达成 ✦');
-      catPraise();                             // 每过10关猫咪冒夸奖气泡
     }
 
     problemText.style.color='#4caf50';
@@ -1700,7 +1401,6 @@ function checkAnswer(){
     },300);
   }else{
     streak-=2;
-    catFocus();                                // 答错时猫咪冒提醒气泡
     if(currentMode==='compare'){
       // 比大小：答错立即进下一关（本题 0 分），掉血×3，上锁防连点误触
       life=Math.max(0,life-10.8);            // 比大小错血再+20%（9→10.8）
@@ -1764,13 +1464,6 @@ function endGame(){
   recordStage();                           // 记录本次到达关卡，供下局计算起点（按模式）
   finalStage.textContent=currentStage-1;
   finalScore.textContent=Math.round(score);
-  // v7.0 金币结算：达到关卡 currentStage，本局起点 startStage
-  const reached=currentStage;
-  const earned=calcCoinsEarned(reached,startStage);
-  addCoins(earned);
-  renderCoins();
-  const coinEarnedEl=document.getElementById('coinEarned');
-  if(coinEarnedEl) coinEarnedEl.textContent=earned;
   if(currentMode==='calc'){
     percentileRow.style.display='';
     progressRow.style.display='';
@@ -2093,17 +1786,10 @@ function renderSecretGrid(){
 function secretShow(which){
   startScreen.style.display='none';gameScreen.style.display='none';resultScreen.style.display='none';
   sec.select.style.display='none';sec.battle.style.display='none';sec.result.style.display='none';
-  // v8.2：秘境战斗过程中不显示持有的货币（金币/钥匙），其余页面正常显示
-  const coinBadge=document.querySelector('.coin-badge');
-  if(coinBadge) coinBadge.style.display=(which==='battle')?'none':'flex';
-  const petEl=document.getElementById('petScreen'); if(petEl) petEl.style.display='none';
-  const rankEl=document.getElementById('rankScreen'); if(rankEl) rankEl.style.display='none';
-  if(which==='menu'){ startScreen.style.display='flex'; renderCoins(); }
+  if(which==='menu') startScreen.style.display='flex';
   else if(which==='select'){ sec.select.style.display='flex'; renderSecretGrid(); }
   else if(which==='battle') sec.battle.style.display='flex';
   else if(which==='result') sec.result.style.display='flex';
-  else if(which==='pet'){ petEl.style.display='flex'; renderPet(); renderCoins(); }
-  else if(which==='rank'){ rankEl.style.display='flex'; renderRank(); renderCoins(); }
 }
 function secretInitKeyboard(){
   sec.keyboard.innerHTML='';
@@ -2125,28 +1811,15 @@ function secretKey(t){
 }
 function secretStartLevel(k){
   const lines=secretStarLines(k);
-  // v7.0：本局开始时锁定宠物心情与技能状态
-  const v7=applyDailyDecay(loadV7(),Date.now());
-  saveV7(v7);
-  const mood=v7.mood;
-  const reduction=moodBurnReduction(mood);
   secretState={
     level:k,active:true,locked:false,input:'',idx:0,
     playerHP:1000,enemyHP:lines.enemyHP,enemyMax:lines.enemyHP,
     score:0,correct:0,wrong:0,qStart:0,q:null,
-    noSpecial:{v:0},lines:lines,startedAt:Date.now(),
-    mood:mood,burnReduction:reduction,
-    steadfastReady:hasSteadfast(mood),   // 不屈意志：本局可用一次
-    shieldReady:hasHardShield(mood),     // 硬核护盾：本局首次挨刀免伤
-    steadfastActive:false,steadfastTimer:null
+    noSpecial:{v:0},lines:lines,startedAt:Date.now()
   };
-  clearSteadfastVisual();
   sec.levelTitle.textContent='第 '+k+' 关 · 炎魔';
   sec.bonus.textContent='敌方加成：🛡+'+lines.bonus.hp+'%　🗡+'+lines.bonus.dmg+'%';
-  const rawDps=5*(1+lines.bonus.dmg/100);
-  const effDps=Math.max(0,rawDps-reduction);
-  sec.passive.textContent='🔥 炽热烈焰：-'+rawDps.toFixed(1)+' / 秒'
-    +(reduction>0?'　🐈 猫咪减免 -'+reduction.toFixed(1)+' → -'+effDps.toFixed(1)+' / 秒':'');
+  sec.passive.textContent='🔥 炽热烈焰：-'+(5*(1+lines.bonus.dmg/100)).toFixed(1)+' / 秒';
   secretShow('battle');
   secretInitKeyboard();
   secretUpdateHP();
@@ -2154,68 +1827,22 @@ function secretStartLevel(k){
   if(secretTick) clearInterval(secretTick);
   secretTick=setInterval(secretBurn,100);
 }
-// 不屈意志：进入 5 秒不死状态（血条保持 0，角色与猫发光闪烁）
-function triggerSteadfast(){
-  const s=secretState;
-  if(!s||!s.steadfastReady||s.steadfastActive) return false;
-  s.steadfastReady=false;
-  s.steadfastActive=true;
-  s.playerHP=0;
-  const banner=document.getElementById('steadfastBanner');
-  if(banner) banner.style.display='block';
-  if(sec.hero) sec.hero.classList.add('steadfast-glow');
-  const bcat=document.getElementById('battleCat');
-  if(bcat) bcat.classList.add('steadfast-glow');
-  clearTimeout(s.steadfastTimer);
-  s.steadfastTimer=setTimeout(()=>{
-    // 5 秒到仍未回血 → 死亡
-    if(s==secretState && s.steadfastActive && s.active){
-      s.steadfastActive=false;
-      clearSteadfastVisual();
-      secretFinish(false);
-    }
-  },5000);
-  return true;
-}
-function clearSteadfastVisual(){
-  const banner=document.getElementById('steadfastBanner');
-  if(banner) banner.style.display='none';
-  if(sec&&sec.hero) sec.hero.classList.remove('steadfast-glow');
-  const bcat=document.getElementById('battleCat');
-  if(bcat) bcat.classList.remove('steadfast-glow');
-}
-// 恢复 250 血（答对时），若处于不屈意志则解除保护继续游戏
-function recoverFromSteadfast(){
-  const s=secretState;
-  if(!s||!s.steadfastActive) return;
-  s.steadfastActive=false;
-  clearTimeout(s.steadfastTimer);
-  clearSteadfastVisual();
-}
 function secretBurn(){
   const s=secretState;
   if(!s||!s.active) return;
-  if(s.steadfastActive){ secretUpdateHP(); return; }   // 不屈意志期间灼烧不致死，血维持0
-  const rawDps=5*(1+s.lines.bonus.dmg/100);
-  const dps=Math.max(0,rawDps-s.burnReduction);
+  const dps=5*(1+s.lines.bonus.dmg/100);
   s.playerHP=Math.max(0,s.playerHP-dps*0.1);
   secretUpdateHP();
-  if(s.playerHP<=0){
-    // 生命归零：先看不屈意志能否触发
-    if(!triggerSteadfast()) secretFinish(false);
-  }
+  if(s.playerHP<=0) secretFinish(false);
 }
 // 算式强制单行：按中间区域实际宽度自动缩放字号，避免长算式折行
 function secretFitProblem(){
   const el=sec.problem, box=el.parentElement;
   if(!box) return;
   el.style.fontSize='';
-  // v8.2：扣除 combat-mid 左右 padding，给算式两侧留出安全间距，避免数字撞到战士/妖怪
-  const cs=getComputedStyle(box);
-  const padX=(parseFloat(cs.paddingLeft)||0)+(parseFloat(cs.paddingRight)||0);
-  const avail=Math.max(60,(box.clientWidth||420)-padX-8);
+  const avail=Math.max(60,(box.clientWidth||420)-10);
   const w=el.scrollWidth||0;
-  if(w>avail) el.style.fontSize=Math.max(11,Math.floor(28*avail/w))+'px';
+  if(w>avail) el.style.fontSize=Math.max(12,Math.floor(28*avail/w))+'px';
 }
 function secretNextProblem(){
   const s=secretState;
@@ -2284,13 +1911,7 @@ function secretSubmit(){
   if(correct){
     s.score+=1000/(3+elapsed);              // 仅答对计分，答错 0 分
     s.correct++;
-    // 不屈意志期间答对：恢复 250 血、解除保护、继续游戏
-    if(s.steadfastActive){
-      recoverFromSteadfast();
-      s.playerHP=250;
-    }else{
-      s.playerHP=Math.min(1000,s.playerHP+250);   // 与投弹同时回血
-    }
+    s.playerHP=Math.min(1000,s.playerHP+250);   // 与投弹同时回血
     secretUpdateHP();
     secretThrow('heroFighter','monsterFighter','💣',500,'#ffd54f',()=>{
       s.enemyHP=Math.max(0,s.enemyHP-500);
@@ -2302,28 +1923,9 @@ function secretSubmit(){
     s.wrong++;
     const dmg=200*(1+s.lines.bonus.dmg/100);
     secretThrow('monsterFighter','heroFighter','🔪',dmg,'#ff6b6b',()=>{
-      // 硬核护盾：本局第一次挨刀免伤（优先于不屈意志判定）
-      if(s.shieldReady){
-        s.shieldReady=false;
-        if(sec.hero){ sec.hero.classList.remove('shield-flash'); void sec.hero.offsetWidth; sec.hero.classList.add('shield-flash'); }
-        secretNextProblem();
-        return;
-      }
-      // 不屈意志期间挨刀 → 依旧死亡
-      if(s.steadfastActive){
-        s.steadfastActive=false;
-        clearTimeout(s.steadfastTimer);
-        clearSteadfastVisual();
-        secretFinish(false);
-        return;
-      }
       s.playerHP=Math.max(0,s.playerHP-dmg);
       secretUpdateHP();
-      if(s.playerHP<=0){
-        // 挨刀归零也触发不屈意志；若无则直接失败
-        if(!triggerSteadfast()) secretFinish(false);
-        return;
-      }
+      if(s.playerHP<=0){ secretFinish(false); return; }
       secretNextProblem();
     });
   }
@@ -2333,36 +1935,28 @@ function secretFinish(win){
   const s=secretState;
   if(!s||!s.active) return;
   s.active=false;
-  s.steadfastActive=false;
-  clearTimeout(s.steadfastTimer);
-  clearSteadfastVisual();
   clearInterval(secretTick);
   const final=Math.round(s.score);
   const stars=win?secretStarsFor(final,s.lines):0;
-  let keyGot=0;
   if(win){
     const saves=loadSecretSaves();
     const cur=saves[s.level]||{best:0,stars:0};
     saves[s.level]={best:Math.max(cur.best,final),stars:Math.max(cur.stars,stars)};
     saveSecretSaves(saves);
-    keyGot=claimSecretKey(s.level);          // v8.0：40关起每关首次通关发1钥匙
   }
-  window._lastKeyGot=keyGot;
   sec.rTitle.textContent=win?'讨伐成功':'讨伐失败';
   sec.rTitle.className='sr-title'+(win?'':' lose');
   sec.rStars.innerHTML=secretStarHTML(stars);
   const used=((Date.now()-s.startedAt)/1000).toFixed(1);
-  sec.rStats.innerHTML='本次得分：<b>'+final+'</b><br>答对 '+s.correct+' 题 · 答错 '+s.wrong+' 题 · 用时 '+used+' 秒'
-    +(keyGot?'<br><span style="color:#ffe680;">🗝️ 首次通关奖励：钥匙 +1</span>':'');
+  sec.rStats.innerHTML='本次得分：<b>'+final+'</b><br>答对 '+s.correct+' 题 · 答错 '+s.wrong+' 题 · 用时 '+used+' 秒';
   sec.rLines.innerHTML='⭐ '+s.lines.minScore.toFixed(0)+' 分　⭐⭐ '+s.lines.twoScore.toFixed(0)+' 分　⭐⭐⭐ '+s.lines.maxScore.toFixed(0)+' 分<br>妖怪血量 '+s.enemyMax+' · 需 '+s.lines.need+' 个炸弹'+(win?'':'（未通关不计成绩）');
   secretShow('result');
 }
 document.getElementById('modeSecret').addEventListener('click',()=>secretShow('select'));
 document.getElementById('secretBackMenu').addEventListener('click',()=>secretShow('menu'));
 document.getElementById('secretBackList').addEventListener('click',()=>{
-  if(secretState){ secretState.active=false; clearTimeout(secretState.steadfastTimer); }
+  if(secretState) secretState.active=false;
   clearInterval(secretTick);
-  clearSteadfastVisual();
   secretShow('select');
 });
 document.getElementById('secretRetryBtn').addEventListener('click',()=>secretStartLevel(secretState.level));
@@ -2376,169 +1970,10 @@ document.addEventListener('keydown',(e)=>{
   else if(k==='Enter') secretKey('提交');
 });
 
-/* ================= v7.0 我的宠物 ================= */
-const petEl={
-  screen:document.getElementById('petScreen'),
-  cat:document.getElementById('petCat'),
-  mood:document.getElementById('moodValue'),
-  moodMax:document.getElementById('moodMax'),
-  fill:document.getElementById('moodFill'),
-  levelInfo:document.getElementById('petLevelInfo'),
-  skills:document.getElementById('petSkills'),
-  feed:document.getElementById('feedBtn'),
-  feed10:document.getElementById('feed10Btn'),
-  upgrade:document.getElementById('upgradeBtn'),
-  msg:document.getElementById('petMsg')
-};
-function petMsg(text){
-  if(!petEl.msg) return;
-  petEl.msg.textContent=text;
-  clearTimeout(petMsg._t);
-  petMsg._t=setTimeout(()=>{ if(petEl.msg) petEl.msg.textContent=''; },2400);
-}
-function renderPet(){
-  if(!petEl.screen) return;
-  const v7=applyDailyDecay(loadV7(),Date.now());
-  saveV7(v7);
-  const cfg=petCfgFor(v7.petLevel);
-  if(petEl.mood) petEl.mood.textContent=Math.round(v7.mood);
-  if(petEl.moodMax) petEl.moodMax.textContent='/ '+cfg.m;
-  if(petEl.fill) petEl.fill.style.width=Math.min(100,Math.max(0,(v7.mood-PET_MIN_MOOD)/(cfg.m-PET_MIN_MOOD)*100))+'%';
-  if(petEl.levelInfo) petEl.levelInfo.textContent='等级 '+v7.petLevel+' · '+(cfg.k>0?('每日凌晨 3:00 衰减 '+cfg.k+'%'):'心情不再每日衰减')+' · 心情下限 '+PET_MIN_MOOD+' / 上限 '+cfg.m+' · 钥匙 🗝️ '+v7.keys;
-  if(petEl.skills){
-    const s=[];
-    s.push(hasSteadfast(v7.mood)?'<span class="pet-skill-on">✨ 不屈意志已解锁（生命归零时 5 秒不死）</span>':'🔒 不屈意志（心情达 8000 解锁）');
-    s.push(hasHardShield(v7.mood)?'<span class="pet-skill-on">🛡 硬核护盾已解锁（每局首次挨刀免伤）</span>':'🔒 硬核护盾（心情达 20000 解锁）');
-    petEl.skills.innerHTML=s.join('<br>');
-  }
-  if(petEl.upgrade){
-    if(cfg.price===null){ petEl.upgrade.textContent='已满级'; petEl.upgrade.disabled=true; }
-    else{
-      const cost='（'+cfg.price+' 🐈'+(cfg.keyPrice>0?' + '+cfg.keyPrice+' 🗝️':'')+'）';
-      petEl.upgrade.textContent='升级宠物'+cost;
-      petEl.upgrade.disabled=v7.coins<cfg.price || v7.keys<cfg.keyPrice;
-    }
-  }
-  if(petEl.feed) petEl.feed.disabled=v7.coins<10;
-  if(petEl.feed10) petEl.feed10.disabled=v7.coins<99;
-  renderCoins();
-}
-function petFeed(cost,gain){
-  const v7=applyDailyDecay(loadV7(),Date.now());
-  if(v7.coins<cost){ petMsg('金币不够啦～'); return; }
-  const cfg=petCfgFor(v7.petLevel);
-  if(v7.mood>=cfg.m){ petMsg('猫咪已经心情满格了！'); return; }
-  v7.coins-=cost;
-  v7.mood=clampMood(v7.mood+gain,v7.petLevel);
-  saveV7(v7);
-  renderPet();
-  petMsg('猫咪开心地吃掉了食物，心情 +'+gain+'！');
-}
-function petUpgrade(){
-  const v7=applyDailyDecay(loadV7(),Date.now());
-  const cfg=petCfgFor(v7.petLevel);
-  if(cfg.price===null){ petMsg('已经是满级啦！'); return; }
-  if(v7.coins<cfg.price){ petMsg('金币不够升级～'); return; }
-  if(v7.keys<cfg.keyPrice){ petMsg('钥匙不够升级～'); return; }
-  v7.coins-=cfg.price;
-  v7.keys-=cfg.keyPrice;
-  v7.petLevel+=1;
-  v7.mood=clampMood(v7.mood,v7.petLevel);
-  saveV7(v7);
-  renderPet();
-  petMsg('升级成功！现在是 '+v7.petLevel+' 级猫咪！');
-}
-if(petEl.feed) petEl.feed.addEventListener('click',()=>petFeed(10,5));
-if(petEl.feed10) petEl.feed10.addEventListener('click',()=>petFeed(99,50));
-if(petEl.upgrade) petEl.upgrade.addEventListener('click',petUpgrade);
-document.getElementById('modePet').addEventListener('click',()=>secretShow('pet'));
-document.getElementById('petBackMenu').addEventListener('click',()=>secretShow('menu'));
-document.getElementById('rankEntryBtn').addEventListener('click',()=>secretShow('rank'));
-document.getElementById('rankBackBtn').addEventListener('click',()=>secretShow('pet'));
-
-/* ================= v8.0 全球排行榜（娱乐向，数据固定） ================= */
-// 总人数 n：由关卡人数分布反推（过40关及以上的 634083 人 = 前 0.6%）
-const RANK_N=105680504;
-// 固定前20名（用户指定）：心情值从 25680→25570，对应通关 97→90 关
-const RANK_TOP20=[
-  ['3972',25680],['3123',25670],['1904',25660],['8652',25650],['4478',25650],
-  ['3265',25630],['9013',25630],['6739',25630],['2580',25610],['7146',25610],
-  ['3892',25610],['5407',25610],['8264',25590],['1938',25590],['4675',25590],
-  ['9502',25590],['6281',25590],['3059',25570],['7814',25570],['2496',25570]
-];
-// 玩家名次（越小越强）：按用户给的分段公式
-function rankOf(mood,n){
-  n=n||RANK_N;
-  if(mood>=20200) return n*0.006;
-  if(mood>=20000) return n*0.015;
-  if(mood>=600)   return n*300/mood;
-  return n*(0.5+(600-mood)*0.0008);
-}
-// 超过玩家的百分比 = (总人数-名次)/总人数，四舍五入 0.01%，封顶 99.99%
-function pctOf(mood,n){
-  n=n||RANK_N;
-  const pct=(1-rankOf(mood,n)/n)*100;
-  return Math.min(99.99,Math.round(pct*100)/100);
-}
-function fmtRank(r){ return Math.max(1,Math.round(r)).toLocaleString('zh-CN'); }
-function renderRank(){
-  const box=document.getElementById('rankList');
-  if(!box) return;
-  const v7=applyDailyDecay(loadV7(),Date.now());
-  const myMood=Math.round(v7.mood);
-  const rows=[];
-  // 玩家心情若达到前20门槛(≥25570)，插入到对应并列位置（并列时玩家最前）
-  let myRank,inserted=false;
-  if(myMood>=RANK_TOP20[19][1]){
-    // 计算前20中严格大于玩家心情的人数 → 玩家应处名次
-    let ahead=0;
-    for(const [,m] of RANK_TOP20){ if(m>myMood) ahead++; }
-    myRank=ahead+1;
-    // 生成榜单：先放 ahead 个更高的假玩家，再插入玩家，其余顺延；并列假玩家排在玩家之后
-    for(let i=0;i<ahead;i++){
-      rows.push({idx:i+1,uid:RANK_TOP20[i][0],mood:RANK_TOP20[i][1],me:false});
-    }
-    rows.push({idx:myRank,uid:'您',mood:myMood,me:true,pct:pctOf(myMood)});
-    for(let i=ahead;i<RANK_TOP20.length;i++){
-      rows.push({idx:i+2,uid:RANK_TOP20[i][0],mood:RANK_TOP20[i][1],me:false});
-    }
-    inserted=true;
-  }else{
-    // 未进前20：固定显示前20，玩家单独列在最后
-    for(let i=0;i<RANK_TOP20.length;i++){
-      rows.push({idx:i+1,uid:RANK_TOP20[i][0],mood:RANK_TOP20[i][1],me:false});
-    }
-    myRank=Math.round(rankOf(myMood));
-  }
-  let html='';
-  for(const r of rows){
-    if(r.me){
-      html+='<div class="rank-row me"><span class="rk-idx">'+fmtRank(r.idx)+'.</span>'
-        +'<span class="rk-pct">(超过'+r.pct.toFixed(2)+'%)</span>'
-        +'<span class="rk-uid">您</span><span class="rk-mood">'+r.mood+'</span></div>';
-    }else{
-      html+='<div class="rank-row"><span class="rk-idx">'+r.idx+'.</span>'
-        +'<span class="rk-uid">用户'+r.uid+'****</span><span class="rk-mood">'+r.mood+'</span></div>';
-    }
-  }
-  if(!inserted){
-    html+='<div class="rank-row me"><span class="rk-idx">'+fmtRank(myRank)+'.</span>'
-      +'<span class="rk-pct">(超过'+pctOf(myMood).toFixed(2)+'%)</span>'
-      +'<span class="rk-uid">您</span><span class="rk-mood">'+myMood+'</span></div>';
-  }
-  box.innerHTML=html;
-}
-
 /* ================= 初始化 ================= */
 initKeyboard();   // 默认按 calc 渲染，进游戏时会重新初始化
 initStartDecor();
 secretInitKeyboard();
-// v7.0：页面加载即执行每日衰减并渲染金币
-(function initV7(){
-  const v7=applyDailyDecay(loadV7(),Date.now());
-  saveV7(v7);
-  renderCoins();
-})();
 </script>
-<div id="__vcBack" style="position:fixed;right:10px;top:10px;z-index:99999;"><a href="../index.html#versions" style="display:inline-block;padding:8px 12px;background:rgba(20,16,40,.85);color:#ffd54f;border:1px solid #7c4dff;border-radius:10px;font:600 13px/1.2 system-ui;text-decoration:none;box-shadow:0 2px 10px rgba(0,0,0,.4);">⬅ 版本中心</a></div></body>
+</body>
 </html>
