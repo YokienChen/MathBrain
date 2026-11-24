@@ -5,7 +5,7 @@
 - 用户目标：把代码同时存到 GitHub 私有仓库（账号 YokienChen，SSH 已配置可用）。本地仓库已 `git init`，首次提交 `3f13a21`。
 - **远程仓库已配置**：`origin = https://github.com/YokienChen/MathBrain.git`（2026-11-24 21:48 起为公开仓库 PUBLIC，用户主动开放；首次提交 `3f13a21` 已推送到 master）。
 - **每次更新的最后一步**：`git add -A && git commit -m "<版本> ..." && git push`，确保 GitHub 上始终有最新代码。
-- `.gitignore` 已排除：`.build/tools/`（1.3G 工具链）、`.build/app/.gradle/`、`app/build/`、临时截图与预览 HTML。保留：主源码、各版本备份、APK、APK 工程源码（含 game.jks 签名密钥）、历史版本资源、验证脚本。
+- `.gitignore` 已排除：`.build/tools/`（1.3G 工具链）、`.build/app/.gradle/`、`app/build/`、临时截图与预览 HTML。保留：主源码、各版本备份、APK、APK 工程源码、历史版本资源、验证脚本。**排除 `*.jks` 签名密钥**（仓库公开后用户要求移除，本地 `.build/app/game.jks` 保留用于打包签名）。
 
 ## 构建环境
 - JAVA_HOME / ANDROID_HOME / GRADLE_HOME 位于 `.build/tools/`，Gradle 8.7，签名 digest `4ae1394a…`。
