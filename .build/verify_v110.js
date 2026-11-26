@@ -21,8 +21,12 @@ ok(java.includes('return "1.1.0";'),'Bridge version1.1.0');
   ok(html.includes('id="'+id+'"'),'DOM#'+id);
 });
 ok(html.includes('class="mode-card ultimate"'),'主页终极挑战入口');
-ok(html.includes('☢'),'螃蟹肚子放射性图标');
-ok(html.includes('🦀'),'螃蟹图标');
+ok(html.includes('crab-radio')&&html.includes('☢'),'螃蟹肚子放射性图标(画中画叠加)');
+ok(html.includes('🦀'),'螃蟹emoji图标');
+ok(html.includes('巨型螃蟹'),'名称改为巨型螃蟹');
+ok(html.includes('敌方加成：🔪+0%')&&html.includes("'敌方加成：🔪+'"),'敌方加成用秘境同款🔪');
+ok(html.includes('crab-emoji-wrap'),'emoji容器样式存在');
+ok(!html.includes('crabBody'),'旧SVG螃蟹已移除');
 
 /* ---------- 3. 血条改造 ---------- */
 ok(html.includes('class="life-bar-wrap"')&&html.includes('class="life-heart"')&&html.includes('❤️'),'普通模式红心血条');
