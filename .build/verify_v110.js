@@ -1,4 +1,4 @@
-/* v1.1.0 终极挑战验证 */
+/* v1.1.1 终极挑战验证 */
 const fs=require('fs'),vm=require('vm');
 const root='C:/Users/lenovo/WorkBuddy/2026-11-18-20-03-11/';
 const html=fs.readFileSync(root+'数学_升级版.html','utf8');
@@ -9,10 +9,10 @@ function ok(c,m){ if(c){pass++;}else{fail++;console.log('FAIL:',m);} }
 function close(a,b,tol){ return Math.abs(a-b)<=(tol||1e-6); }
 
 /* ---------- 1. 版本标识 ---------- */
-ok(html.includes('<!-- MathBrain v1.1.0 -->'),'HTML顶部v1.1.0');
-ok(/versionCode\s+30/.test(gradle),'Gradle versionCode30');
-ok(/versionName\s+"1\.1\.0"/.test(gradle),'Gradle versionName1.1.0');
-ok(java.includes('return "1.1.0";'),'Bridge version1.1.0');
+ok(html.includes('<!-- MathBrain v1.1.1 -->'),'HTML顶部v1.1.1');
+ok(/versionCode\s+31/.test(gradle),'Gradle versionCode31');
+ok(/versionName\s+"1\.1\.1"/.test(gradle),'Gradle versionName1.1.1');
+ok(java.includes('return "1.1.1";'),'Bridge version1.1.1');
 
 /* ---------- 2. 页面与DOM ---------- */
 ['modeUltimate','ultScreen','ultResultScreen','ultStage','ultHpFill','ultHpPct','ultBlueFill','ultBluePct',
@@ -37,7 +37,7 @@ ok(!html.includes('生命 <span id="lifeValue"'),'旧"生命 x%"文本已移除'
 /* ---------- 4. 纯逻辑公式（抽取函数执行） ---------- */
 const js=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 // 抽取公式函数定义
-const fns=['ultAddLimit','ultAddSubProb','ultFactorCap','ultEnemyBonus','ultIsSpecial','ultBlueGain','getRandomInt'];
+const fns=['ultAddLimit','ultAddSubProb','ultFactorCap','ultEnemyBonus','ultIsSpecial','ultBlueGain','getRandomInt','ultDigitAt','ultFireNumber','ultFireHTML','ultProblemHTML','ultNewProblem'];
 let fsrc='';
 for(const fn of fns){
   const re=new RegExp('function '+fn+'\\([^)]*\\)\\s*\\{[\\s\\S]*?\\n\\}','m');
@@ -88,6 +88,35 @@ ok(close(ctx.ultBlueGain(4),25,1e-9),'蓝条 t=4 → (8-4)*6.25=25%');
 ok(close(ctx.ultBlueGain(5),18.75,1e-9),'蓝条 t=5 → 93.75/5=18.75%');
 ok(close(ctx.ultBlueGain(10),9.375,1e-9),'蓝条 t=10 → 9.375%');
 ok(close(ctx.ultBlueGain(4.999),ctx.ultBlueGain(5.001),0.02),'蓝条在5秒处近似连续');
+
+/* ---------- 4b. v1.1.1 🔥只波及一位数字 ---------- */
+ok(ctx.ultFireNumber(1234,0)==='123🔥','火遮个位');
+ok(ctx.ultFireNumber(1234,2)==='1🔥34','火遮百位');
+ok(ctx.ultFireNumber(7,0)==='🔥','一位数整位遮');
+ok(ctx.ultDigitAt(1234,2)===2,'取位数字');
+const fq={a:12,b:34,op:'×',ans:408,special:true,hideIdx:0,hidePos:0,revealed:false};
+ok(ctx.ultProblemHTML(fq)==='1<span class="fire">🔥</span> × 34','特殊关只藏一位(12→1🔥)');
+fq.hidePos=1;
+ok(ctx.ultProblemHTML(fq)==='<span class="fire">🔥</span>2 × 34','火遮十位显示');
+fq.revealed=true;
+ok(ctx.ultProblemHTML(fq)==='12 × 34','冰揭示后完整显示');
+fq.revealed=false;fq.wholeHide=true;
+ok(ctx.ultProblemHTML(fq)==='<span class="fire">🔥</span> × 34','v1.1.0旧存档整位隐藏兼容');
+let digitOk=true,hideCount=0;
+for(const k of [102,105,150,300,302,500,1000]){
+  for(let i=0;i<40;i++){
+    const q=ctx.ultNewProblem(k);
+    if(!q.special) continue;
+    hideCount++;
+    const n=q.hideIdx===0?q.a:q.b;
+    if(!(q.hidePos>=0&&q.hidePos<String(n).length)) digitOk=false;
+    const shown=ctx.ultFireNumber(n,q.hidePos);
+    if(shown.indexOf('🔥')<0||shown.replace('🔥','#').length!==String(n).length) digitOk=false;
+  }
+}
+ok(hideCount>0&&digitOk,'随机出题：🔥只替换一位且位置合法');
+ok(html.includes('wholeHide=true'),'旧存档兼容标记');
+ok(html.includes('hidePos:s.q.hidePos'),'存档保存隐藏位');
 
 /* ---------- 5. 机制关键字 ---------- */
 ok(html.includes('const ULT_MAX_LIFE=100000'),'血量上限100000');

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- MathBrain v1.1.0 -->
+<!-- MathBrain v1.1.1 -->
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -2970,15 +2970,35 @@ function ultNewProblem(k){
     op='×'; ans=a*b;
   }
   const special=ultIsSpecial(k);
-  const hideIdx=special?(Math.random()<0.5?0:1):-1;
-  return {a:a,b:b,op:op,ans:ans,special:special,hideIdx:hideIdx,revealed:false,qStart:Date.now()};
+  let hideIdx=-1,hidePos=0;
+  if(special){
+    // v1.1.1：与秘境一致，🔥 只波及一位数字。优先选位数≥2 的操作数
+    const sa=String(a).length, sb=String(b).length;
+    hideIdx=(sa>=2&&sb>=2)?(Math.random()<0.5?0:1):(sa>=2?0:1);
+    const len=String(hideIdx===0?a:b).length;
+    hidePos=len>1?getRandomInt(0,len-1):0;
+  }
+  return {a:a,b:b,op:op,ans:ans,special:special,hideIdx:hideIdx,hidePos:hidePos,revealed:false,qStart:Date.now()};
+}
+// v1.1.1：数字位替换（pos=0 个位），用字符串操作避免大数精度问题
+function ultDigitAt(n,pos){
+  const s=String(n),p=s.length-1-pos;
+  return (p>=0&&p<s.length)?Number(s[p]):0;
+}
+function ultFireNumber(n,pos){
+  const s=String(n),p=s.length-1-pos;
+  return (p<0||p>=s.length)?s:s.slice(0,p)+'🔥'+s.slice(p+1);
+}
+function ultFireHTML(n,pos){
+  return ultFireNumber(n,pos).replace(/🔥/g,'<span class="fire">🔥</span>');
 }
 function ultProblemHTML(q){
-  const a=(q.special&&!q.revealed&&q.hideIdx===0)?'<span class="fire">🔥</span>':String(q.a);
-  const b=(q.special&&!q.revealed&&q.hideIdx===1)?'<span class="fire">🔥</span>':String(q.b);
+  const whole=q.wholeHide;   // v1.1.0 旧存档：整个操作数被遮，保持原样
+  const a=(q.special&&!q.revealed&&q.hideIdx===0)?(whole?'<span class="fire">🔥</span>':ultFireHTML(q.a,q.hidePos)):String(q.a);
+  const b=(q.special&&!q.revealed&&q.hideIdx===1)?(whole?'<span class="fire">🔥</span>':ultFireHTML(q.b,q.hidePos)):String(q.b);
   return a+' '+q.op+' '+b;
 }
-function ultInputStr(q){ return q.special?(q.hideIdx===0?String(q.a):String(q.b)):''; }
+function ultInputStr(q){ return q.special?String(ultDigitAt(q.hideIdx===0?q.a:q.b,q.hidePos)):''; }
 
 /* ---------- 启动 / 恢复 ---------- */
 function ultStart(resume){
@@ -3002,6 +3022,7 @@ function ultStart(resume){
   ultInitKeyboard();
   if(saved&&saved.q){
     ultState.q=saved.q; ultState.q.qStart=Date.now();
+    if(ultState.q.special&&ultState.q.hidePos===undefined){ ultState.q.wholeHide=true; ultState.q.hidePos=0; }
   }else{
     ultState.q=ultNewProblem(ultState.stage);
   }
@@ -3127,7 +3148,7 @@ function ultSaveAndExit(){
   ultResetOps();
   if(typeof Guard!=='undefined') Guard.onGameEnd();
   const meta=ultLoad();
-  meta.save={stage:s.stage,hp:s.hp,ice:s.ice,blue:s.blue,q:{a:s.q.a,b:s.q.b,op:s.q.op,ans:String(s.q.ans),special:s.q.special,hideIdx:s.q.hideIdx,revealed:s.q.revealed}};
+  meta.save={stage:s.stage,hp:s.hp,ice:s.ice,blue:s.blue,q:{a:s.q.a,b:s.q.b,op:s.q.op,ans:String(s.q.ans),special:s.q.special,hideIdx:s.q.hideIdx,hidePos:s.q.hidePos,wholeHide:s.q.wholeHide,revealed:s.q.revealed}};
   ultSave(meta);
   ultScreen.style.display='none';
   const cb=document.querySelector('.coin-badge'); if(cb) cb.style.display='';
