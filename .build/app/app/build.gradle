@@ -10,8 +10,8 @@ android {
         applicationId "com.mathbrain.game"
         minSdk 21
         targetSdk 34
-        versionCode 31
-        versionName "1.1.1"
+        versionCode 32
+        versionName "1.1.2"
     }
 
     // v1.0.1：应用内版本控制已移除，历史版本仅保留在 .build/app/local_versions_assets，不再打进 APK

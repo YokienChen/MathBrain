@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- MathBrain v1.1.1 -->
+<!-- MathBrain v1.1.2 -->
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -464,6 +464,15 @@ body{
 .ult-result .big{font-size:3rem;color:#a8f4ff;text-shadow:0 0 22px rgba(0,220,255,.6);font-weight:bold;}
 .ult-result .sub{font-size:1.05rem;color:#ffe680;}
 .ult-result .cd{font-size:.95rem;color:#ffb0a0;}
+/* v1.1.2 页面内弹窗：Android WebView 不处理 alert/confirm，必须走 DOM */
+.ult-modal{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:20px;}
+.ult-modal-box{width:100%;max-width:340px;background:linear-gradient(160deg,#1b2140,#121733);border:2px solid #5b7cfa;border-radius:18px;padding:20px;box-shadow:0 18px 50px rgba(0,0,0,.6);text-align:center;}
+.ult-modal-title{font-size:1.1rem;font-weight:800;color:#ffe082;margin-bottom:10px;}
+.ult-modal-msg{font-size:.9rem;color:#e8eaf6;line-height:1.6;margin-bottom:18px;}
+.ult-modal-btns{display:flex;flex-direction:column;gap:10px;}
+.ult-modal-btn{padding:12px;border-radius:12px;border:2px solid #5b7cfa;background:#222b55;color:#fff;font-size:.95rem;font-weight:700;cursor:pointer;}
+.ult-modal-btn.primary{background:linear-gradient(135deg,#ff8a65,#e53935);border-color:#ffab91;}
+.ult-toast{position:fixed;left:50%;top:80px;transform:translateX(-50%);z-index:10000;background:rgba(20,25,50,.96);border:2px solid #ffb74d;color:#fff;padding:10px 18px;border-radius:12px;font-size:.9rem;box-shadow:0 8px 24px rgba(0,0,0,.5);max-width:86vw;text-align:center;}
 </style>
 </head>
 <body>
@@ -2890,6 +2899,29 @@ const ultSaveBtn=document.getElementById('ultSaveBtn');
 const ultPauseBtn=document.getElementById('ultPauseBtn');
 const ultBestLabel=document.getElementById('ultBestLabel');
 
+// v1.1.2：页面内提示/弹窗，替代 WebView 中失效的 alert/confirm
+function ultToast(msg){
+  let t=document.getElementById('ultToast');
+  if(!t){ t=document.createElement('div'); t.id='ultToast'; t.className='ult-toast'; document.body.appendChild(t); }
+  t.textContent=msg; t.style.display='block';
+  clearTimeout(ultToast._t);
+  ultToast._t=setTimeout(()=>{ t.style.display='none'; },2800);
+}
+function ultShowModal(title,msg,btns){
+  const m=document.getElementById('ultModal');
+  document.getElementById('ultModalTitle').textContent=title;
+  document.getElementById('ultModalMsg').textContent=msg;
+  const box=document.getElementById('ultModalBtns'); box.innerHTML='';
+  btns.forEach(b=>{
+    const el=document.createElement('button');
+    el.className='ult-modal-btn'+(b.primary?' primary':'');
+    el.textContent=b.label;
+    el.addEventListener('click',()=>{ m.style.display='none'; b.fn(); });
+    box.appendChild(el);
+  });
+  m.style.display='flex';
+}
+
 function ultLoad(){
   try{
     let raw=null;
@@ -2904,6 +2936,14 @@ function ultSave(o){
   const s=JSON.stringify(o);
   try{ if(window.AndroidStore&&window.AndroidStore.setHistory) window.AndroidStore.setHistory(ULT_KEY,s); }catch(e){}
   try{ localStorage.setItem(ULT_KEY,s); }catch(e){}
+}
+// v1.1.2：统一写入完整进度（答对/答错/保存退出共用），防止杀后台丢档
+function ultWriteSave(s){
+  if(!s||!s.q) return;
+  const meta=ultLoad();
+  if(s.stage>meta.stage) meta.stage=s.stage;
+  meta.save={stage:s.stage,hp:s.hp,ice:s.ice,blue:s.blue,q:{a:s.q.a,b:s.q.b,op:s.q.op,ans:String(s.q.ans),special:s.q.special,hideIdx:s.q.hideIdx,hidePos:s.q.hidePos,wholeHide:s.q.wholeHide,revealed:s.q.revealed}};
+  ultSave(meta);
 }
 function ultCdRemaining(now){
   const d=ultLoad().cooldownUntil-(now||Date.now());
@@ -3003,11 +3043,14 @@ function ultInputStr(q){ return q.special?String(ultDigitAt(q.hideIdx===0?q.a:q.
 /* ---------- 启动 / 恢复 ---------- */
 function ultStart(resume){
   const v7=loadV7();
-  if(v7.coins<ULT_COST){ alert('金币不足，需要 '+ULT_COST+' 金币'); return; }
   const meta=ultLoad();
-  if(meta.cooldownUntil>Date.now()){ alert(ultCdText(meta.cooldownUntil-Date.now())); return; }
-  v7.coins-=ULT_COST; saveV7(v7); renderCoins();
+  if(meta.cooldownUntil>Date.now()){ ultToast(ultCdText(meta.cooldownUntil-Date.now())); return; }
   const saved=(resume&&meta.save)?meta.save:null;
+  // v1.1.2：续玩已付过参与费，不再重复扣 1000 金币
+  if(!saved){
+    if(v7.coins<ULT_COST){ ultToast('金币不足，需要 '+ULT_COST+' 金币'); return; }
+    v7.coins-=ULT_COST; saveV7(v7); renderCoins();
+  }
   ultState={
     stage:saved?saved.stage:1,
     hp:saved?saved.hp:ULT_MAX_LIFE,
@@ -3087,14 +3130,12 @@ function ultSubmit(){
     s.blue+=ultBlueGain(t);
     while(s.blue>=100){ s.blue-=100; s.ice++; }
     s.stage++;
-    const meta=ultLoad();
-    if(s.stage>meta.stage) meta.stage=s.stage;
-    ultSave(meta);
     // 两段式：在切下一题的瞬间，题目先隐藏，再执行保存退出或暂停（不提前透题）
     if(s.saveArmed || s.pauseArmed){
       const goSave=s.saveArmed;
       s.q=ultNewProblem(s.stage);
       s.input=''; s.locked=false;
+      ultWriteSave(s);                       // v1.1.2 自动存档
       ultProblemEl.style.visibility='hidden';
       if(goSave){ ultSaveAndExit(); }
       else{ ultApplyPause(); }
@@ -3103,10 +3144,12 @@ function ultSubmit(){
     s.q=ultNewProblem(s.stage);
     s.input='';
     s.locked=false;
+    ultWriteSave(s);                         // v1.1.2 每答对一题自动存档，杀后台也能续
     ultRender();
   }else{
     s.hp=Math.max(0,s.hp-25);
     if(s.hp<=0){ ultFinish(); return; }
+    ultWriteSave(s);                         // v1.1.2 扣血后同步存档
     // 🔥 未被冰熄灭时答错：提示上一个答案比正确答案大/小（仅本次，2秒）
     if(q.special&&!q.revealed){
       const hint=u>BigInt(q.ans)?'上一个答案比正确答案大了':'上一个答案比正确答案小了';
@@ -3147,9 +3190,7 @@ function ultSaveAndExit(){
   clearInterval(ultTick); ultTick=null;
   ultResetOps();
   if(typeof Guard!=='undefined') Guard.onGameEnd();
-  const meta=ultLoad();
-  meta.save={stage:s.stage,hp:s.hp,ice:s.ice,blue:s.blue,q:{a:s.q.a,b:s.q.b,op:s.q.op,ans:String(s.q.ans),special:s.q.special,hideIdx:s.q.hideIdx,hidePos:s.q.hidePos,wholeHide:s.q.wholeHide,revealed:s.q.revealed}};
-  ultSave(meta);
+  ultWriteSave(s);
   ultScreen.style.display='none';
   const cb=document.querySelector('.coin-badge'); if(cb) cb.style.display='';
   startScreen.style.display='flex';
@@ -3224,9 +3265,15 @@ const ultResumeBtn=document.getElementById('ultResumeBtn');
 if(ultResumeBtn) ultResumeBtn.addEventListener('click',ultResume);
 if(document.getElementById('modeUltimate')) document.getElementById('modeUltimate').addEventListener('click',()=>{
   const cd=ultCdRemaining();
-  if(cd>0){ alert(ultCdText(cd)); return; }
+  if(cd>0){ ultToast(ultCdText(cd)); return; }
   const meta=ultLoad();
-  if(meta.save){ if(confirm('检测到未完成的挑战（第 '+meta.save.stage+' 关），是否继续？')) ultStart(true); else ultStart(false); }
+  if(meta.save){
+    const st=meta.save.stage;
+    ultShowModal('发现未完成的挑战','上次停在第 '+st+' 关，进度已保存。继续吗？',[
+      {label:'继续第 '+st+' 关',primary:true,fn:()=>ultStart(true)},
+      {label:'重新开始（覆盖旧进度）',fn:()=>ultStart(false)}
+    ]);
+  }
   else ultStart(false);
 });
 if(document.getElementById('ultResultBack')) document.getElementById('ultResultBack').addEventListener('click',()=>{
@@ -3429,5 +3476,12 @@ secretInitKeyboard();
 })();
 Guard.init();   // v1.1.0：启动防外挂（生命周期监听/心跳/检测/重启补扣）
 </script>
+<div class="ult-modal" id="ultModal" style="display:none;">
+  <div class="ult-modal-box">
+    <div class="ult-modal-title" id="ultModalTitle"></div>
+    <div class="ult-modal-msg" id="ultModalMsg"></div>
+    <div class="ult-modal-btns" id="ultModalBtns"></div>
+  </div>
+</div>
 </body>
 </html>

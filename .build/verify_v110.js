@@ -1,4 +1,4 @@
-/* v1.1.1 终极挑战验证 */
+/* v1.1.2 终极挑战验证 */
 const fs=require('fs'),vm=require('vm');
 const root='C:/Users/lenovo/WorkBuddy/2026-11-18-20-03-11/';
 const html=fs.readFileSync(root+'数学_升级版.html','utf8');
@@ -9,10 +9,10 @@ function ok(c,m){ if(c){pass++;}else{fail++;console.log('FAIL:',m);} }
 function close(a,b,tol){ return Math.abs(a-b)<=(tol||1e-6); }
 
 /* ---------- 1. 版本标识 ---------- */
-ok(html.includes('<!-- MathBrain v1.1.1 -->'),'HTML顶部v1.1.1');
-ok(/versionCode\s+31/.test(gradle),'Gradle versionCode31');
-ok(/versionName\s+"1\.1\.1"/.test(gradle),'Gradle versionName1.1.1');
-ok(java.includes('return "1.1.1";'),'Bridge version1.1.1');
+ok(html.includes('<!-- MathBrain v1.1.2 -->'),'HTML顶部v1.1.2');
+ok(/versionCode\s+32/.test(gradle),'Gradle versionCode32');
+ok(/versionName\s+"1\.1\.2"/.test(gradle),'Gradle versionName1.1.2');
+ok(java.includes('return "1.1.2";'),'Bridge version1.1.2');
 
 /* ---------- 2. 页面与DOM ---------- */
 ['modeUltimate','ultScreen','ultResultScreen','ultStage','ultHpFill','ultHpPct','ultBlueFill','ultBluePct',
@@ -144,6 +144,17 @@ ok(html.includes('s.saveArmed=false; ultSaveBtn.classList.remove(\'armed\')'),'�
 ok(html.includes('ULT_KEY=\'mathbrain_ultimate_v1\''),'存档key');
 ok(html.includes('meta.save={stage:s.stage,hp:s.hp,ice:s.ice,blue:s.blue'),'保存完整进度');
 ok(html.includes('meta.cooldownUntil=Date.now()+ULT_CD_MS'),'结算设置冷却');
+/* ---------- 5b. v1.1.2 存档恢复修复（WebView confirm 被吞） ---------- */
+ok(!/\balert\(|\bconfirm\(/.test(js),'彻底移除alert/confirm');
+ok(html.includes('id="ultModal"')&&html.includes('function ultShowModal('),'页面内模态框替代confirm');
+ok(html.includes('继续第 \'+st+\' 关')&&html.includes('重新开始（覆盖旧进度）'),'续玩/重开双选项明确');
+ok(html.includes('function ultWriteSave(s)'),'统一存档函数');
+ok((html.match(/ultWriteSave\(s\)/g)||[]).length>=4,'答对/答错/保存退出均自动存档');
+ok(html.includes('// v1.1.2：续玩已付过参与费，不再重复扣 1000 金币'),'续玩不重复扣费');
+const startFn=js.slice(js.indexOf('function ultStart('),js.indexOf('function stopAllScreens('));
+ok(!/if\(v7\.coins<ULT_COST\)\{ ultToast/.test(startFn.replace(/if\(!saved\)\{[\s\S]*?\n  \}/,'')),'金币检查仅在开新局分支');
+ok(html.includes("t.id='ultToast'")&&html.includes('function ultToast('),'页面内toast替代alert');
+ok(html.includes("ultShowModal('发现未完成的挑战'"),'主页检测存档弹窗');
 ok(html.includes('距下次开放还有'),'冷却倒计时文案');
 ok(html.includes('最高达到：第 '),'主页显示最高关卡');
 // 防外挂接入
