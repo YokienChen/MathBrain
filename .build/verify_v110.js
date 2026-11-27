@@ -1,4 +1,4 @@
-/* v1.1.2 终极挑战验证 */
+/* v1.1.3 终极挑战验证 */
 const fs=require('fs'),vm=require('vm');
 const root='C:/Users/lenovo/WorkBuddy/2026-11-18-20-03-11/';
 const html=fs.readFileSync(root+'数学_升级版.html','utf8');
@@ -9,10 +9,10 @@ function ok(c,m){ if(c){pass++;}else{fail++;console.log('FAIL:',m);} }
 function close(a,b,tol){ return Math.abs(a-b)<=(tol||1e-6); }
 
 /* ---------- 1. 版本标识 ---------- */
-ok(html.includes('<!-- MathBrain v1.1.2 -->'),'HTML顶部v1.1.2');
-ok(/versionCode\s+32/.test(gradle),'Gradle versionCode32');
-ok(/versionName\s+"1\.1\.2"/.test(gradle),'Gradle versionName1.1.2');
-ok(java.includes('return "1.1.2";'),'Bridge version1.1.2');
+ok(html.includes('<!-- MathBrain v1.1.3 -->'),'HTML顶部v1.1.3');
+ok(/versionCode\s+33/.test(gradle),'Gradle versionCode33');
+ok(/versionName\s+"1\.1\.3"/.test(gradle),'Gradle versionName1.1.3');
+ok(java.includes('return "1.1.3";'),'Bridge version1.1.3');
 
 /* ---------- 2. 页面与DOM ---------- */
 ['modeUltimate','ultScreen','ultResultScreen','ultStage','ultHpFill','ultHpPct','ultBlueFill','ultBluePct',
@@ -119,7 +119,7 @@ ok(html.includes('wholeHide=true'),'旧存档兼容标记');
 ok(html.includes('hidePos:s.q.hidePos'),'存档保存隐藏位');
 
 /* ---------- 5. 机制关键字 ---------- */
-ok(html.includes('const ULT_MAX_LIFE=100000'),'血量上限100000');
+ok(html.includes('const ULT_MAX_LIFE=150000'),'血量上限150000(v1.1.3)');
 ok(html.includes('ULT_COST=1000'),'参与费用1000');
 ok(html.includes('22*60*60*1000'),'冷却22小时');
 ok(html.includes('s.hp=Math.max(0,s.hp-25)'),'答错扣25血');
@@ -143,18 +143,29 @@ ok(html.includes('s.saveArmed=false; ultSaveBtn.classList.remove(\'armed\')'),'�
 // 存档与冷却
 ok(html.includes('ULT_KEY=\'mathbrain_ultimate_v1\''),'存档key');
 ok(html.includes('meta.save={stage:s.stage,hp:s.hp,ice:s.ice,blue:s.blue'),'保存完整进度');
-ok(html.includes('meta.cooldownUntil=Date.now()+ULT_CD_MS'),'结算设置冷却');
+ok(html.includes('meta.cooldownUntil=Math.max((meta.runStartAt||0)+ULT_CD_MS,Date.now()+ULT_CD_MS)'),'结算设置冷却');
 /* ---------- 5b. v1.1.2 存档恢复修复（WebView confirm 被吞） ---------- */
 ok(!/\balert\(|\bconfirm\(/.test(js),'彻底移除alert/confirm');
 ok(html.includes('id="ultModal"')&&html.includes('function ultShowModal('),'页面内模态框替代confirm');
 ok(html.includes('继续第 \'+st+\' 关')&&html.includes('重新开始（覆盖旧进度）'),'续玩/重开双选项明确');
 ok(html.includes('function ultWriteSave(s)'),'统一存档函数');
 ok((html.match(/ultWriteSave\(s\)/g)||[]).length>=4,'答对/答错/保存退出均自动存档');
-ok(html.includes('// v1.1.2：续玩已付过参与费，不再重复扣 1000 金币'),'续玩不重复扣费');
+ok(/if\(!saved\)\{[\s\S]{0,400}v7\.coins-=ULT_COST/.test(js),'续玩不重复扣费(扣费在if(!saved)内)');
 const startFn=js.slice(js.indexOf('function ultStart('),js.indexOf('function stopAllScreens('));
 ok(!/if\(v7\.coins<ULT_COST\)\{ ultToast/.test(startFn.replace(/if\(!saved\)\{[\s\S]*?\n  \}/,'')),'金币检查仅在开新局分支');
 ok(html.includes("t.id='ultToast'")&&html.includes('function ultToast('),'页面内toast替代alert');
 ok(html.includes("ultShowModal('发现未完成的挑战'"),'主页检测存档弹窗');
+/* ---------- 5c. v1.1.3 修复与平衡性 ---------- */
+ok(html.includes('ULT_BLUE_UNLOCK=71'),'蓝条解锁线71关');
+ok(html.includes('if(s.stage>=ULT_BLUE_UNLOCK){')&&html.includes('s.blue+=ultBlueGain(t)'),'前70关不累积蓝条');
+ok(html.includes('通过70关以解锁'),'前70关蓝条解锁文案');
+ok(html.includes("ultBluePct.textContent='通过70关以解锁'"),'前70关蓝条白字');
+ok(html.includes('ultProblemEl.style.visibility=\'\';')&&html.includes("if(ultPausePanel) ultPausePanel.style.display='none';"),'ultStart复位题目/控件(修复空白bug)');
+ok(html.includes('runStartAt:o.runStartAt||0')&&html.includes('runStartAt:0'),'存档读取runStartAt');
+ok(html.includes('meta.runStartAt=Date.now()'),'开局记录时间戳');
+ok(html.includes('meta.cooldownUntil=Math.max(meta.cooldownUntil||0,Date.now()+ULT_CD_MS)'),'开局即锁22h');
+ok(html.includes('meta.cooldownUntil=Math.max((meta.runStartAt||0)+ULT_CD_MS,Date.now()+ULT_CD_MS)'),'结算CD不早于开局+22h');
+ok(html.includes('if(!saved){')&&html.includes('const saved=(resume&&meta.save)?meta.save:null;'),'继续存档在CD检查之前判定');
 ok(html.includes('距下次开放还有'),'冷却倒计时文案');
 ok(html.includes('最高达到：第 '),'主页显示最高关卡');
 // 防外挂接入
