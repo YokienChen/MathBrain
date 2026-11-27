@@ -1,4 +1,4 @@
-/* v1.1.3 终极挑战验证 */
+/* v1.1.4 终极挑战验证 */
 const fs=require('fs'),vm=require('vm');
 const root='C:/Users/lenovo/WorkBuddy/2026-11-18-20-03-11/';
 const html=fs.readFileSync(root+'数学_升级版.html','utf8');
@@ -9,10 +9,10 @@ function ok(c,m){ if(c){pass++;}else{fail++;console.log('FAIL:',m);} }
 function close(a,b,tol){ return Math.abs(a-b)<=(tol||1e-6); }
 
 /* ---------- 1. 版本标识 ---------- */
-ok(html.includes('<!-- MathBrain v1.1.3 -->'),'HTML顶部v1.1.3');
-ok(/versionCode\s+33/.test(gradle),'Gradle versionCode33');
-ok(/versionName\s+"1\.1\.3"/.test(gradle),'Gradle versionName1.1.3');
-ok(java.includes('return "1.1.3";'),'Bridge version1.1.3');
+ok(html.includes('<!-- MathBrain v1.1.4 -->'),'HTML顶部v1.1.4');
+ok(/versionCode\s+34/.test(gradle),'Gradle versionCode34');
+ok(/versionName\s+"1\.1\.4"/.test(gradle),'Gradle versionName1.1.4');
+ok(java.includes('return "1.1.4";'),'Bridge version1.1.4');
 
 /* ---------- 2. 页面与DOM ---------- */
 ['modeUltimate','ultScreen','ultResultScreen','ultStage','ultHpFill','ultHpPct','ultBlueFill','ultBluePct',
@@ -166,6 +166,14 @@ ok(html.includes('meta.runStartAt=Date.now()'),'开局记录时间戳');
 ok(html.includes('meta.cooldownUntil=Math.max(meta.cooldownUntil||0,Date.now()+ULT_CD_MS)'),'开局即锁22h');
 ok(html.includes('meta.cooldownUntil=Math.max((meta.runStartAt||0)+ULT_CD_MS,Date.now()+ULT_CD_MS)'),'结算CD不早于开局+22h');
 ok(html.includes('if(!saved){')&&html.includes('const saved=(resume&&meta.save)?meta.save:null;'),'继续存档在CD检查之前判定');
+/* ---------- 5d. v1.1.4 全面排查修复 ---------- */
+const keyFn=js.slice(js.indexOf('function ultKey('),js.indexOf('function ultUseIce('));
+ok(keyFn.indexOf("if(t==='提交')")<keyFn.indexOf("classList.contains('hint')"),'提交键在hint清空之前处理');
+ok(html.includes('// v1.1.4：提交键不受 hint 清除影响'),'hint提交修复注释');
+ok(html.includes('s.q===q&&ultInputEl.classList.contains(\'hint\')'),'hint清除增加同题校验');
+ok(html.includes('// v1.1.4：2秒后清除提示时，必须确认仍是同一道题'),'hint超时防覆盖注释');
+ok(/if\(!s\.pauseArmed\)\{ s\.pauseArmed=true;[\s\S]{0,120}\}\s*else \{ s\.pauseArmed=false; ultPauseBtn\.classList\.remove\('armed'\); \}/.test(js),'暂停第二下为取消(非立即暂停)');
+ok(!/else ultApplyPause\(\);\s*\n\}\);\s*\nif\(ultIceBtn\)/.test(js),'暂停事件不再直接ultApplyPause');
 ok(html.includes('距下次开放还有'),'冷却倒计时文案');
 ok(html.includes('最高达到：第 '),'主页显示最高关卡');
 // 防外挂接入
