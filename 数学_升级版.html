@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- MathBrain v1.1.4 -->
+<!-- MathBrain v1.1.5 -->
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -2939,12 +2939,25 @@ function ultSave(o){
   try{ localStorage.setItem(ULT_KEY,s); }catch(e){}
 }
 // v1.1.2：统一写入完整进度（答对/答错/保存退出共用），防止杀后台丢档
-function ultWriteSave(s){
+// v1.1.5：exitMode 标记离场方式——'active'(进行中) / 'paused'(暂停) / 'saved'(显式保存退出)
+function ultWriteSave(s,exitMode){
   if(!s||!s.q) return;
   const meta=ultLoad();
   if(s.stage>meta.stage) meta.stage=s.stage;
-  meta.save={stage:s.stage,hp:s.hp,ice:s.ice,blue:s.blue,q:{a:s.q.a,b:s.q.b,op:s.q.op,ans:String(s.q.ans),special:s.q.special,hideIdx:s.q.hideIdx,hidePos:s.q.hidePos,wholeHide:s.q.wholeHide,revealed:s.q.revealed}};
+  meta.save={stage:s.stage,hp:s.hp,ice:s.ice,blue:s.blue,q:{a:s.q.a,b:s.q.b,op:s.q.op,ans:String(s.q.ans),special:s.q.special,hideIdx:s.q.hideIdx,hidePos:s.q.hidePos,wholeHide:s.q.wholeHide,revealed:s.q.revealed},exitMode:exitMode||'active'};
   ultSave(meta);
+}
+// v1.1.5：启动时检查——未暂停、未显式保存就离开（=直接杀后台）视为放弃本次挑战：删档 + 22h CD
+function ultCheckAbandon(){
+  const meta=ultLoad();
+  if(!meta.save||meta.save.exitMode!=='active') return false;
+  const reached=meta.save.stage||0;
+  if(reached>meta.maxStage) meta.maxStage=reached;
+  meta.stage=0;
+  meta.save=null;
+  meta.cooldownUntil=Math.max((meta.runStartAt||0)+ULT_CD_MS,Date.now()+ULT_CD_MS);
+  ultSave(meta);
+  return true;
 }
 function ultCdRemaining(now){
   const d=ultLoad().cooldownUntil-(now||Date.now());
@@ -3081,6 +3094,7 @@ function ultStart(resume){
   }else{
     ultState.q=ultNewProblem(ultState.stage);
   }
+  ultWriteSave(ultState,'active');   // v1.1.5：进入战斗即为进行中，续玩后再次杀后台同样按弃权处理
   ultRender();
   if(ultTick) clearInterval(ultTick);
   ultTick=setInterval(ultUltTick,100);
@@ -3217,7 +3231,7 @@ function ultSaveAndExit(){
   clearInterval(ultTick); ultTick=null;
   ultResetOps();
   if(typeof Guard!=='undefined') Guard.onGameEnd();
-  ultWriteSave(s);
+  ultWriteSave(s,'saved');   // v1.1.5：显式保存退出标记为可续档
   ultScreen.style.display='none';
   const cb=document.querySelector('.coin-badge'); if(cb) cb.style.display='';
   startScreen.style.display='flex';
@@ -3227,6 +3241,7 @@ function ultApplyPause(){
   const s=ultState;
   if(!s||!s.active||s.paused) return;
   s.paused=true;
+  ultWriteSave(s,'paused');   // v1.1.5：暂停离场标记为可续档
   s.saveArmed=false;s.pauseArmed=false;
   if(ultSaveBtn) ultSaveBtn.classList.remove('armed');
   if(ultPauseBtn) ultPauseBtn.classList.remove('armed');
@@ -3249,6 +3264,7 @@ function ultResume(){
   if(ultPausePanel) ultPausePanel.style.display='none';
   s.q=ultNewProblem(s.stage);
   s.input='';s.locked=false;
+  ultWriteSave(s,'active');   // v1.1.5：继续后恢复"进行中"标记
   ultRender();
   startTime=Date.now();
 }
@@ -3510,6 +3526,11 @@ secretInitKeyboard();
   renderCoins();
 })();
 Guard.init();   // v1.1.0：启动防外挂（生命周期监听/心跳/检测/重启补扣）
+// v1.1.5：页面重新加载（=app 被杀后重进）时，未暂停/未显式保存的存档视为弃权
+if(ultCheckAbandon()){
+  ultToast('检测到未暂停直接退出，本次挑战已作废并进入 22 小时冷却');
+  ultRenderBest();
+}
 </script>
 <div class="ult-modal" id="ultModal" style="display:none;">
   <div class="ult-modal-box">

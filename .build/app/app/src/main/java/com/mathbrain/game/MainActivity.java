@@ -109,7 +109,7 @@ public class MainActivity extends Activity {
             }
             @JavascriptInterface
             public String version() {
-                return "1.1.4";
+                return "1.1.5";
             }
         }, "AndroidGuard");
 

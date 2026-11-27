@@ -1,4 +1,4 @@
-/* v1.1.4 终极挑战验证 */
+/* v1.1.5 终极挑战验证 */
 const fs=require('fs'),vm=require('vm');
 const root='C:/Users/lenovo/WorkBuddy/2026-11-18-20-03-11/';
 const html=fs.readFileSync(root+'数学_升级版.html','utf8');
@@ -9,10 +9,10 @@ function ok(c,m){ if(c){pass++;}else{fail++;console.log('FAIL:',m);} }
 function close(a,b,tol){ return Math.abs(a-b)<=(tol||1e-6); }
 
 /* ---------- 1. 版本标识 ---------- */
-ok(html.includes('<!-- MathBrain v1.1.4 -->'),'HTML顶部v1.1.4');
-ok(/versionCode\s+34/.test(gradle),'Gradle versionCode34');
-ok(/versionName\s+"1\.1\.4"/.test(gradle),'Gradle versionName1.1.4');
-ok(java.includes('return "1.1.4";'),'Bridge version1.1.4');
+ok(html.includes('<!-- MathBrain v1.1.5 -->'),'HTML顶部v1.1.5');
+ok(/versionCode\s+35/.test(gradle),'Gradle versionCode35');
+ok(/versionName\s+"1\.1\.5"/.test(gradle),'Gradle versionName1.1.5');
+ok(java.includes('return "1.1.5";'),'Bridge version1.1.5');
 
 /* ---------- 2. 页面与DOM ---------- */
 ['modeUltimate','ultScreen','ultResultScreen','ultStage','ultHpFill','ultHpPct','ultBlueFill','ultBluePct',
@@ -148,8 +148,8 @@ ok(html.includes('meta.cooldownUntil=Math.max((meta.runStartAt||0)+ULT_CD_MS,Dat
 ok(!/\balert\(|\bconfirm\(/.test(js),'彻底移除alert/confirm');
 ok(html.includes('id="ultModal"')&&html.includes('function ultShowModal('),'页面内模态框替代confirm');
 ok(html.includes('继续第 \'+st+\' 关')&&html.includes('重新开始（覆盖旧进度）'),'续玩/重开双选项明确');
-ok(html.includes('function ultWriteSave(s)'),'统一存档函数');
-ok((html.match(/ultWriteSave\(s\)/g)||[]).length>=4,'答对/答错/保存退出均自动存档');
+ok(html.includes('function ultWriteSave(s,exitMode)'),'统一存档函数带离场标记');
+ok((html.match(/ultWriteSave\(s/g)||[]).length>=4,'答对/答错/保存退出均自动存档');
 ok(/if\(!saved\)\{[\s\S]{0,400}v7\.coins-=ULT_COST/.test(js),'续玩不重复扣费(扣费在if(!saved)内)');
 const startFn=js.slice(js.indexOf('function ultStart('),js.indexOf('function stopAllScreens('));
 ok(!/if\(v7\.coins<ULT_COST\)\{ ultToast/.test(startFn.replace(/if\(!saved\)\{[\s\S]*?\n  \}/,'')),'金币检查仅在开新局分支');
@@ -174,6 +174,17 @@ ok(html.includes('s.q===q&&ultInputEl.classList.contains(\'hint\')'),'hint清除
 ok(html.includes('// v1.1.4：2秒后清除提示时，必须确认仍是同一道题'),'hint超时防覆盖注释');
 ok(/if\(!s\.pauseArmed\)\{ s\.pauseArmed=true;[\s\S]{0,120}\}\s*else \{ s\.pauseArmed=false; ultPauseBtn\.classList\.remove\('armed'\); \}/.test(js),'暂停第二下为取消(非立即暂停)');
 ok(!/else ultApplyPause\(\);\s*\n\}\);\s*\nif\(ultIceBtn\)/.test(js),'暂停事件不再直接ultApplyPause');
+/* ---------- 5e. v1.1.5 未暂停杀后台=弃权 ---------- */
+ok(html.includes("meta.save={stage:s.stage,hp:s.hp,ice:s.ice,blue:s.blue,q:")&&html.includes("exitMode:exitMode||'active'"),'存档带exitMode标记(默认active)');
+ok(html.includes("function ultCheckAbandon()"),'启动弃权检查函数');
+ok(html.includes("meta.save.exitMode!=='active'")&&html.includes('meta.save=null;'),'仅active离场删档');
+ok(html.includes("meta.cooldownUntil=Math.max((meta.runStartAt||0)+ULT_CD_MS,Date.now()+ULT_CD_MS)")&&html.includes('function ultCheckAbandon'),'弃权进入22h冷却');
+ok(html.includes("ultWriteSave(s,'paused')"),'暂停标记paused可续档');
+ok(html.includes("ultWriteSave(s,'saved')"),'显式保存退出标记saved可续档');
+ok(html.includes("ultWriteSave(ultState,'active')"),'开局/续玩标记active');
+ok(html.includes("ultWriteSave(s,'active');   // v1.1.5：继续后恢复"),'暂停继续后恢复active标记');
+ok(html.includes('if(ultCheckAbandon()){'),'页面加载即执行弃权检查');
+ok(html.includes('检测到未暂停直接退出，本次挑战已作废'),'弃权提示');
 ok(html.includes('距下次开放还有'),'冷却倒计时文案');
 ok(html.includes('最高达到：第 '),'主页显示最高关卡');
 // 防外挂接入
